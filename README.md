@@ -1,0 +1,3 @@
+# analytics
+Analysis of the municipal data for real time alerts, predictive analytics and more...
+We will analyse the data created by the eGov SmartCity ERP for increasing the efficiency of Municial Employees by enabling data driven governance. 
