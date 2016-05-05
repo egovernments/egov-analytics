@@ -1,0 +1,6 @@
+bin/*
+local/*
+lib/*
+include/*
+complaints
+pip-*
