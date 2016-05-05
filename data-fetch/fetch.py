@@ -19,10 +19,10 @@ class Constants(object):
   TABLE_NAME = "complaints" 
 
   # the batch size to fetch from the elasticsearch server
-  BATCH_SIZE = 1000 
+  BATCH_SIZE = 100
   
   # list of columns and their orders
-  COLUMNS = ["id", "ComplaintType", "Zone", "Ward", "Deptartment", "Date"]
+  COLUMNS = ["id", "ComplaintType", "Zone", "Ward", "Department", "Date"]
 
 class Admin(object):
   """
@@ -149,6 +149,7 @@ class Exporter(object):
     with sqlite3.connect(Constants.TABLE_NAME) as conn:
       cursor = conn.execute("SELECT COUNT(*) from COMPLAINTS")
       print cursor.fetchone(), "records present"
+
   def exportTo(self, path):
     with sqlite3.connect(Constants.TABLE_NAME) as conn:
       with codecs.open(path, "w", "utf-8") as writer:
@@ -156,15 +157,20 @@ class Exporter(object):
         for row in conn.execute("SELECT * from COMPLAINTS ORDER BY date ASC"):
           writer.write("\t".join(map(str, row)) + "\n")        
 
-if __name__ == '__main__':
-  parser = argparse.ArgumentParser(description='Fetch data')
-  parser.add_argument('esHost', metavar='esHost', type=str, help='the elastic search host to fetch data from')
-  parser.add_argument('esPort', metavar='esPort', type=int, help='the elastic search port to fetch data from')
-
+if __name__ == "__main__":
+  parser = argparse.ArgumentParser(description="Fetch data")
+  parser.add_argument("esHost", metavar="esHost", type=str, help="the elastic search host to fetch data from")
+  parser.add_argument("esPort", metavar="esPort", type=int, help="the elastic search port to fetch data from")
+  parser.add_argument("outputPath", metavar="outputPath", type=str, help="the path to output the data to")
   args = parser.parse_args()
 
+  # ensure that databases, etc are created
   Admin.create()
+  # print some information *before* the export
   exporter = Exporter()
   exporter.summarize()
-  exporter.exportTo("output.tsv")
-  ComplaintsClient(args.esHost, args.esPort).fetch()
+
+  # fetch the latest data, and export it
+  ComplaintsClient(args.esHost, args.esPort).fetch()  
+  exporter.exportTo(args.outputPath)
+  
