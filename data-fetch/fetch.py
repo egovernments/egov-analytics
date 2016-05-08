@@ -100,11 +100,11 @@ class ComplaintsClient(object):
       last_date = self._get_oldest_date()
       log.info("fetching data from date: {}".format(last_date))
     
-    log.info("starting to fetch data.")
+    log.info("starting to fetch data.")    
     while True:      
       hits = self._fetch_after_date(last_date, 0, Constants.BATCH_SIZE)        
       log.info("fetched {} complaints".format(len(hits)))      
-      if len(hits) == 0:
+      if len(hits) in [0, 1]:
         break
       with sqlite3.connect(Constants.TABLE_NAME) as conn:        
         for hit in hits:          
