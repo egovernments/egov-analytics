@@ -165,7 +165,7 @@ if __name__ == "__main__":
   args = parser.parse_args()
 
   # ensure that databases, etc are created
-  Admin.create()
+  Admin.setup()
   # print some information *before* the export
   exporter = Exporter()
   exporter.summarize()
