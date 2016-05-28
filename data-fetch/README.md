@@ -21,5 +21,5 @@ To run it, you need to know the elastic-search instance's URL and port
 The headers are as follows:
 
 | id	| ComplaintType| 	Zone| 	Ward| 	Department| 	Date |
-| --- |
+| --- | ---          | ---  | ---   | ---         | ---    |
 |Complaint Id|One of 93 complaint types| The zone in which the complaint was posted | the ward in which the complaint was poster| the department assigned to tackle the complaint| the time stamp|
