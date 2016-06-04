@@ -10,22 +10,23 @@ This project covers the analysis of the municipal data for real time alerts, pre
 - Alerts and Notifications system which raises an alert if an anomaly or increasing trend is detected.
 
 #### Project milestones
-###### Part 1: Data Analysis Report
+##### Part 1: Data Analysis Report
 Analyze historical data to find out what patterns exist in the data. For example, Water Logging complaints may peak in September in wards x, y and z. This report will contain the following details:
 - Ward Level:Cyclical or Seasonal Patterns 
 - Complaint Type: Cyclical or Seasonal Patterns, Wards in which these complaints occur the most
 
-###### Part 2: Top Complaints - Forecast Models (1)
+##### Part 2: Top Complaints - Forecast Models (1)
 - A monthly forecast model, which forecasts the number of ward-wise complaints for the top 5 complaint types for the next 3 months
 - The top 5 complaints are picked according to the counts at the city level
 - This model may return a value - ‘Unknown’ for wards which don’t satisfy the assumptions listed below
 
-###### Part 3: Ward Level - Forecast Models (2) 
+##### Part 3: Ward Level - Forecast Models (2) 
 - For each ward, forecasts the number of complaints for the top 3 complaint types for the next 3 months
 - The top 3 complaint types are picked according to the counts, at the ward level
 
-###### Part 4: Alerts and Notifications
+##### Part 4: Alerts and Notifications
 - Alert if an anomaly or increasing trend is detected from the existing predictions
 - Note that this is not fully specified, and would require exploration from the team
 
+#### How to run
 
