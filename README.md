@@ -1,13 +1,31 @@
-## DataKind
+This project covers the analysis of the municipal data for real time alerts, predictive analytics and more... We will analyse the data created by the eGov SmartCity ERP for increasing the efficiency of Municial Employees by enabling data driven governance.
+
+#### DataKind 
 [DataKind](http://www.datakind.org/) is a nonprofit organization that brings leading data scientists together with high impact social organizations through a comprehensive, collaborative approach that leads to shared insights, greater understanding and positive action through data in the service of humanity.
 
-This project is part of [DataCorps](http://www.datakind.org/datacorps), which brings together teams of pro bono data scientists with social change organizations on long-term projects that use data science to transform their work and their sector. DataKind helps organizations define their needs and discover what’s possible, then match them with a team that can translate those needs into data science problems and solve them with advanced analytics. 
+#### eGovernments Foundation
+[eGovernments Foundation](http://www.egovernments.org/) transforms urban governance with the use of scalable and replicable technology solutions that enable efficient and effective municipal operations, better decision making, and contact-less urban service delivery. eGovernments is looking forward for the following outputs from the engagement:
+- Monthly forecasts for overall top 5 complaint types across the city at the ward level : This will be used by the Commissioner and City Level Municipal Executives to allocate resources and take proactive action.
+- Monthly forecasts for top 3 complaint types for each ward: These will be used by the zonal and ward level executives to take appropriate actions in their respective jurisdictions.
+- Alerts and Notifications system which raises an alert if an anomaly or increasing trend is detected.
 
-## eGovernments Foundation
-[eGovernments Foundation](http://www.egovernments.org/) transforms urban governance with the use of scalable and replicable technology solutions that enable efficient and effective municipal operations, better decision making, and contact-less urban service delivery. Their mission is to bring better and inclusive governance, leading to smarter cities.
-eGovernments Foundation is looking forward to moving the governmental operations from a reactive mode to a proactive mode by using the historical complaint data;  predicting the complaints and the locations so that the government can effectively utilize its resources. 
+#### Project milestones
+###### Part 1: Data Analysis Report
+Analyze historical data to find out what patterns exist in the data. For example, Water Logging complaints may peak in September in wards x, y and z. This report will contain the following details:
+- Ward Level:Cyclical or Seasonal Patterns 
+- Complaint Type: Cyclical or Seasonal Patterns, Wards in which these complaints occur the most
 
-This project will be using the data from the eGovernments implementation for the Chennai Municipal Corporation. It will involve building a system to forecast the number of complaints in a ward on a monthly level, based on which the Corporation can plan for resources ahead and increase overall preparedness. In addition to this, an alerts system to keep the stakeholders notified of events of interest will also be looked at. It is envisaged that such developments will help in driving proactive action.
+###### Part 2: Top Complaints - Forecast Models (1)
+- A monthly forecast model, which forecasts the number of ward-wise complaints for the top 5 complaint types for the next 3 months
+- The top 5 complaints are picked according to the counts at the city level
+- This model may return a value - ‘Unknown’ for wards which don’t satisfy the assumptions listed below
 
-## How to Run
+###### Part 3: Ward Level - Forecast Models (2) 
+- For each ward, forecasts the number of complaints for the top 3 complaint types for the next 3 months
+- The top 3 complaint types are picked according to the counts, at the ward level
+
+###### Part 4: Alerts and Notifications
+- Alert if an anomaly or increasing trend is detected from the existing predictions
+- Note that this is not fully specified, and would require exploration from the team
+
 
