@@ -30,11 +30,14 @@ shinyUI(fluidPage(
           choices = c("ALL", "YES", "NO")
         ),
         sliderInput('daysToResolve', label = 'No. of Days to Resolve',
-                    min = 0, max = 1050, value = c(0, 1050))
+                    min = 0, max = 1050, value = c(0, 1050)),
+        sliderInput('topNComplaintTypes', label = 'Number of Top Complaint Types',
+                    min = 5, max = 15, value = 10)
       )
     ),
     mainPanel(
       fluidRow(dygraphOutput("plotData")),
+      fluidRow(plotOutput("plotTopNComplaints")),
       fluidRow(plotOutput("plotSpread"))
     )
   )
