@@ -69,5 +69,18 @@ shinyServer(function(input, output) {
       p <- barplot(md$coredata.series., names.arg = md$Month, main=paste0("Complaints for Year ", year))
     }
   })
+  
+  output$plotTopNComplaints <- renderPlot({
+    subs <- subsetDf()
+    counts <- data.frame(table(subs$Complaint.Type))
+    if(nrow(counts) == 1) {
+      return(NULL);
+    }
+    counts <- counts[order(-counts$Freq), ][1:input$topNComplaintTypes, ]
+    par(mai=c(1,4,1,1))
+    barplot(counts$Freq, names.arg = counts$Var1, horiz=T, las=1, 
+            main="Top complaint types", 
+            xlab="Number of complaints")
+  })
 })
 
