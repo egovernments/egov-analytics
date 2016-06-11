@@ -1,8 +1,9 @@
 library(xts)
 library(hash)
 library(data.table)
+library(dygraphs)
 
-df = fread("~/sb_egovs/data/coc.csv")
+df = fread("/home/samarth/workspaces/datakind-workspace/coc.csv")
 df$Complaint.Date <- as.Date(df$Complaint.Date, format = "%m/%d/%Y")
 df$Resolution.Date <- as.Date(df$Resolution.Date, format = "%m/%d/%Y")
 df$NumComplaints <- 1
@@ -13,3 +14,8 @@ choicesMapping <- hash("Daily" = "day", "Weekly" = "week",
 
 minDate <- min(df$Complaint.Date)
 maxDate <- max(df$Complaint.Date)
+
+topComplaintTypes <- data.frame(table(df$Complaint.Type))
+topComplaintTypes <- topComplaintTypes[order(-topComplaintTypes$Freq),]
+topComplaintTypes <- topComplaintTypes[1:10, ]
+topComplaintTypes <- as.character(topComplaintTypes$Var1)

@@ -1,5 +1,3 @@
-library(dygraphs)
-
 shinyServer(function(input, output) {
 
   subsetDf <- reactive({
@@ -52,6 +50,24 @@ shinyServer(function(input, output) {
             ylab = "Number of Complaints",
             main = "Number of Complaints Over Time") %>%
       dyRangeSelector()
+  })
+  
+  #
+  # This is the monthly plot of the data
+  #
+  output$plotSpread <- renderPlot({
+    subs <- subsetDf()
+    series <- xts(subs$NumComplaints, subs$Complaint.Date)
+    series <- apply.monthly(series, FUN = sum)
+    monthlyData <- data.frame(date=index(series), coredata(series))
+    monthlyData$Month <- month.abb[month(monthlyData$date)]
+    monthlyData$Year <- year(monthlyData$date)
+    years <- unique(monthlyData$Year)
+    par(mfrow=c(3,2))
+    for(year in years) {
+      md <- monthlyData[monthlyData$Year == year, ]
+      p <- barplot(md$coredata.series., names.arg = md$Month, main=paste0("Complaints for Year ", year))
+    }
   })
 })
 

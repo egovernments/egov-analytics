@@ -7,9 +7,8 @@ shinyUI(fluidPage(
       fluidRow(
         selectInput(
           "complaintType", label = h5("Complaint Type"), 
-          choices = c( "All", 
-                       as.character(unique(df$Complaint.Type))
-                       [order(as.character(unique(df$Complaint.Type)))])
+          # show only the top complaint types
+          choices = c( "All", topComplaintTypes)
         ),
         selectInput(
           "ward", label = h5("Ward"),
@@ -35,7 +34,8 @@ shinyUI(fluidPage(
       )
     ),
     mainPanel(
-      fluidRow(dygraphOutput("plotData"))
+      fluidRow(dygraphOutput("plotData")),
+      fluidRow(plotOutput("plotSpread"))
     )
   )
 ))
