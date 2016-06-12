@@ -1,11 +1,23 @@
+require(dplyr)
+require(Amelia)
+require(lubridate)
+args<-commandArgs(TRUE)
+if(length(args) != 2) {
+  stop("Usage: Rscript rollup.R <pathToInputFile.csv> <pathToOutputFile.csv>")  
+}
+
+inputFile <- args[1]
+outputFile <- args[2]
+
+
 nas <- c(NA, 'NA', '', ' ', 'NULL')
-dd_data <- read.csv('./data/datadive/coc.csv', stringsAsFactors = F,
+dd_data <- read.csv(inputFile, stringsAsFactors = F,
                     na.strings = nas)
 glimpse(dd_data)
 data <- dd_data
 sum(is.na(data$Complaint.Date)) # no NA
-library(Amelia)
-missmap(dd_data)
+
+#missmap(dd_data)
 
 
 #  ------------------------------------------------------------------------
@@ -35,23 +47,16 @@ data_rolled_seq <- left_join(date_seq, data_rolled)
 data_rolled_seq$complaint_count[is.na(data_rolled_seq$complaint_count)] <- 0
 sum(is.na(data_rolled_seq$complaint_count))
 
-write.csv(data_rolled_seq,'./data/datadive/ddive_rolled_seq.csv',row.names=F)
+#write.csv(data_rolled_seq,outputFile,row.names=F)
 
 # each date, each type, each Ward
 full <- expand.grid(Complaint.Date=date_seq$Complaint.Date,
-            Complaint.Type=unique(data$Complaint.Type),
-            Ward=unique(data$Ward))
+           Complaint.Type=unique(data$Complaint.Type),
+           Ward=unique(data$Ward))
 full <- dplyr::arrange(full, Complaint.Date)
 full_with_count <- left_join(full, data_rolled, 
-                            by = c('Complaint.Date', 'Complaint.Type', 'Ward'))
+                           by = c('Complaint.Date', 'Complaint.Type', 'Ward'))
 nrow(full) - nrow(data_rolled)
 sum(is.na(full_with_count))
-write.csv(full_with_count,'./data/datadive/ddive_rolled_crossJoin.csv',
+write.csv(full_with_count, outputFile,
           row.names=F)
-
-
-
-
-
-
-
