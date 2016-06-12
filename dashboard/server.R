@@ -91,5 +91,19 @@ shinyServer(function(input, output) {
             main="Top complaint types", 
             xlab="Number of complaints")
   })
+  
+  output$plotTopNWards <- renderPlot({
+    subs <- subsetDf()
+    counts <- data.frame(table(subs$Ward))
+    if(nrow(counts) == 1) {
+      return(NULL);
+    }
+    counts <- counts[order(-counts$Freq), ][1:input$topNWards, ]
+    counts <- counts[order(counts$Freq), ]
+    opar <- par(mai=c(1,4,1,1))
+    barplot(counts$Freq, names.arg = counts$Var1, horiz=T, las=1, 
+            main="Top wards by complaints", 
+            xlab="Number of complaints")
+  })
 })
 
