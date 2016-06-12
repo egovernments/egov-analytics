@@ -63,11 +63,19 @@ shinyServer(function(input, output) {
     monthlyData$Month <- month.abb[month(monthlyData$date)]
     monthlyData$Year <- year(monthlyData$date)
     years <- unique(monthlyData$Year)
-    par(mfrow=c(3,2))
+    opar <- par(mfrow=c(3,2), pin=c(4, 1.5), mar=c(5, 4, 4, 2))
     for(year in years) {
       md <- monthlyData[monthlyData$Year == year, ]
-      p <- barplot(md$coredata.series., names.arg = md$Month, main=paste0("Complaints for Year ", year))
+      months <- data.frame(Month=month.abb)
+      names(md)[2] <- "count"
+      joined <- merge(x = months, y = md, by = c("Month"), sort=F, all.x = T)
+      joined[is.na(joined$count), 3]  <- 0
+      joined$Month <- factor(joined$Month, levels=month.abb, ordered = T)
+      joined <- joined[order(joined$Month), ]
+      p <- barplot(joined$count, 
+                   names.arg = joined$Month, main=paste0("Complaints for Year ", year))
     }
+    par(opar)
   })
   
   output$plotTopNComplaints <- renderPlot({
@@ -77,9 +85,24 @@ shinyServer(function(input, output) {
       return(NULL);
     }
     counts <- counts[order(-counts$Freq), ][1:input$topNComplaintTypes, ]
+    counts <- counts[order(counts$Freq), ]
     par(mai=c(1,4,1,1))
     barplot(counts$Freq, names.arg = counts$Var1, horiz=T, las=1, 
             main="Top complaint types", 
+            xlab="Number of complaints")
+  })
+  
+  output$plotTopNWards <- renderPlot({
+    subs <- subsetDf()
+    counts <- data.frame(table(subs$Ward))
+    if(nrow(counts) == 1) {
+      return(NULL);
+    }
+    counts <- counts[order(-counts$Freq), ][1:input$topNWards, ]
+    counts <- counts[order(counts$Freq), ]
+    opar <- par(mai=c(1,4,1,1))
+    barplot(counts$Freq, names.arg = counts$Var1, horiz=T, las=1, 
+            main="Top wards by complaints", 
             xlab="Number of complaints")
   })
 })
