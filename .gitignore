@@ -4,3 +4,4 @@
 .Ruserdata
 *.Rproj
 data/
+*.ipynb_checkpoints*
