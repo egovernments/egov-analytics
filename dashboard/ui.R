@@ -25,10 +25,6 @@ shinyUI(fluidPage(
           min = minDate, max = maxDate,
           start = minDate, end = maxDate
         ),
-        selectInput(
-          "status", label = "Resolution Status",
-          choices = c("ALL", "YES", "NO")
-        ),
         sliderInput('daysToResolve', label = 'No. of Days to Resolve',
                     min = 0, max = 1050, value = c(0, 1050)),
         sliderInput('topNComplaintTypes', label = 'Number of Top Complaint Types',

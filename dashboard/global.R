@@ -2,8 +2,9 @@ library(xts)
 library(hash)
 library(data.table)
 library(dygraphs)
+library(plotly)
 
-df = fread("/home/samarth/workspaces/datakind-workspace/coc.csv")
+df = fread("../data/coc.csv")
 df$Complaint.Date <- as.Date(df$Complaint.Date, format = "%m/%d/%Y")
 df$Resolution.Date <- as.Date(df$Resolution.Date, format = "%m/%d/%Y")
 df$NumComplaints <- 1
