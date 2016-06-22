@@ -34,10 +34,24 @@ shinyUI(fluidPage(
       )
     ),
     mainPanel(
-      dygraphOutput("plotData"),
-                plotOutput("plotSpread"),
-                plotlyOutput("plotTopNComplaints"),
-                plotlyOutput("plotTopNWards")
+      tabsetPanel(
+        tabPanel(
+          title = 'Trends & Spreads',
+          tags$style(type = "text/css",
+                     ".shiny-output-error { visibility: hidden; }",
+                     ".shiny-output-error:before { visibility: hidden; }"
+          ),
+          dygraphOutput('plotData'),
+          plotlyOutput('plotSpread')
+        ),
+        tabPanel(
+          title = 'Top Wards / Complaints',
+          br(),
+          plotlyOutput("plotTopNComplaints"),
+          br(), br(), br(),
+          plotlyOutput("plotTopNWards")
+        )
+      )
     )
   )
 ))

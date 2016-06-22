@@ -51,28 +51,46 @@ shinyServer(function(input, output) {
   #
   # This is the monthly plot of the data
   #
-  output$plotSpread <- renderPlot({
+  # output$plotSpread <- renderPlot({
+  #   subs <- subsetDf()
+  #   series <- xts(subs$NumComplaints, subs$Complaint.Date)
+  #   series <- apply.monthly(series, FUN = sum)
+  #   monthlyData <- data.frame(date = index(series), coredata(series))
+  #   monthlyData$Month <- month.abb[month(monthlyData$date)]
+  #   monthlyData$Year <- year(monthlyData$date)
+  #   years <- unique(monthlyData$Year)
+  #   opar <- par(mfrow = c(3,2), pin = c(4, 1.5), mar = c(5, 4, 4, 2))
+  #   for (year in years) {
+  #     md <- monthlyData[monthlyData$Year == year, ]
+  #     months <- data.frame(Month = month.abb)
+  #     names(md)[2] <- "count"
+  #     joined <- merge(x = months, y = md, by = c("Month"), sort = F, all.x = T)
+  #     joined[is.na(joined$count), 3]  <- 0
+  #     joined$Month <- factor(joined$Month, levels = month.abb, ordered = T)
+  #     joined <- joined[order(joined$Month), ]
+  #     p <- barplot(joined$count,
+  #                  names.arg = joined$Month,
+  #                  main = paste0("Complaints for Year ", year))
+  #   }
+  #   par(opar)
+  # })
+  
+  output$plotSpread <- renderPlotly({
     subs <- subsetDf()
     series <- xts(subs$NumComplaints, subs$Complaint.Date)
     series <- apply.monthly(series, FUN = sum)
     monthlyData <- data.frame(date = index(series), coredata(series))
     monthlyData$Month <- month.abb[month(monthlyData$date)]
     monthlyData$Year <- year(monthlyData$date)
-    years <- unique(monthlyData$Year)
-    opar <- par(mfrow = c(3,2), pin = c(4, 1.5), mar = c(5, 4, 4, 2))
-    for (year in years) {
-      md <- monthlyData[monthlyData$Year == year, ]
-      months <- data.frame(Month = month.abb)
-      names(md)[2] <- "count"
-      joined <- merge(x = months, y = md, by = c("Month"), sort = F, all.x = T)
-      joined[is.na(joined$count), 3]  <- 0
-      joined$Month <- factor(joined$Month, levels = month.abb, ordered = T)
-      joined <- joined[order(joined$Month), ]
-      p <- barplot(joined$count,
-                   names.arg = joined$Month,
-                   main = paste0("Complaints for Year ", year))
-    }
-    par(opar)
+    names(monthlyData)[2] <- "count"
+    months <- data.frame(Month = month.abb)
+    monthlyData <- left_join(months, monthlyData)
+    monthlyData[is.na(monthlyData$count), 3]  <- 0
+    monthlyData$Month <- factor(monthlyData$Month, levels = month.abb, ordered = T)
+    monthlyData <- monthlyData[order(monthlyData$Month), ]
+    
+    plot_ly(monthlyData, x = Month, y = count, 
+                 group = Year, type = "bar")
   })
   
   output$plotTopNComplaints <- renderPlotly({
@@ -104,7 +122,7 @@ shinyServer(function(input, output) {
       layout(title = "Top wards by complaints",
              xaxis = list(title = 'Number of complaints'),
              yaxis = list(title = ''),
-             margin = list(l = 300, t = 100))
+             margin = list(l = 300))
   })
 })
 
