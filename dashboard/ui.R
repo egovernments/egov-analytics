@@ -34,10 +34,10 @@ shinyUI(fluidPage(
       )
     ),
     mainPanel(
-      fluidRow(dygraphOutput("plotData")),
-      fluidRow(plotOutput("plotTopNComplaints")),
-      fluidRow(plotOutput("plotTopNWards")),
-      fluidRow(plotOutput("plotSpread"))
+      dygraphOutput("plotData"),
+                plotOutput("plotSpread"),
+                plotlyOutput("plotTopNComplaints"),
+                plotlyOutput("plotTopNWards")
     )
   )
 ))
