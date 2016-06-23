@@ -36,7 +36,7 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(
         tabPanel(
-          title = 'Trends & Spreads',
+          title = 'Trends',
           tags$style(type = "text/css",
                      ".shiny-output-error { visibility: hidden; }",
                      ".shiny-output-error:before { visibility: hidden; }"
@@ -45,7 +45,7 @@ shinyUI(fluidPage(
           plotlyOutput('plotSpread')
         ),
         tabPanel(
-          title = 'Top Wards / Complaints',
+          title = 'Top Wards and/or Complaints',
           br(),
           plotlyOutput("plotTopNComplaints"),
           br(), br(), br(),
