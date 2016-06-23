@@ -1,6 +1,7 @@
 library(xts)
 library(hash)
 library(data.table)
+library(dplyr)
 library(dygraphs)
 library(plotly)
 
