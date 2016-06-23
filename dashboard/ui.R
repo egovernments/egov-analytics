@@ -25,10 +25,6 @@ shinyUI(fluidPage(
           min = minDate, max = maxDate,
           start = minDate, end = maxDate
         ),
-        selectInput(
-          "status", label = "Resolution Status",
-          choices = c("ALL", "YES", "NO")
-        ),
         sliderInput('daysToResolve', label = 'No. of Days to Resolve',
                     min = 0, max = 1050, value = c(0, 1050)),
         sliderInput('topNComplaintTypes', label = 'Number of Top Complaint Types',
@@ -38,10 +34,24 @@ shinyUI(fluidPage(
       )
     ),
     mainPanel(
-      fluidRow(dygraphOutput("plotData")),
-      fluidRow(plotOutput("plotTopNComplaints")),
-      fluidRow(plotOutput("plotTopNWards")),
-      fluidRow(plotOutput("plotSpread"))
+      tabsetPanel(
+        tabPanel(
+          title = 'Trends',
+          tags$style(type = "text/css",
+                     ".shiny-output-error { visibility: hidden; }",
+                     ".shiny-output-error:before { visibility: hidden; }"
+          ),
+          dygraphOutput('plotData'),
+          plotlyOutput('plotSpread')
+        ),
+        tabPanel(
+          title = 'Top Wards and/or Complaints',
+          br(),
+          plotlyOutput("plotTopNComplaints"),
+          br(), br(), br(),
+          plotlyOutput("plotTopNWards")
+        )
+      )
     )
   )
 ))
