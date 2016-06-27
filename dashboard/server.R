@@ -39,7 +39,32 @@ shinyServer(function(input, output) {
     }
     series
   })
-
+  
+  getTSObject <- reactive({
+    # TODO add functionality for other periodicities, right now only monthly is supported
+    subs <- subsetDf()
+    minYear <- year(min(subs$Complaint.Date))
+    maxYear <- year(max(subs$Complaint.Date))
+    ideal <- data.frame(Month=character(), Year=integer(), stringsAsFactors=F)
+    for(year in seq(from=minYear, to=maxYear)) {    
+      for(month in month.abb) {
+        r <- nrow(ideal)
+        month <- as.character(month)
+        ideal[nrow(ideal)+1,] <- c(month, year)        
+      }
+    }
+    series <- xts(subs$NumComplaints, subs$Complaint.Date)
+    series <- apply.monthly(series, FUN = sum)
+    monthlyData <- data.frame(Date=index(series), Complaints=coredata(series))
+    monthlyData$Month <- month.abb[month(monthlyData$Date)]
+    monthlyData$Year <- year(monthlyData$Date)
+    joined <- merge(x = ideal, y = monthlyData, by = c("Month", "Year"), sort=F, all= T)
+    joined$Date <- NULL
+    joined <- joined[order(as.yearmon(paste0(joined$Year, "-", joined$Month), "%Y-%b")), ]
+    joined[is.na(joined$Complaints), ]$Complaints <- 0   
+    monthly <- ts(monthlyData$Complaints, start=c(minYear, 1), frequency = 12)
+  })
+  
   output$plotData <- renderDygraph({
     dygraph(getSeries(),
             xlab = "Time",
@@ -96,6 +121,21 @@ shinyServer(function(input, output) {
              xaxis = list(title = 'Number of complaints'),
              yaxis = list(title = ''),
              margin = list(l = 300))
+  })
+  
+  output$plotACFAndPACF <- renderPlot({
+    tsdisplay(getTSObject(), main = "ACF and PACF plots for monthly complaint data")
+  })
+  
+  output$plotSeasonPlot <- renderPlot({
+    seasonplot(getTSObject(),ylab="Number of complaints", xlab="Year",
+               main=paste0("Seasonal plot for monthly complaint data"),
+               year.labels=TRUE, year.labels.left=TRUE, col=1:20, pch=19)
+  })
+  
+  output$plotDecomposition <- renderPlot({
+    # TODO
+    return(NULL)
   })
 })
 

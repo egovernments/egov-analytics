@@ -1,13 +1,20 @@
+DATA="/home/samarth/workspaces/datakind-workspace/cocCombined.csv"
 library(xts)
 library(hash)
 library(data.table)
 library(dplyr)
 library(dygraphs)
 library(plotly)
+library(forecast)
+library(lubridate)
 
-df = fread("../data/coc.csv")
-df$Complaint.Date <- as.Date(df$Complaint.Date, format = "%m/%d/%Y")
-df$Resolution.Date <- as.Date(df$Resolution.Date, format = "%m/%d/%Y")
+raw <- fread(DATA, stringsAsFactors = F)
+raw$Complaint.Date <- as.Date(raw$Complaint.Date, format = "%m/%d/%Y")
+raw$Resolution.Date <- as.Date(raw$Resolution.Date, format = "%m/%d/%Y")
+
+# get data only from 2012 onwards
+df <- raw[raw$Complaint.Date >= as.Date("01/01/2012", format = "%m/%d/%Y"), ] 
+head(df$Complaint.Date)
 df$NumComplaints <- 1
 
 choicesForTime <- c("Daily", "Weekly", "Monthly", "Quarterly")

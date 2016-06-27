@@ -50,6 +50,12 @@ shinyUI(fluidPage(
           plotlyOutput("plotTopNComplaints"),
           br(), br(), br(),
           plotlyOutput("plotTopNWards")
+        ),
+        tabPanel(
+          title = 'Time Series Analysis',
+          plotOutput("plotACFAndPACF"),
+          plotOutput("plotSeasonPlot"),
+          plotOutput("plotDecomposition")
         )
       )
     )
