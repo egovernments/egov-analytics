@@ -134,8 +134,7 @@ shinyServer(function(input, output) {
   })
   
   output$plotDecomposition <- renderPlot({
-    # TODO
-    return(NULL)
+    plot(stl(getTSObject(), s.window="per"), main="Decomposition of monthly complaint data")
   })
 })
 
