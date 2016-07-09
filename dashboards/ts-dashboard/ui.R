@@ -20,6 +20,8 @@ shinyUI(fluidPage(
         h5("Preprocessing Parameters"),
         checkboxInput("adjustForSeasonality", "Adjust for seasonality", value=F),
         h5("ARIMA Parameters"),
+        checkboxInput("ARIMA.boxCox", "Apply Box-Cox Transformation", value=F),
+        sliderInput("ARIMA.lambda", label="Lambda(Box-Cox Transformation)", min=0.0, max=1, step=.01, value=0),
         sliderInput("ARIMA.p", label="p", min=1, max=18, value = 1),
         sliderInput("ARIMA.d", label="d", min=0, max=12, value = 0),
         sliderInput("ARIMA.q", label="q", min=1, max=18, value = 1)
