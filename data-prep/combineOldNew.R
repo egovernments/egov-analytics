@@ -1,6 +1,11 @@
-OLD="/home/samarth/workspaces/datakind-workspace/coc.csv"
-NEW="/home/samarth/workspaces/datakind-workspace/cocNew.csv"
-COMBINED="/home/samarth/workspaces/datakind-workspace/cocCombined.csv"
+args <- commandArgs(trailingOnly=TRUE)
+if(length(args) != 3) {
+  stop("Usage: combineOldNew.R <old.csv> <new.csv> <combined.csv>")
+}
+
+OLD=args[1]
+NEW=args[2]
+COMBINED=args[3]
 old <- read.csv(OLD, stringsAsFactors = F)
 new <- read.csv(NEW, stringsAsFactors = F)
 
