@@ -14,6 +14,10 @@ shinyServer(function(input, output) {
     if(input$adjustForSeasonality) {
       monthly <- monthly - monthlyComponents$seasonal
     }
+    if(input$logTransformation) {
+      monthly[monthly==0] <- 1
+      monthly <- log(monthly)
+    }
     monthly
   })
   
@@ -24,6 +28,7 @@ shinyServer(function(input, output) {
   output$plotTs <- renderPlot({
     tsdisplay(getProcessed(), main="Processed Data")
   })
+  
   output$plotForecast <- renderPlot({
     monthly <- getProcessed()
     trainStart <- c(2012, 1)
@@ -34,11 +39,14 @@ shinyServer(function(input, output) {
     # split into 'test' and 'train' set
     trainData <- window(monthly, start=trainStart, end=trainEnd)
     testData <- window(monthly, start=testStart, end=testEnd)
+    if(input$logTransformation) {
+      testData <- exp(testData)
+    }
     
     rValues$trainData <-trainData
     rValues$testData <- testData
     
-    # model the data
+    # ARIMA
     if(input$method == "ARIMA") {
       
       if(input$ARIMA.boxCox) {
@@ -48,15 +56,38 @@ shinyServer(function(input, output) {
       }
       fit <- Arima(trainData, order=c(input$ARIMA.p, input$ARIMA.d, input$ARIMA.q), 
                    method="ML", lambda=lambda)
-      rValues$fit <- fit
-      plot(forecast(fit, h=12), main=paste0("Forecasts for ",input$dataSet))
-      lines(testData, lty=2)  
+      forecasted <- forecast(fit, h=12)
     }
-    # Add other methods
+    
+    # Exponential_Smoothing_Standard
+    else if(input$method == "Exponential_Smoothing_Standard") {
+      fit <- ets(trainData)
+      forecasted <- forecast.ets(fit, h=12)
+    }
+    
+    # Exponential_Smoothing_HoltWinters
+    else if(input$method == "Exponential_Smoothing_HoltWinters") {
+      fit <- HoltWinters(trainData)
+      forecasted <- forecast.HoltWinters(fit, h=12)
+    }
+    
+    ## put other methods here
+    
+    # de-Log if log-transformation has been applied
+    if(input$logTransformation) {
+      forecasted$mean <- exp(forecasted$mean)
+      forecasted$upper <- exp(forecasted$upper)
+      forecasted$lower <- exp(forecasted$lower)
+      forecasted$x <- exp(forecasted$x)
+    }
+    rValues$forecasted <- forecasted
+    plot.forecast(forecasted, 
+         main=paste0("Forecasts for ",input$dataSet," using ",input$method))
+    lines(testData, lty=2, col="red")
   })
   
   output$displayMetrics <- renderTable({
-    accuracy(forecast(rValues$fit, h=12), rValues$testData)
+    accuracy(rValues$forecasted, rValues$testData)
   })
   
   
