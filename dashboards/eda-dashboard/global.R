@@ -1,4 +1,4 @@
-DATA="/home/samarth/workspaces/datakind-workspace/cocCombined.csv"
+DATA="/home/samarth/workspaces/datakind-workspace/cocUptoJuly2016.csv"
 library(xts)
 library(hash)
 library(data.table)
