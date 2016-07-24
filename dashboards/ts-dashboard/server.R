@@ -2,7 +2,7 @@ shinyServer(function(input, output) {
   getData <- reactive({
     raw <- datasets[[input$dataSet]]
     # since pre-2012, there were very few data points, subset it. also, we only consider 2015 data    
-    return(window(raw, start=c(2012,1), end=c(2015, 12)))
+    return(window(raw, start=c(2012,1), end=c(2016, 6)))
   })
   
   rValues <- reactiveValues()
@@ -10,10 +10,6 @@ shinyServer(function(input, output) {
   getProcessed <- reactive({
     monthly <- getData()
     monthlyComponents <- decompose(monthly)
-    # pre processing
-    if(input$adjustForSeasonality) {
-      monthly <- monthly - monthlyComponents$seasonal
-    }
     if(input$logTransformation) {
       monthly[monthly==0] <- 1
       monthly <- log(monthly)
@@ -32,9 +28,9 @@ shinyServer(function(input, output) {
   output$plotForecast <- renderPlot({
     monthly <- getProcessed()
     trainStart <- c(2012, 1)
-    trainEnd <- c(2014, 12)
-    testStart <- c(2015, 1)
-    testEnd <- c(2015, 12)
+    trainEnd <- c(2015, 6)
+    testStart <- c(2015, 7)
+    testEnd <- c(2016, 6)
     
     # split into 'test' and 'train' set
     trainData <- window(monthly, start=trainStart, end=trainEnd)
