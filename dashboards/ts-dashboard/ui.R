@@ -20,7 +20,6 @@ shinyUI(fluidPage(
       ),
       fluidRow(
         h5("Preprocessing Parameters"),
-        checkboxInput("adjustForSeasonality", "Adjust for seasonality", value=F),
         checkboxInput("logTransformation", "Apply Log Transformation", value=F),
         h5("ARIMA Parameters"),
         checkboxInput("ARIMA.boxCox", "Apply Box-Cox Transformation", value=F),
