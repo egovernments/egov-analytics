@@ -77,6 +77,7 @@ methods[["ARIMA"]] <- function() {
 
 
 methods[["SARIMA"]] <- function() {
+  
   grid <- expand.grid(p=seq(1,6), 
                       q=seq(1,3), 
                       d=c(1), 
