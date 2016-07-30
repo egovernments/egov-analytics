@@ -133,6 +133,56 @@ methods[["SARIMA"]] <- function() {
   return(resultsDf)    
 }
 
+methods[["UCM"]] <- function() {
+  grid <- expand.grid(season.length=seq(2, 18), 
+                      cycle.period=seq(1, 12),
+                      complaintTypes=complaintTypes,
+                      stringsAsFactors=F)
+  resultsDf <- data.frame(
+    complaintType=c(),
+    method=c(),
+    parameters=c(),
+    TrainMAPE=c(),
+    TrainRMSE=c(),
+    TestMAPE=c(),
+    TestRMSE=c()
+  )
+  
+  for(i in 1:nrow(grid)) {
+    params <- grid[i,]
+    complaintType <- params$complaintType
+    monthly <- data[[complaintType]]        
+    trainData <- window(monthly, start=trainStart, end=trainEnd)
+    testData <- window(monthly, start=testStart, end=testEnd)
+    form <- trainData~0
+    fit <- tryCatch(
+            ucm(form,
+               trainData,
+               level=T, slope=T, season=T, cycle=F, 
+               season.length=params$season.length, 
+               cycle.period=params$cycle.period),
+            error= function(e) e
+    )
+          
+    if(inherits(fit, "error")) next
+    pred <- predict(fit$model, n.ahead=predictionInterval)
+    acc <- accuracy(testData, pred)
+    paramDesc <- paste0("(s.l, c.p) = (", params$season.length, ", ", params$cycle.period, ")")
+    resultRow <- data.frame(
+      complaintType=c(complaintType),
+      method=c("UCM"),
+      parameters=c(paramDesc),
+      TrainMAPE=c(NA),
+      TrainRMSE=c(NA),
+      TestMAPE=c(acc[1,5]),
+      TestRMSE=c(acc[1,2])
+    )
+    resultsDf <- rbind(resultsDf, resultRow)
+  }
+  
+  return(resultsDf)
+}
+
 resultsDf <- data.frame(
     complaintType=c(),
     method=c(),
