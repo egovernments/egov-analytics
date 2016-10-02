@@ -1,9 +1,9 @@
 library(xts)
 library(forecast)
 library(fpp)
-
+library(rucm)
 data <- list()
-data[["Top N Complaints"]] <- "C:/Users/sahil.maheshwari/Documents/R_Scripts/eGov_DC/data/topNComplaints"
+data[["Top N Complaints"]] <- "/home/samarth/workspaces/datakind-workspace/analytics/time-series/data/topNComplaints"
 
 loadData <- function(dataFolder) {
   files <- list.files(dataFolder)
