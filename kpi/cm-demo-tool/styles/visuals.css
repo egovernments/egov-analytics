@@ -1,0 +1,166 @@
+    * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    
+    html,
+    body {
+        background-color: #FFF;
+        height: 100%;
+    }
+    
+    #mapChartLegend,
+    #mapChartLegend > .toExportViz {
+        height: 100%;
+        overflow: hidden;
+    }
+    
+    #map-canvas {
+        background-color: #B3D1FF;
+        width: 100%;
+        float: left;
+        border-top: 0;
+    }
+    
+    .googft-info-window {
+        background-color: yellow
+    }
+    
+    #searchChosenDiv {
+        top: 7px;
+        left: 41px;
+        display: inline-block;
+        position: absolute;
+        z-index: 100;
+    }
+    
+    #chosenNames {
+        width: 150px;
+    }
+    
+    #centerMap {
+        top: 8px;
+        left: 10px;
+        display: inline-block;
+        position: absolute;
+        z-index: 100;
+    }
+    
+    #titleBar label {
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: lighter;
+        font-size: 18px;
+    }
+    
+    #titleBar {
+        background-color: #FFF;
+        color: #000;
+        z-index: 100;
+        opacity: 1;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 5px;
+        position: relative;
+    }
+    
+    #chartVizDiv {
+        border-left: 1px solid #ccc;
+        background-color: #FFFFFF;
+        width: 100%;
+        float: left;
+        overflow: hidden;
+        position: relative;
+        z-index: 5;
+    }
+    
+    #mapChartLegend {
+        position: relative;
+    }
+    
+    #chartControl {
+        display: inline-block;
+        position: absolute;
+        top: 10px;
+        right: 50px;
+        z-index: 10;
+    }
+    
+    #cityChosenDiv {
+        font-size: 18px;
+        display: none;
+    }
+    
+    #chartPrev:disabled {
+        background-color: #6B4F2C;
+        border-color: #6B4F2C;
+    }
+    
+    #chartNext:disabled {
+        background-color: #6B4F2C;
+        border-color: #6B4F2C;
+    }
+    
+    .btn,
+    .btn:focus,
+    .btn:visited,
+    .btn:active {
+        background-color: #6B4F2C;
+        border-color: #6B4F2C;
+    }
+    
+    .btn:hover {
+        background-color: #F5861F;
+        border-color: #F5861F;
+    }
+    
+    #legendWrapper {
+        z-index: 100;
+    }
+    
+    #legend {
+        border: 2px solid black;
+        background-color: #FFF;
+        margin: 10px;
+        padding: 5px;
+        width: 150px;
+        height: 120px;
+    }
+    
+    #legendTitle {
+        font-weight: bold;
+        margin-top: 3px;
+    }
+    
+    #legend div {
+        clear: both;
+    }
+    
+    .color {
+        height: 12px;
+        width: 12px;
+        margin-right: 3px;
+        float: left;
+        display: block;
+    }
+    
+    .padding-0 {
+        padding: 0px;
+    }
+
+    .chosen-container-single .chosen-single{ height:23px;}
+
+    #genReport{
+    position:absolute;top:5px;right:5px;
+    }
+
+    .modal-lg{
+        width: 100%;
+        height:100%;
+    }
+
+    .infoWindowTable th, td { padding: 5px;}
+    .infoWindowTable {margin-top: 5px;}
+/*    #infoWindowTable {border-collapse: separate; border-spacing: 5px;}*/

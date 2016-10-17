@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="Neon Admin Panel" />
+    <meta name="author" content="" />
+    <title>Municipal Performance Indicators</title>
+    <link rel="icon" href="global//images/favicon.png" sizes="32x32">
+    <link rel="stylesheet" href="global/css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="global/css/font-icons/entypo/css/entypo.css">
+    <link rel="stylesheet" href="global/css/font-icons/font-awesome-4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="global/css/egov/custom.css">
+    <link rel="stylesheet" href="global/css/egov/header-custom.css">
+    
+    <!--[if lt IE 9]><script src="resources/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+</head>
+<body class="page-body index">
+	<div class="page-container" id="page-container" style="display:table">
+		<header class="navbar navbar-fixed-top">
+            <!-- set fixed position by adding class "navbar-fixed-top" -->
+            <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+                <div class="container-fluid">
+                    <div class="navbar-header col-md-10 col-xs-10">
+                        <a class="navbar-brand" href="javascript:void(0);">
+                            <img src="global/images/logo_cdma.png" height="60">
+                            <div>
+                                <span class="title2 map-title">Municipal Performance Indicators</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="nav-right-menu col-md-2 col-xs-2">
+                        <ul class="hr-menu text-right">
+                            <li class="ico-menu">
+                                <a href="//egovernments.org" target="_blank">
+                                    <img src="global/images/egov_logo_tr_h.png" title="Powered by eGovernments" height="37">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <!-- <div class="hod-section">
+            <h4>Choose HOD</h4>
+            <form class="form-horizontal" action="apmpi-hods.html" method="GET" target="_blank">
+                        <div class="form-group">
+                            <select class="form-control" name="hod">
+                        <option value="7">Combined</option>
+                                <option value="1">DMA</option>
+                                <option value="2">CE</option>
+                                <option value="3">DTCP</option>
+                                <option value="4">MEPMA</option>
+                                <option value="5">Swacha Andhra Corp.</option>
+                                <option value="6">Greening Corp.</option>
+                            </select>
+                            <input type="hidden" id="hidField" name="hodname" value="Combined" />
+                        </div>
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+            </form>
+        </div> -->
+        <div class="main-content text-center">
+            <h2>HOD</h2>
+            <div class="row">
+                <div class="col-md-3">
+                        <div class="box a">
+                            <div>
+                                <span><i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i></span>
+                                <p>Combined</p>
+                                <p>Combined Report of All Indicators</p>
+                            </div>
+                            <p class="text-right view-report"><a href="apmpi-hods.html?hod=7&hodname=Combined" target="_blank" class="btn btn-success">View Indicators</a></p>
+                        </div>
+                </div>
+                <div class="col-md-3">
+                        <div class="box b">
+                            <div>
+                                <span><i class="fa fa-area-chart fa-2x" aria-hidden="true"></i></span>
+                                <p>DMA</p>
+                                <p>Director of Municipal Administration Indicators</p>
+                            </div>
+                            <p class="text-right view-report"><a href="apmpi-hods.html?hod=1&hodname=DMA" target="_blank" class="btn btn-success">View Indicators</a></p>
+                        </div>
+                </div>
+                <div class="col-md-3">
+                        <div class="box c">
+                            <div>
+                                <span><i class="fa fa-pie-chart fa-2x" aria-hidden="true"></i></span>
+                                <p>CE</p>
+                                <p>C.E (PH) Indicators</p>
+                            </div>
+                            <p class="text-right view-report"><a href="apmpi-hods.html?hod=2&hodname=CE" target="_blank" class="btn btn-success">View Indicators</a></p>
+                        </div>
+                </div>
+                <div class="col-md-3">
+                        <div class="box d">
+                            <div>
+                                <span><i class="fa fa-line-chart fa-2x" aria-hidden="true"></i></span>
+                                <p>DTCP</p>
+                                <p>DTCP Indicators</p>
+                            </div>
+                            <p class="text-right view-report"><a href="apmpi-hods.html?hod=3&hodname=DTCP" target="_blank" class="btn btn-success">View Indicators</a></p>
+                        </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                        <div class="box e">
+                            <div>
+                                <span><i class="fa fa-pie-chart fa-2x" aria-hidden="true"></i></span>
+                                <p>MEPMA</p>
+                                <p>MEPMA Indicators</p>
+                            </div>
+                            <p class="text-right view-report"><a href="apmpi-hods.html?hod=4&hodname=MEPMA" target="_blank" class="btn btn-success">View Indicators</a></p>
+                        </div>
+                </div>
+                <div class="col-md-3">
+                        <div class="box f">
+                            <div>
+                                <span><i class="fa fa-line-chart fa-2x" aria-hidden="true"></i></span>
+                                <p>Swacha Andhra Corp.</p>
+                                <p>Swacha Andhra Corporation Indicators</p>
+                            </div>
+                            <p class="text-right view-report"><a href="apmpi-hods.html?hod=5&hodname=Swacha+Andhra+Corp." target="_blank" class="btn btn-success">View Indicators</a></p>
+                        </div>
+                </div>
+                <div class="col-md-3">
+                        <div class="box g">
+                            <div>
+                                <span><i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i></span>
+                                <p>Greening Corp.</p>
+                                <p>Greening Corporation Indicators</p>
+                            </div>
+                            <p class="text-right view-report"><a href="apmpi-hods.html?hod=6&hodname=Greening+Corp." target="_blank" class="btn btn-success">View Indicators</a></p>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <footer class="main">
+            Powered by <a href="http://eGovernments.org" target="_blank">eGovernments Foundation</a>
+        </footer>
+	</div>
+	<style>
+        .box{
+            padding:20px;
+            margin:15px 0;
+            height: 205px;
+            vertical-align: middle;
+            color:#fff;
+            position: relative;
+        }
+        .box div{
+            margin-top: 15px;
+        }
+        .box div p{
+            margin-top: 10px;
+        }
+        .box div > p:first-of-type{
+            font-size:16px;
+        }
+        .a{
+            background: #05869c;
+        }
+        .b{
+            background: #15a185;
+        }
+        .c{
+            background: rgb(34, 101, 148);
+        }
+        .d{
+            background: #e67e22;
+        }
+        .e{
+            background:#2db265;
+        }
+        .f{
+            background: #bc1f4a;
+        }
+        .g{
+            background: #34495e;
+        }
+        .view-report{
+            position: absolute;
+            right: 20px;
+            bottom: 0px;   
+        }
+        .btn-success {
+            color: #fff;
+            background: rgba(0, 0, 0, 0.3); /* 50% transparent */
+            border: 0;
+            border-radius: 0;
+        }
+        .btn-success:hover, .btn-success:focus, .btn-success.focus, .btn-success:active, .btn-success.active, .open > .dropdown-toggle.btn-success{
+            color: #fff;
+            background: rgba(0, 0, 0, 0.6); /* 50% transparent */
+        }
+	</style>
+<script src="global/js/jquery/jquery.js"></script>
+<script type="text/javascript">
+	$("select").change(function(){
+		$('#hidField').val($("select option:selected").text());
+    });
+</script>
+</body>
+</html>

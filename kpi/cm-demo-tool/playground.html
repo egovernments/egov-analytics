@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="Arpit Narechania - Khosla Labs">
+    <meta charset="utf-8">
+    <!-- Bootstrap CSS and JS files -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!-- main CSS file -->
+    <link rel="stylesheet" href="styles/playground.css">
+    <!-- Include main JS file -->
+    <script src="js/playground.js"></script>
+    <!-- Chosen - library to format select dropdown -->
+    <script type="text/javascript" src="libs/chosen/chosen.jquery.min.js"></script>
+    <link rel="stylesheet" href="libs/chosen/chosen.css">
+    <!-- Favicon -->
+    <link rel="icon" href="images/favicon.png" sizes="32x32">
+    <title>Playground</title>
+</head>
+
+<body onload=initialize()>
+    <!-- Title Header-->
+    <div id="titleBar">
+        <div><img id="cdma_logo" src="images/logo_cdma.png" alt="CDMA logo"></div>
+        <div>
+            <label id="titleText" style="float: left">eGovernments Foundation: Andhra Pradesh Cities Data Analytics Tool</label>
+        </div>
+        <div><img id="egov_logo" src="images/logo_eGov.png" alt="eGovernments logo" ;></div>
+    </div>
+    <!-- Select dropdowns for various options-->
+    <div id="formDiv">
+        <form class="form-inline" role="form">
+            <div class="form-group">
+                <label for="attributeNameY">X Axis</label>
+                <select id="attribute-selector-2" class="form-control chosen-select" onchange="onAttriYChanged();">
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="attributeNameX">Map,Y Axis</label>
+                <select id="attribute-selector" class="form-control chosen-select" onchange="onAttriXChanged();"></select>
+            </div>
+            <div class="form-group">
+                <label for="placeType">Area</label>
+                <select id="area-selector" class="form-control chosen-select" onchange="onAreaChanged();">
+                    <option value="4">AP-Grade wise</option>
+                    <option value="1">AP-State</option>
+                    <option value="2">AP-Districts</option>
+                    <option value="3">AP-Regions</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <div id="district">
+                    <label>District: </label>
+                    <select id="district-selector" class="form-control chosen-select" onchange="onDistrictChanged();">
+                        <option value="ANANTAPUR">Anantapur</option>
+                        <option value="CHITTOOR">Chittoor</option>
+                        <option value="KADAPPA">Kadappa</option>
+                        <option value="EAST GODAVARI">East Godavari</option>
+                        <option value="GUNTUR">Guntur</option>
+                        <option value="KRISHNA">Krishna</option>
+                        <option value="KURNOOL">Kurnool</option>
+                        <option value="NELLORE">Nellore</option>
+                        <option value="PRAKASAM">Prakasam</option>
+                        <option value="SRIKAKULUM">Srikakulum</option>
+                        <option value="VISAKHAPATNAM">Visakhapatnam</option>
+                        <option value="VIZIANAGARAM">Vizianagaram</option>
+                        <option value="WEST GODAVARI">West Godavari</option>
+                    </select>
+                </div>
+                <div id="region">
+                    <label>Region: </label>
+                    <select id="region-selector" class="form-control chosen-select" onchange="onRegionChanged();">
+                        <option value="ANANTAPUR">Anantapur</option>
+                        <option value="GUNTUR">Guntur</option>
+                        <option value="RAJAHMUNDRY">Rajahmundry</option>
+                        <option value="VISAKHAPATNAM">Visakhapatnam</option>
+                    </select>
+                </div>
+                <div id="grade">
+                    <label>Grade: </label>
+                    <select id="grade-selector" class="form-control chosen-select" onchange="onGradeChanged();">
+                        <option value="G3">Grade III & NP</option>
+                        <option value="G1">Special & Selection</option>
+                        <option value="G2">Grade I&II</option>
+                        <option value="G4">Corp</option>
+                        <option value="I">I</option>
+                        <option value="II">II</option>
+                        <option value="III">III</option>
+                        <option value="NP">NP</option>
+                        <option value="Special">Special</option>
+                        <option value="Corp">Corp</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="chartType">Chart</label>
+                <select id="charttype-selector" class="form-control chosen-select" onchange="onChartChanged();">
+                    <option value="ColumnChart">Column Chart</option>
+                    <option value="ScatterChart">Scatter Chart</option>
+                    <option value="BarChart">Bar Chart</option>
+                    <option value="LineChart">Line Chart</option>
+                    <option value="PieChart">Pie Chart</option>
+                    <option value="Table">Table</option>
+<!--                    <option value="Histogram">Histogram</option> -->
+                    <option value="MultiChart">MultiSeries</option>
+                    <option value="AreaChart">Area Chart</option>
+                    <option value="SteppedAreaChart">Stepped Area Chart</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="sortType">Sort by</label>
+                <select id="sort-selector" class="form-control chosen-select" onchange="onSortChanged();">
+                    <option value="XDESC">X Descending</option>
+                    <option value="XASC">X Ascending</option>
+                    <option value="YASC">Y Ascending</option>
+                    <option value="YDESC">Y Descending</option>
+                    <option value=""> No Sort</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="vizType">Viz Type</label>
+                <select id="visualizationtype-selector" class="form-control chosen-select" onchange="onVisualizationChanged();">
+                    <option value="split">Split</option>
+                    <option value="map">Map only</option>
+                    <option value="chart">Chart only</option>
+                </select>
+            </div>
+            <a id="genVis" target="visuals" class="btn btn-sm btn-info">Update</a>
+        </form>
+    </div>
+    <iframe name="visuals" src="visuals.html?X=M-Achievement (percentage)&Y=ULB%20Name&area=grade&grade=G3&chart=ColumnChart&sort=XDESC&viz=split&status=start&main=1&sub=0" id="visuals" scrolling="no" />
+
+    <script>
+    /* Start Chosen to change UI of select*/
+    $(".chosen-select").chosen({
+        no_results_text: "Oops, nothing found!"
+    });
+    </script>
+</body>
+
+</html>
