@@ -1,0 +1,291 @@
+<!-- #-------------------------------------------------------------------------------
+# eGov suite of products aim to improve the internal efficiency,transparency, 
+#    accountability and the service delivery of the government  organizations.
+# 
+#     Copyright (C) <2015>  eGovernments Foundation
+# 
+#     The updated version of eGov suite of products as by eGovernments Foundation 
+#     is available at http://www.egovernments.org
+# 
+#     This program is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     any later version.
+# 
+#     This program is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+# 
+#     You should have received a copy of the GNU General Public License
+#     along with this program. If not, see http://www.gnu.org/licenses/ or 
+#     http://www.gnu.org/licenses/gpl.html .
+# 
+#     In addition to the terms of the GPL license to be adhered to in using this
+#     program, the following additional terms are to be complied with:
+# 
+#   1) All versions of this program, verbatim or modified must carry this 
+#      Legal Notice.
+# 
+#   2) Any misrepresentation of the origin of the material is prohibited. It 
+#      is required that all modified versions of this material be marked in 
+#      reasonable ways as different from the original version.
+# 
+#   3) This license does not grant any rights to any user of the program 
+#      with regards to rights under trademark law for use of the trade names 
+#      or trademarks of eGovernments Foundation.
+# 
+#   In case of any queries, you can reach eGovernments Foundation at contact@egovernments.org.
+#------------------------------------------------------------------------------- -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="Neon Admin Panel" />
+    <meta name="author" content="" />
+    <title></title>
+    <link rel="icon" href="global//images/favicon.png" sizes="32x32">
+    <link rel="stylesheet" href="global/css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="global/css/font-icons/entypo/css/entypo.css">
+    <link rel="stylesheet" href="global/css/font-icons/font-awesome-4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="global/css/egov/custom.css">
+    <link rel="stylesheet" href="global/css/egov/header-custom.css">
+    <script src="global/js/jquery/jquery.js"></script>
+    <!--[if lt IE 9]><script src="resources/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+</head>
+
+<body class="page-body index">
+    <div class="page-container" id="page-container" style="height:100%;">
+        <header class="navbar navbar-fixed-top">
+            <!-- set fixed position by adding class "navbar-fixed-top" -->
+            <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+                <div class="container-fluid">
+                    <div class="navbar-header col-md-10 col-xs-10">
+                        <a class="navbar-brand" href="javascript:void(0);">
+                            <img src="global/images/logo_cdma.png" height="60">
+                            <div>
+                                <span class="title2 map-title">Municipal Performance Indicators</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="nav-right-menu col-md-2 col-xs-2">
+                        <ul class="hr-menu text-right">
+                            <li class="ico-menu">
+                                <a href="//egovernments.org" target="_blank">
+                                    <img src="global/images/egov_logo_tr_h.png" title="Powered by eGovernments" height="37">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <div class="citizen-screens tabs tabs-style-topline" style="margin-top:1px;margin-bottom:0">
+            <nav class="first-section-tab">
+                <ul>
+                    <li style="border:none;" data-toggle="tooltip" title="Combined" data-indicators="Overall" data-maincount="0" class="overall">
+                        <a href="javascript:void(0);">
+                            <div class="text-center"><i class="fa fa-life-ring"></i></div>
+                            <span class="hidden-sm hidden-xs">Combined</span>
+                        </a>
+                    </li>
+                    <li class="hod-swacha hide" style="border:none;" data-toggle="tooltip" title="Swachcha Andhra" data-indicators="Swachchaandhra" data-maincount="1">
+                        <a href="javascript:void(0);">
+                            <div class="text-center"><i class="fa fa-paint-brush"></i></div>
+                            <span class="hidden-sm hidden-xs">Swacha Andhra</span>
+                        </a>
+                    </li>
+                    <li style="border:none;" data-toggle="tooltip" title="Greenery development" data-indicators="Greenerydevelopment" data-maincount="2" class="hod-green hide">
+                        <a href="javascript:void(0);">
+                            <div class="text-center"><i class="fa fa-tree"></i></div>
+                            <span class="hidden-sm hidden-xs">Greenery Development</span>
+                        </a>
+                    </li>
+                    <li style="border:none;" data-toggle="tooltip" title="Solid Waste Management" data-indicators="solidwastemgmt" data-maincount="3" class="hod-dma hide tab-current-newreq">
+                        <a href="javascript:void(0);">
+                            <div class="text-center"><i class="fa fa-trash"></i></div>
+                            <span class="hidden-sm hidden-xs">Solid Waste Management</span>
+                        </a>
+                    </li>
+                    <li style="border:none;" data-toggle="tooltip" title="Propert Tax" data-indicators="propertytax" data-maincount="4" class="hod-dma hide">
+                        <a href="javascript:void(0);">
+                            <div class="text-center"><i class="fa fa-inr"></i></div>
+                            <span class="hidden-sm hidden-xs">Property Tax</span>
+                        </a>
+                    </li>
+                    <li style="border:none;" data-toggle="tooltip" title="Citizen Services" data-indicators="Citizenservices" data-maincount="5" class="hod-dma hide">
+                        <a href="javascript:void(0);">
+                            <div class="text-center"><i class="fa fa-male"></i></div>
+                            <span class="hidden-sm hidden-xs">Citizen Services</span>
+                        </a>
+                    </li>
+                    <li style="border:none;" data-toggle="tooltip" title="Finance" data-indicators="Finance" data-maincount="6" class="hod-dma hide">
+                        <a href="javascript:void(0);">
+                            <div class="text-center"><i class="fa fa-money"></i></div>
+                            <span class="hidden-sm hidden-xs">Finance</span>
+                        </a>
+                    </li>
+                    <li style="border:none;" data-toggle="tooltip" title="Education" data-indicators="Education" data-maincount="7" class="hod-dma hide">
+                        <a href="javascript:void(0);">
+                            <div class="text-center"><i class="fa fa-graduation-cap"></i></div>
+                            <span class="hidden-sm hidden-xs">Education</span>
+                        </a>
+                    </li>
+                    <li style="border:none;" data-toggle="tooltip" title="Water supply" data-indicators="watersupply" data-maincount="8" class="hod-ce hide tab-current-newreq">
+                        <a href="javascript:void(0);">
+                            <div class="text-center"><i class="fa fa-tint"></i></div>
+                            <span class="hidden-sm hidden-xs">Water supply</span>
+                        </a>
+                    </li>
+                    <li style="border:none;" data-toggle="tooltip" title="Street Lighting" data-indicators="Streetlighting" data-maincount="9" class="hod-ce hide">
+                        <a href="javascript:void(0);">
+                            <div class="text-center"><i class="fa fa-lightbulb-o"></i></div>
+                            <span class="hidden-sm hidden-xs">Street Lighting</span>
+                        </a>
+                    </li>
+                    <!-- <li style="border:none;" data-toggle="tooltip" title="Works" data-indicators="works" data-maincount="10" class="hod-ce hide">
+                        <a href="javascript:void(0);">
+                            <div class="text-center"><i class="fa fa-file-word-o"></i></div>
+                            <span class="hidden-sm hidden-xs">Works</span>
+                        </a>
+                    </li> -->
+                    <li style="border:none;" data-toggle="tooltip" title="Town Planning Activities" data-indicators="townplaningact" data-maincount="11" class="hod-dtcp hide">
+                        <a href="javascript:void(0);">
+                            <div class="text-center"><i class="fa fa-building"></i></div>
+                            <span class="hidden-sm hidden-xs">Town Planning Activities</span>
+                        </a>
+                    </li>
+                    <li style="border:none;" data-toggle="tooltip" title="Community Development" data-indicators="Communitydevelopment" data-maincount="12" class="hod-mepma hide tab-current-newreq">
+                        <a href="javascript:void(0);">
+                            <div class="text-center"><i class="fa fa-connectdevelop"></i></div>
+                            <span class="hidden-sm hidden-xs">Community Development</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <nav class="second-section-tab">
+                <ul>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-md-12" style="padding:5px 10px 5px 10px; border-bottom:1px solid #d4d4d4;">
+            <div class="pull-left">
+                <select class="viztype" style="padding: 5px 10px;">
+                    <option value="split">Split</option>
+                    <option value="chart">Chart</option>
+                    <option value="map">Map</option>
+                </select>
+            </div>
+            <div class="withoutdropdownbtns btn-group text-right pull-left" style="padding-left:5px" role="group">
+                <button type="button" class="btn btn-primary btn-sm timeframe-search" data-timeline="uptoprevmonth">Upto prev. month</button>
+                <button type="button" class="btn btn-primary btn-sm timeframe-search active" data-timeline="monthly">Monthly</button>
+                <button type="button" class="btn btn-primary btn-sm timeframe-search" data-timeline="cumulative">Cumulative</button>
+                <button type="button" class="btn btn-primary btn-sm timeframe-search" data-timeline="comparative">Comparative</button>
+            </div>
+            <div class="dropdownbtns btn-group text-right pull-right" role="group">
+             <button type="button" class="btn btn-primary grade-search btn-sm" data-search="elevenulb">11 ULBs</button>
+                <button type="button" class="btn btn-primary grade-search btn-sm active" data-search="allulb">All</button>
+                <button type="button" class="btn btn-primary grade-search btn-sm" data-search="corp">Corps.</button>
+                <button type="button" class="btn btn-primary grade-search btn-sm" data-search="specialndselect">Spl & Sel.</button>
+                <button type="button" class="btn btn-primary grade-search btn-sm" data-search="grade1nd2">Gr. I & II</button>
+                <button type="button" class="btn btn-primary grade-search btn-sm" data-search="grade3ndnp">Gr. III & NP</button>
+                <button type="button" class="btn btn-primary grade-search btn-sm" data-search="regwise">Reg-Wise</button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle custom-dropdown" data-region="" data-toggle="dropdown">
+                        Regions <span class="caret"></span></button>
+                    <ul class="dropdown-menu pull-right" role="menu">
+                        <li><a href="javascript:void(0);">ALL</a></li>
+                        <li><a href="javascript:void(0);">GUNTUR</a></li>
+                        <li><a href="javascript:void(0);">ANANTAPUR</a></li>
+                        <li><a href="javascript:void(0);">RAJAHMUNDRY</a></li>
+                        <li><a href="javascript:void(0);">VISAKHAPATNAM</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle custom-dropdown" data-district="" data-toggle="dropdown">
+                        Districts <span class="caret"></span></button>
+                    <ul class="dropdown-menu pull-right" role="menu">
+                        <li><a href="javascript:void(0);">ALL</a></li>
+                        <li><a href="javascript:void(0);">ANANTAPUR</a></li>
+                        <li><a href="javascript:void(0);">CHITTOOR</a></li>
+                        <li><a href="javascript:void(0);">KADAPPA</a></li>
+                        <li><a href="javascript:void(0);">EAST GODAVARI</a></li>
+                        <li><a href="javascript:void(0);">GUNTUR</a></li>
+                        <li><a href="javascript:void(0);">KRISHNA</a></li>
+                        <li><a href="javascript:void(0);">KURNOOL</a></li>
+                        <li><a href="javascript:void(0);">NELLORE</a></li>
+                        <li><a href="javascript:void(0);">PRAKASAM</a></li>
+                        <li><a href="javascript:void(0);">SRIKAKULUM</a></li>
+                        <li><a href="javascript:void(0);">VISAKHAPATNAM</a></li>
+                        <li><a href="javascript:void(0);">VIZIANAGARAM</a></li>
+                        <li><a href="javascript:void(0);">WEST GODAVARI</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- <iframe id="getiframe" src="../cm-demo-tool/visuals.html?X=M-Achievement (percentage)&Y=ULB%20Name&area=city&chart=ColumnChart&sort=XDESC&viz=split&status=start&main=1&sub=0" scrolling="no"></iframe> -->
+        <iframe id="getiframe" src="" scrolling="no"></iframe>
+		<!--div style="width: 100%;position: fixed;padding: 10px;bottom: 0;background: #ddd;color:red;font-family:semibold">Since financial year starts from April. Previous month data won't be available for this month.</div-->
+    </div>
+    <script src="global/js/bootstrap/bootstrap.js"></script>
+    <script src="app/js/index.js"></script>
+    <style>
+    .tabs-style-topline nav.first-section-tab a span {
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
+    .second-section-tab li a span {
+        font-weight: bold;
+    }
+    
+    .second-section-tab ul li a {
+        background: #fff;
+    }
+    
+    .second-section-tab ul li a.subtab-a {
+        background: rgba(51, 165, 183, 0.9);
+        color: #fff;
+    }
+    
+    #getiframe {
+        height: calc(100% - 160px);
+        width: 100%;
+    }
+    
+    .second-section-tab i {
+        position: absolute;
+        right: 10px;
+        top: 12px;
+    }
+    </style>
+    <script>
+    $(document).ready(function() {
+        $('[data-toggle="tooltip"]').tooltip({
+            placement: 'bottom',
+            container: 'body'
+        });
+        $('[data-toggle="popover"]').popover({
+            template: '<div class="popover"><div class="arrow"></div><div class="popover-content"></div></div>',
+            trigger: 'hover',
+            html: true,
+            container: 'body',
+            placement: 'bottom'
+        });
+    });
+    </script>
+</body>
+<style>
+.btn-sm{
+    font-size:13px;
+}
+</style>
+</html>

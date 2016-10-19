@@ -1,0 +1,70 @@
+   * {
+       -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+       box-sizing: border-box;
+   }
+   
+   html,
+   body {
+       height: 100%;
+       background-color: #E6E6E6;
+   }
+   
+   #titleBar {
+       width: 100%;
+   }
+   
+   #cdma_logo {
+       float: left;
+       clear: left;
+       width: 100px;
+       height: 100px;
+   }
+   
+   #egov_logo {
+       float: right;
+       clear: right;
+       width: 100px;
+       height: 100px;
+   }
+   
+   #titleBar label {
+       display: inline-block;
+       text-align: center;
+       font-size: 28px;
+       font-family: 'OpenSans', sans-serif;
+       width: calc(100% - 200px);
+   }
+   
+   #formDiv {
+       font-family: 'OpenSans', sans-serif;
+       margin-left: 5px;
+       padding: 10px;
+       font-size: 18px;
+       float: none;
+       clear: none;
+       width: 100%;
+       text-align: center;
+   }
+   
+   .form-group select {
+       text-align: center;
+       font-size: 16px;
+   }
+   
+   #attribute-selector,
+   #attribute-selector-2,
+   #district-selector,
+   #grade-selector,
+   #area-selector,
+   #region-selector,
+   #sort-selector,
+   #visualizationtype-selector,
+   #charttype-selector {
+       width: 150px;
+   }
+   
+   #visuals {
+       height: calc(100%);
+       width: 100%;
+   }
