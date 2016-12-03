@@ -3,12 +3,14 @@ library(forecast)
 library(fpp)
 library(rucm)
 data <- list()
-data[["Top N Complaints"]] <- "/home/samarth/workspaces/datakind-workspace/analytics/time-series/data/topNComplaints"
+data[["Top N Complaints"]] <- "../../time-series/data/topNComplaints"
 
 loadData <- function(dataFolder) {
+  print(paste0("Loading ", dataFolder))
   files <- list.files(dataFolder)
   data <- list()
-  for(file in files) {    
+  for(file in files) {
+    print(paste0("Loading file: ", file))
     df <- read.csv(paste0(dataFolder, "/", file), stringsAsFactors=F)    
     minYear <- min(df$Year)
     complaintType <- substr(file,1,(nchar(file))-4)    
@@ -21,7 +23,7 @@ loadData <- function(dataFolder) {
 datasets <- list()
 for(d in names(data)) {
   location <- data[[d]]
-  print(paste0("Loading data ", d, "from location ", location))
+  print(paste0("Loading data ", d))
   one <- loadData(location)
   for(t in names(one)) {
     datasets[[paste0(d, " - ", t)]] <- one[[t]]
