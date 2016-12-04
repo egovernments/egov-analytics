@@ -9,11 +9,40 @@ shinyServer(function(input, output) {
   
   getProcessed <- reactive({
     monthly <- getData()
+    if(input$cleanOutliers) {
+      monthly <- tsclean(monthly)
+    }
+    
+    if(input$STL) {
+      x.window <- "periodic"
+      if(input$STL.Window > 0) {
+        x.window <- input$STL.Window
+      }
+      stl.fit <- stl(monthly, x.window)
+      monthly <- seasadj(stl.fit)
+      rValues$stl.fit <- stl.fit
+    }
+    
     monthly
   })
+
+  output$plotOutliers <- renderPlot({
+    series <- getData()
+    plot(series, col="red", lty=2)
+    lines(tsclean(series), lty=1)
+    legend("topright", col=c("red", "black"), lty=c(2,1), legend=c("Original", "Cleaned"))
+  })
   
-  output$plotRaw <- renderPlot({
-    plot(getData(), main="Raw Data")
+  output$plotSTL <- renderPlot({
+    series <- getData()
+    if(input$cleanOutliers) {
+      series <- tsclean(series)
+    }
+    x.window <- "periodic"
+    if(input$STL.Window > 0) {
+      x.window <- input$STL.Window
+    }
+    plot(stl(series, x.window))
   })
   
   output$plotTs <- renderPlot({
@@ -35,58 +64,32 @@ shinyServer(function(input, output) {
     
     # ARIMA
     if(input$method == "ARIMA") {
-      if(input$ARIMA.boxCox) {
-        lambda <- input$ARIMA.lambda
-      } else {
-        lambda <- NULL  
-      }
-      if(input$ARIMA.seasonal) {
-        seasonal <- c(input$ARIMA.P, input$ARIMA.D, input$ARIMA.Q)
-      } else {
-        seasonal <- c(0,0,0)
-      }
       fit <- Arima(trainData, 
-                   order=c(input$ARIMA.p, input$ARIMA.d, input$ARIMA.q), 
-                   seasonal=seasonal,
-                   method="ML", lambda=lambda)
+                   order=c(input$ARIMA.p, input$ARIMA.d, input$ARIMA.q))
       forecasted <- forecast(fit, h=12)
     }
     
-    # Exponential_Smoothing_Standard
-    else if(input$method == "Exponential_Smoothing_Standard") {
-      fit <- ets(trainData)
+    # Exponential Smoothing - ETS
+     else if(input$method == "Exponential Smoothing - ETS") {
+      
+	  #Adjusting the training data for value less than 1 which will affect the multiplicative model 
+	  trainData_ets <- trainData
+	  trainData_ets[trainData_ets < 1] <- 1
+	  
+	  model_type <- paste0(substr(input$error,1,1),substr(input$trend,1,1),substr(input$seasonality,1,1), collapse = "")
+	  print(model_type)
+	  fit <- ets(trainData_ets, model = model_type,damped = input$damping)
       forecasted <- forecast.ets(fit, h=12)
-    }
-    # Exponential_Smoothing_HoltWinters
-    else if(input$method == "Exponential_Smoothing_HoltWinters") {
-      fit <- HoltWinters(trainData)
-      forecasted <- forecast.HoltWinters(fit, h=12)
     } 
-    # Unobserved components model
-    else if(input$method == "UCM") {
-      fit <- ucm(formula=trainData~0, data=trainData, level=T, slope = T, season = T, cycle = T, season.length=input$UCM.season.length, cycle.period=input$UCM.cycle.period)
-      forecasted <- predict(fit$model, n.ahead=12)
-    }
-    
+   
     rValues$forecasted <- forecasted
-    if(input$method == "UCM") {
-      plot(monthly, lty=1, col=1)
-      lines(testData, lty=1, col=2)
-      lines(forecasted, lty=2, col=3)
-      legend("topleft",
-             col=c(1,2,3), 
-             lty=c(1,1,2),
-             legend=c("Actual Data", "Unseen (Test) Data", "Forecast"))
-    } else {
-      plot.forecast(forecasted, 
-           main=paste0("Forecasts for ",input$dataSet," using ",input$method))
-      lines(testData, lty=2, col="red")
-    }
+    plot.forecast(forecasted, 
+         main=paste0("Forecasts for ",input$dataSet," using ",input$method," model: ",model_type))
+    lines(testData, lty=2, col="red")
   })
   
   output$displayMetrics <- renderTable({
     accuracy(rValues$forecasted, rValues$testData)
   })
-  
   
 })
