@@ -22,6 +22,35 @@ shinyUI(fluidPage(
             max = 12,
             value = 0
           )
+        ),
+        fluidRow(
+          dateRangeInput(
+            "dataRange",
+            "DataSet Range",
+            start  = "2012-01-01",
+            end    = "2016-07-01",
+            format = "mm-yyyy",
+            separator = " to ",
+            startview = "year"
+          ),
+          dateRangeInput(
+            "trainRange",
+            "Training Set Range",
+            start  = "2012-01-01",
+            end    = "2015-06-01",
+            format = "mm-yyyy",
+            separator = " to ",
+            startview = "year"
+          ),
+          dateRangeInput(
+            "testRange",
+            "Test Set Range",
+            start  = "2015-07-01",
+            end    = "2016-06-01",
+            format = "mm-yyyy",
+            separator = " to ",
+            startview = "year"
+          )
         )
       ),
       tabPanel(
