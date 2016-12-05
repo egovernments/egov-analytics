@@ -25,14 +25,24 @@ shinyUI(fluidPage(
             selectInput(
               "method", label = h5("Modeling Method"),
               choices = c("ARIMA", 
-                          "Exponential_Smoothing_Standard",
-                          "Exponential_Smoothing_HoltWinters")
+                          "Exponential Smoothing - ETS")
             )
           ), fluidRow(
             h3("ARIMA Parameters"),
             sliderInput("ARIMA.p", label="p", min=1, max=18, value = 1),
             sliderInput("ARIMA.d", label="d", min=0, max=12, value = 0),
             sliderInput("ARIMA.q", label="q", min=1, max=18, value = 1)
+          ), fluidRow(
+            h3("ETS Parameters"),
+			h5("Select the type of ETS model:"),
+            selectInput('error','Error',c("Additive","Multiplicative")),
+			selectInput('trend','Trend',c("None","Additive","Multiplicative")),
+			selectInput('seasonality','Seasonality',c("None","Additive","Multiplicative")),
+			h5('Tick if damping is required for trend:'),
+			checkboxInput("damping", "Damped Trend", value = F),
+			h5(''),
+			h5(''),
+			h5('Note: No output plot will be displayed for incompatible model')
           )
         )
       )
