@@ -69,21 +69,22 @@ shinyServer(function(input, output) {
       forecasted <- forecast(fit, h=12)
     }
     
-    # Exponential_Smoothing_Standard
-    else if(input$method == "Exponential_Smoothing_Standard") {
-      fit <- ets(trainData)
+    # Exponential Smoothing - ETS
+     else if(input$method == "Exponential Smoothing - ETS") {
+      
+	  #Adjusting the training data for value less than 1 which will affect the multiplicative model 
+	  trainData_ets <- trainData
+	  trainData_ets[trainData_ets < 1] <- 1
+	  
+	  model_type <- paste0(substr(input$error,1,1),substr(input$trend,1,1),substr(input$seasonality,1,1), collapse = "")
+	  print(model_type)
+	  fit <- ets(trainData_ets, model = model_type,damped = input$damping)
       forecasted <- forecast.ets(fit, h=12)
-    }
-    # Exponential_Smoothing_HoltWinters
-    else if(input$method == "Exponential_Smoothing_HoltWinters") {
-      fit <- HoltWinters(trainData)
-      forecasted <- forecast.HoltWinters(fit, h=12)
     } 
    
-    
     rValues$forecasted <- forecasted
     plot.forecast(forecasted, 
-         main=paste0("Forecasts for ",input$dataSet," using ",input$method))
+         main=paste0("Forecasts for ",input$dataSet," using ",input$method," model: ",model_type))
     lines(testData, lty=2, col="red")
   })
   
