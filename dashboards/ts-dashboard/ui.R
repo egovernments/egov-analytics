@@ -66,7 +66,7 @@ shinyUI(fluidPage(
           sliderInput(
             "ARIMA.p",
             label = "p",
-            min = 1,
+            min = 0,
             max = 18,
             value = 1
           ),
@@ -80,7 +80,7 @@ shinyUI(fluidPage(
           sliderInput(
             "ARIMA.q",
             label = "q",
-            min = 1,
+            min = 0,
             max = 18,
             value = 1
           )
