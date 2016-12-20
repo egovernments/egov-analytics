@@ -1,13 +1,12 @@
 DATA="../../../cocUptoJuly2016.csv"
 library(xts)
 library(hash)
-library(data.table)
-library(dplyr)
-library(dygraphs)
 library(plotly)
 library(forecast)
 library(lubridate)
 library(htmlwidgets)
+library(dplyr)
+library(dygraphs)
 
 raw <- read.csv(DATA, stringsAsFactors = F)
 head(raw)

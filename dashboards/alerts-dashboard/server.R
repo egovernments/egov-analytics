@@ -48,22 +48,11 @@ shinyServer(function(input, output) {
   
   
   output$plotData <- renderDygraph({
-    graph <- dygraph(getSeries(),
+    dygraph(getSeries(),
             xlab = "Time",
             ylab = "Number of Complaints",
-            main = "Number of Complaints Over Time")
-    printClick <- "function pointClickCallback(e, point) { console.log(point); document.getElementById('clickedDate').innerHTML = 'Date: ' + point.xval + ' Value: ' + point.yval; }"
-    
-    dyCallbacks(graph, pointClickCallback=JS(printClick)) 
-    dyRangeSelector(graph)
-    
-    
-    graph
+            main = "Number of Complaints Over Time") %>% dyRangeSelector()
   })
-  
-  output$clicked <- renderText({
-    print(clicked_x())
-    'Hello'
-  })
+
 })
 
