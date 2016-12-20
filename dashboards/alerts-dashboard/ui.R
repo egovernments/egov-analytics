@@ -34,8 +34,7 @@ shinyUI(fluidPage(
                      ".shiny-output-error { visibility: hidden; }",
                      ".shiny-output-error:before { visibility: hidden; }"
           ),
-          dygraphOutput('plotData'),
-          div(id="clickedDate")
+          dygraphOutput('plotData')
         )
       )
     )
