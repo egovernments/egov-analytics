@@ -5,6 +5,7 @@ library(plotly)
 library(forecast)
 library(lubridate)
 library(htmlwidgets)
+library(AnomalyDetection)
 library(dplyr)
 library(dygraphs)
 
@@ -28,3 +29,11 @@ topComplaintTypes <- data.frame(table(df$Complaint.Type), stringsAsFactors = F)
 topComplaintTypes <- topComplaintTypes[order(-topComplaintTypes$Freq),]
 topComplaintTypes <- topComplaintTypes[1:5, ]
 topComplaintTypes <- as.character(topComplaintTypes$Var1)
+
+
+anomalies.around <- function(xtsobj, date, window.size=60) {
+  end_time <- date
+  start_time <- date - (24 * 60 * 60 * window.size)
+  subset <- window(xtsobj, start=start_time, end=end_time)
+  AnomalyDetectionVec(drop(coredata(subset)),period=24, plot=T, only_last = T)
+}

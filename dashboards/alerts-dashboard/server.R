@@ -51,7 +51,18 @@ shinyServer(function(input, output) {
     dygraph(getSeries(),
             xlab = "Time",
             ylab = "Number of Complaints",
-            main = "Number of Complaints Over Time") %>% dyRangeSelector()
+            main = "Number of Complaints Over Time") %>% 
+      dyRangeSelector()
+  })
+
+  output$plotAnoms <- renderPlot({
+    series <- getSeries()
+    if(input$detectAnoms == FALSE) {
+      return(NULL)
+    }
+    # +1 day to include the date
+    anom.date <- input$anoms.date + 1
+    anomalies.around(series, anom.date, window.size = input$window.size)$plot
   })
 
 })
