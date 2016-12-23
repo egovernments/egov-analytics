@@ -10,6 +10,9 @@ shinyServer(function(input, output) {
     daysToResolveMin <- input$daysToResolve[1]
     daysToResolveMax <- input$daysToResolve[2]
     
+	#Assuming zero days for NA values
+	subs$Number.of.days.for.resolution[is.na(subs$Number.of.days.for.resolution)] <- 0
+	
     subs <- subs[subs$Complaint.Date >= startDate & 
                    subs$Complaint.Date <= endDate, ]
     subs <- subs[subs$Number.of.days.for.resolution >= daysToResolveMin &
@@ -18,14 +21,16 @@ shinyServer(function(input, output) {
     if (complaintType != "All") {
       subs <- subs[subs$Complaint.Type == complaintType, ]
     }
-    if (ward != "All") {
-      subs <- subs[subs$Ward == ward, ]
+	
+	if (ward != "All") {
+      subs <- subs[subs$Ward %in% ward, ]
     }
     subs
   })
   
   getSeries <- reactive({
     subs <- subsetDf()
+	#print(head(subs))
     series <- xts(subs$NumComplaints, subs$Complaint.Date)
     timePeriod <- input$timePeriod
     if (timePeriod == "Daily") {
@@ -42,7 +47,8 @@ shinyServer(function(input, output) {
   
   getTSObject <- reactive({
     # TODO add functionality for other periodicities, right now only monthly is supported
-    subs <- subsetDf()
+    
+	subs <- subsetDf()
     minYear <- year(min(subs$Complaint.Date))
     maxYear <- year(max(subs$Complaint.Date))
     ideal <- data.frame(Month=character(), Year=integer(), stringsAsFactors=F)
@@ -53,6 +59,7 @@ shinyServer(function(input, output) {
         ideal[nrow(ideal)+1,] <- c(month, year)        
       }
     }
+	
     series <- xts(subs$NumComplaints, subs$Complaint.Date)
     series <- apply.monthly(series, FUN = sum)
     monthlyData <- data.frame(Date=index(series), Complaints=coredata(series))
@@ -66,7 +73,8 @@ shinyServer(function(input, output) {
   })
   
   output$plotData <- renderDygraph({
-    dygraph(getSeries(),
+    #print("TEST TEST")
+	dygraph(getSeries(),
             xlab = "Time",
             ylab = "Number of Complaints",
             main = "Number of Complaints Over Time") %>%
@@ -81,14 +89,32 @@ shinyServer(function(input, output) {
     monthlyData$Month <- month.abb[month(monthlyData$date)]
     monthlyData$Year <- year(monthlyData$date)
     names(monthlyData)[2] <- "count"
-    months <- data.frame(Month = month.abb)
-    monthlyData <- left_join(months, monthlyData)
+    months_1 <- data.frame(Month = month.abb)
+	monthlyData <- left_join(months_1, monthlyData)
     monthlyData[is.na(monthlyData$count), 3]  <- 0
     monthlyData$Month <- factor(monthlyData$Month, levels = month.abb, ordered = T)
     monthlyData <- monthlyData[order(monthlyData$Month), ]
-    
-    plot_ly(monthlyData, x = Month, y = count, 
-                 group = Year, type = "bar")
+    monthlyData_1 <- monthlyData
+	monthlyData_1$date <- NULL
+	md <- spread(monthlyData_1, Year, count)
+	
+	#Checking if all the columns are present
+	ifelse("2012" %in% names(md),"",md$`2012` <- NA)
+	ifelse("2013" %in% names(md),"",md$`2013` <- NA)
+	ifelse("2014" %in% names(md),"",md$`2014` <- NA)
+	ifelse("2015" %in% names(md),"",md$`2015` <- NA)
+	ifelse("2016" %in% names(md),"",md$`2016` <- NA)
+	
+	md <- md[!names(md) %in% "<NA>"]
+	
+	plot_ly(md, x = ~Month, y = ~`2016`,name = 'Year 2016',type = "bar") %>%
+	add_trace(y = ~`2015`, name = 'Year 2015') %>%
+	add_trace(y = ~`2014`, name = 'Year 2014') %>%
+	add_trace(y = ~`2013`, name = 'Year 2013') %>%
+	add_trace(y = ~`2012`, name = 'Year 2012') %>%
+	layout(yaxis = list(title = 'Complaints'), barmode = 'group')
+
+				  
   })
   
   output$plotTopNComplaints <- renderPlotly({
@@ -98,12 +124,15 @@ shinyServer(function(input, output) {
       return(NULL);
     }
     counts <- counts[order(-counts$Freq), ][1:input$topNComplaintTypes, ]
-    counts <- counts[order(counts$Freq), ]
-    plot_ly(x = counts$Freq, y = counts$Var1, 
-            type = 'bar', orientation = 'h') %>% 
+    counts <<- counts[order(counts$Freq), ]
+   
+   counts$Var1 <- factor(counts$Var1, level = counts$Var1[order(counts$Freq)],order = TRUE)
+
+	
+	plot_ly(x = counts$Freq, y = counts$Var1, 
+            type = 'bar') %>%
       layout(title = "Top complaint types",
-             xaxis = list(title = 'Number of complaints'),
-             yaxis = list(title = ''),
+            xaxis = list(title = 'Number of complaints'),
              margin = list(l = 300))
   })
   
@@ -115,6 +144,9 @@ shinyServer(function(input, output) {
     }
     counts <- counts[order(-counts$Freq), ][1:input$topNWards, ]
     counts <- counts[order(counts$Freq), ]
+	
+	counts$Var1 <- factor(counts$Var1, level = counts$Var1[order(counts$Freq)],order = TRUE)
+
     plot_ly(x = counts$Freq, y = counts$Var1, 
             type = 'bar', orientation = 'h') %>% 
       layout(title = "Top wards by complaints",

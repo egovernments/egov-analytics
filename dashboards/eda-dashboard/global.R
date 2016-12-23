@@ -1,4 +1,6 @@
 DATA="/home/samarth/workspaces/datakind-workspace/cocUptoJuly2016.csv"
+
+library(shiny)
 library(xts)
 library(hash)
 library(data.table)
@@ -7,8 +9,10 @@ library(dygraphs)
 library(plotly)
 library(forecast)
 library(lubridate)
+library(ggplot2)
+library(tidyr)
 
-raw <- fread(DATA, stringsAsFactors = F)
+raw <- read.csv(DATA, stringsAsFactors = F)
 raw$Complaint.Date <- as.Date(raw$Complaint.Date, format = "%m/%d/%Y")
 raw$Resolution.Date <- as.Date(raw$Resolution.Date, format = "%m/%d/%Y")
 
