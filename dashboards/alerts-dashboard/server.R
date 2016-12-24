@@ -60,9 +60,8 @@ shinyServer(function(input, output) {
     if(input$detectAnoms == FALSE) {
       return(NULL)
     }
-    # +1 day to include the date
-    anom.date <- input$anoms.date + 1
-    anomalies.around(series, anom.date, window.size = input$window.size)$plot
+    anom.date <- strftime(input$anoms.date, "%Y-%m-%d 23:59:59")
+    anomalies.around(series, as.POSIXct(anom.date), window.size = input$window.size)$plot
   })
 
 })
