@@ -43,7 +43,20 @@ ComplaintsData <- R6Class("ComplaintsData",
         if(rollup == "month") {
           series <- apply.monthly(series, FUN=sum)
         }
-        series
+		
+		monthlyData <- data.frame(Date=index(series), Complaints=coredata(series))
+		
+		# create columns for join 
+		monthlyData$Month <- month.abb[month(monthlyData$Date)]
+		monthlyData$Year <- year(monthlyData$Date)
+		joined <- merge(x = ideal, y = monthlyData, by = c("Month", "Year"), sort=F, all= T)        
+		joined$Date <- NULL
+		
+		# sort it by year-month   
+		joined <- joined[order(as.yearmon(paste0(joined$Year, "-", joined$Month), "%Y-%b")), ]
+		joined[is.na(joined$Complaints), ]$Complaints <- 0   
+		series_ts <- ts(joined$Complaints, start = c(min(as.numeric(joined$Year)),1), frequency = 12)
+		series_ts	
       }
     )
 ) 
