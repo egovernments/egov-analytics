@@ -55,7 +55,8 @@ egovs_forecasts <- function(series,
                             model_spec, 
                             cleaned = TRUE, 
                             stl_decompose = TRUE, 
-                            forecast_points = 3) {
+                            forecast_points = 3,
+                            as.df = TRUE) {
   ts_model <- toupper(ts_model)
   if (!(ts_model %in% c("ARIMA", "ETS"))) {
     stop("Error: Only ETS and ARIMA can be modelled")
@@ -97,8 +98,14 @@ egovs_forecasts <- function(series,
     seasonal_mean <- period_stat(seasonal_part, 2, c(2012, 1), years = 7)
     predictions <- predictions + seasonal_mean
   }
-  
-  return(predictions)
+  if(as.df) {
+    pred.frame <- data.frame(Year = floor(time(predictions)),
+                             Month = month.abb[cycle(predictions)],
+                             Forecast = coredata(predictions))
+    pred.frame  
+  } else {
+    predictions
+  }
   
 }
 
