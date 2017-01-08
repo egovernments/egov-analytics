@@ -1,0 +1,18 @@
+{
+	"model-spec" : {
+		"Mosquito menace " : {
+			"model" : "ARIMA",
+			"p" : 1,
+			"d" : 2,
+			"q" : 2,
+			"lambda" : null,
+			"stl" : true,
+			"clean-outliers" : true
+		}, 
+		"Non burning of street lights" : {
+			"model" : "ETS",
+			"type" : "AAA",
+			"damped-trend" : false
+		}
+	}
+}
