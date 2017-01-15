@@ -52,11 +52,17 @@ period_stat <- function(ts_data_in, type = 1, start_value, years) {
 
 egovs_forecasts <- function(series, 
                             ts_model, 
-                            model_spec, 
-                            cleaned = TRUE, 
-                            stl_decompose = TRUE, 
                             forecast_points = 3,
-                            as.df = TRUE) {
+                            as.df = TRUE, 
+                            cleaned = FALSE, 
+                            stl_decompose = FALSE, 
+                            ...) {
+  model_args <- list(...)
+  
+  print(model_args)
+  
+  ## TODO validate model_args
+  
   ts_model <- toupper(ts_model)
   if (!(ts_model %in% c("ARIMA", "ETS"))) {
     stop("Error: Only ETS and ARIMA can be modelled")
@@ -79,7 +85,10 @@ egovs_forecasts <- function(series,
   }
   
   if (toupper(ts_model) == "ARIMA") {
-    fit <- Arima(series, order = model_spec[[1]], lambda = model_spec[[2]])
+    # TODO add validation that p, d, q is present
+    order <- c(model_args$arima.p, model_args$arima.d, model_args$arima.q)
+    lambda <- model_args$lambda
+    fit <- Arima(series, order = order, lambda = lambda)
     predictions <- forecast(fit, forecast_points)$mean
     
   } else if (toupper(ts_model) == "ETS") {
@@ -91,7 +100,9 @@ egovs_forecasts <- function(series,
     ES_series[ES_series == 0] = 0.1
     
     # Forecasts
-    fit <- ets(ES_series, model = model_spec[[1]], damped = model_spec[[2]])
+    damped <- model_args$ets.damped
+    ets.model <- model_args$ets.model
+    fit <- ets(ES_series, model = ets.model, damped = damped)
     predictions <- forecast.ets(fit, h = forecast_points)$mean - bias_value
   }
   if (stl_decompose == TRUE) {
@@ -113,5 +124,8 @@ egovs_forecasts <- function(series,
 
 
 # Example Call
-# egovs_forecasts(ts_data, ts_model = "ets", model_spec = list("AAA", FALSE), forecast_points = 3)
-# egovs_forecasts(ts_data, ts_model = "arima", model_spec = list(c(1, 0, 1), NULL), forecast_points = 5)
+# egovs_forecasts(series, ts_model = "ets", ets.model="AAA", ets.damped=TRUE)
+# egovs_forecasts(series, ts_model = "arima", forecast_points = 5, arima.p = 3, arima.q = 2, arima.d = 1, arima.lambda=NULL)
+
+
+

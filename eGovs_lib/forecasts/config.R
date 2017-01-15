@@ -1,12 +1,21 @@
 library(jsonlite)
 library(R6)
 
+
+Constants <- list(
+  allowed_params = c("arima.p", "arima.d", "arima.q", "ets.model", "ets.damped", "lambda")
+)
+
+
 Config <- R6Class(
   "ForecastsConfig",
   public = list(
     config = NULL,
     initialize = function(config.path) {
-      self$config <- jsonlite::fromJSON(readLines(config.path), flatten = FALSE)
+      self$config <- suppressWarnings(jsonlite::fromJSON(readLines(config.path), flatten = FALSE)) 
+    },
+    getDataPath = function() {
+      self$config[["data"]][["path"]]
     },
     getModelSpec = function(complaint.type) {
       model_spec <- self$config[["model-spec"]][[complaint.type]]
@@ -14,9 +23,18 @@ Config <- R6Class(
         stop(paste("Model spec is not present for complaint type:", complaint.type))
       }
       model_spec
+    }, getComplaintTypesToModel = function() {
+      names(self$config[["model-spec"]])
     },
     getModelType = function(complaint.type) {
       self$getModelSpec(complaint.type)[["model"]]
+    }, 
+    getStartDate = function(complaint.type) {
+      start.date <- self$getModelSpec(complaint.type)[["start-date"]]
+      if(is.null(start.date)) {
+        return(NULL)
+      }
+      as.POSIXct(start.date, format = "%m/%d/%Y")
     },
     isCleanOutliers = function(complaint.type) {
       model_spec <- self$getModelSpec(complaint.type)
@@ -37,6 +55,17 @@ Config <- R6Class(
         return(FALSE)
       }
       return(TRUE)
+    },
+    getModelParams = function(complaint.type) {
+      model_spec <- self$getModelSpec(complaint.type)
+      paramList <- list()
+      for(p in Constants$allowed_params) {
+        if(p %in% names(model_spec)) {
+          paramList[[p]] = model_spec[[p]]
+        }
+      }
+      
+      paramList
     }
   )
 )
