@@ -70,7 +70,12 @@ ComplaintsData <- R6Class(
       joined <- joined[order(as.yearmon(paste0(joined$Year, "-", joined$Month), "%Y-%b")), ]
       joined[is.na(joined$Complaints), ]$Complaints <- 0   
       series_ts <- ts(joined$Complaints, start = c(min(as.numeric(joined$Year)),1), frequency = 12)
-      series_ts	
+      max_date <- max(self$data$Complaint.Date)
+      window(series_ts, end=c(year(max_date), month(max_date)))
     }
   )
 ) 
+
+# Example 
+# complaints.data <- ComplaintsData$new("~/workspaces/datakind-ws/cocUptoJuly2016.csv")
+# series <- complaints.data$getComplaintData("Mosquito menace ")
