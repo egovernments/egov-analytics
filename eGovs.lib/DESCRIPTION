@@ -1,0 +1,29 @@
+Package: eGovs.lib
+Title: Forecasts and Alerts for the PGR System
+Version: 0.0.0.9000
+Authors@R: c(
+  person("Samarth", "Bhargav", email = "samarth.bhargav92@gmail.com", role = c("aut", "cre")),
+  person("Murugesan", "Ramakrishnan", email = "arv.ram108@gmail.com", role = c("aut")),
+  person("Sahil", "Maheshwari", email = "sahil030288@gmail.com", role = c("ctb"))
+  )
+Description: What the package does (one paragraph).
+Depends:
+    R (>= 3.3.2)
+License: MIT
+Encoding: UTF-8
+LazyData: true
+BugReports: https://github.com/egovernments/analytics/issues
+Imports:
+    jsonlite,
+    R6,
+    dplyr,
+    lubridate,
+    xts,
+    forecast,
+    zoo,
+    optparse,
+    ggplot2
+RoxygenNote: 5.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
