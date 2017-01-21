@@ -1,3 +1,5 @@
+## TODO: ETS should also use lambda
+## TODO: Add validation for model_args
 
 ################################# Function for average seasonality over years
 period_stat <- function(ts_data_in, type = 1, start_value, years) {
@@ -54,13 +56,14 @@ egovs_forecasts <- function(series,
                             forecast_points = 3,
                             as.df = TRUE,
                             cleaned = FALSE,
-                            stl_decompose = FALSE,
+                            stl.decompose = FALSE,
                             ...) {
   model_args <- list(...)
 
-  print(model_args)
-
-  ## TODO validate model_args
+  # add some default params for stl if not present
+  if(is.null(model_args$stl.period)) {
+    model_args$stl.period <- "periodic"
+  }
 
   ts_model <- toupper(ts_model)
   if (!(ts_model %in% c("ARIMA", "ETS"))) {
@@ -76,38 +79,42 @@ egovs_forecasts <- function(series,
     series <- tsclean(series)
   }
 
-  # Seasonal adjustment
-  if (stl_decompose == TRUE) {
-    stl.fit <- stl(series, s.window = "periodic")
-    series <- seasadj(stl.fit)
-    seasonal_part <- stl.fit[[1]][, 1]
-  }
-
-  if (toupper(ts_model) == "ARIMA") {
-    # TODO add validation that p, d, q is present
+  if(ts_model == "ARIMA") {
     order <- c(model_args$arima.p, model_args$arima.d, model_args$arima.q)
     lambda <- model_args$lambda
-    fit <- Arima(series, order = order, lambda = lambda)
-    predictions <- forecast(fit, forecast_points)$mean
+    model_function <- function(series) {
+      Arima(series, order = order, lambda = lambda)
+    }
 
-  } else if (toupper(ts_model) == "ETS") {
-    # Preprocessing in ETS
-    min_ts_value <- min(series)
-    bias_value <- (-1 * min_ts_value) + 1
-    ES_series <- series + bias_value
-
-    ES_series[ES_series == 0] = 0.1
-
-    # Forecasts
+    if(stl.decompose) {
+      model <- stlm(series,
+                    s.window = model_args$stl.period,
+                    modelfunction = model_function)
+    } else {
+      model <- model_function(series)
+    }
+  } else if (ts_model == "ETS") {
     damped <- model_args$ets.damped
     ets.model <- model_args$ets.model
-    fit <- ets(ES_series, model = ets.model, damped = damped)
-    predictions <- forecast.ets(fit, h = forecast_points)$mean - bias_value
+    model_function <- function(y) {
+      min_ts_value <- min(y)
+      bias_value <- (-1 * min_ts_value) + 1
+      ES_series <- y + bias_value
+      ES_series[ES_series == 0] = 0.1
+      ets(ES_series, model = ets.model, damped = damped)
+    }
+
+    if(stl.decompose) {
+      model <- stlm(series,
+                    s.window = model_args$stl.period,
+                    modelfunction = model_function)
+    } else {
+      model <- model_function(series)
+    }
   }
-  if (stl_decompose == TRUE) {
-    seasonal_mean <- period_stat(seasonal_part, 2, c(2012, 1), years = 7)
-    predictions <- predictions + seasonal_mean
-  }
+
+  predictions <- forecast(model, forecast_points)
+
   if(as.df) {
     pred.frame <- data.frame(Year = floor(time(predictions)),
                              Month = month.abb[cycle(predictions)],
@@ -116,7 +123,6 @@ egovs_forecasts <- function(series,
   } else {
     predictions
   }
-
 }
 
 # TODO Include functions to plot See if confidence interval has to be included #If yes, then they too have to be seasonlly adjusted

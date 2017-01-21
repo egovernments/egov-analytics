@@ -1,4 +1,8 @@
 
+#' @import dplyr
+#' @import forecast
+NULL
+
 ideal__ <- function(minYear, maxYear) {
   ideal <- data.frame(Month=character(), Year=integer(), stringsAsFactors=F)
   for(year in seq(from=minYear, to=maxYear)) {
@@ -48,16 +52,16 @@ ComplaintsData <- R6Class(
         stop("No rows in the data")
       }
 
-      series <- xts(df$NumComplaints, df$Complaint.Date)
+      series <- xts::xts(df$NumComplaints, df$Complaint.Date)
       if(rollup == "month") {
-        series <- apply.monthly(series, FUN=sum)
+        series <- xts::apply.monthly(series, FUN=sum)
       }
 
-      monthlyData <- data.frame(Date=index(series), Complaints=coredata(series))
+      monthlyData <- data.frame(Date=zoo::index(series), Complaints=zoo::coredata(series))
 
       # create columns for join
-      monthlyData$Month <- month.abb[month(monthlyData$Date)]
-      monthlyData$Year <- year(monthlyData$Date)
+      monthlyData$Month <- month.abb[lubridate::month(monthlyData$Date)]
+      monthlyData$Year <- lubridate::year(monthlyData$Date)
       ideal <- ideal__(min(monthlyData$Year), max(monthlyData$Year))
       joined <- merge(x = ideal, y = monthlyData, by = c("Month", "Year"), sort=F, all= T)
       joined$Date <- NULL
@@ -67,7 +71,7 @@ ComplaintsData <- R6Class(
       joined[is.na(joined$Complaints), ]$Complaints <- 0
       series_ts <- ts(joined$Complaints, start = c(min(as.numeric(joined$Year)),1), frequency = 12)
       max_date <- max(self$data$Complaint.Date)
-      window(series_ts, end=c(year(max_date), month(max_date)))
+      window(series_ts, end=c(lubridate::year(max_date), lubridate::month(max_date)))
     }
   )
 )

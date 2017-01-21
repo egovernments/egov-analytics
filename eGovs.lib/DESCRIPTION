@@ -16,13 +16,13 @@ BugReports: https://github.com/egovernments/analytics/issues
 Imports:
     jsonlite,
     R6,
-    dplyr,
     lubridate,
     xts,
     forecast,
     zoo,
     optparse,
-    ggplot2
+    ggplot2,
+    dplyr
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
