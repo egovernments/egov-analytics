@@ -1,6 +1,7 @@
 
 #' @import dplyr
 #' @import forecast
+#' @importFrom magrittr "%>%"
 NULL
 
 ideal__ <- function(minYear, maxYear) {
@@ -67,7 +68,7 @@ ComplaintsData <- R6Class(
       joined$Date <- NULL
 
       # sort it by year-month
-      joined <- joined[order(as.yearmon(paste0(joined$Year, "-", joined$Month), "%Y-%b")), ]
+      joined <- joined[order(zoo::as.yearmon(paste0(joined$Year, "-", joined$Month), "%Y-%b")), ]
       joined[is.na(joined$Complaints), ]$Complaints <- 0
       series_ts <- ts(joined$Complaints, start = c(min(as.numeric(joined$Year)),1), frequency = 12)
       max_date <- max(self$data$Complaint.Date)
