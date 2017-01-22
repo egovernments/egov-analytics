@@ -1,55 +1,6 @@
 ## TODO: ETS should also use lambda
 ## TODO: Add validation for model_args
 
-################################# Function for average seasonality over years
-period_stat <- function(ts_data_in, type = 1, start_value, years) {
-  # type 1: sum type 2: mean
-
-  freq <- frequency(ts_data_in)
-  len <- length(ts_data_in)
-
-  freq_vector <- numeric(0)
-  freq_sum <- numeric(0)
-  vec <- numeric(0)
-  sum_vec <- numeric(0)
-
-  start_val <- start(ts_data_in)
-
-  ts_data_in <- c(rep(NA, start_val[2] - 1), ts_data_in)
-
-  max_limit <- ceiling(len/freq)
-  for (i in 1:max_limit) {
-
-    vec <- ts_data_in[(((i - 1) * freq) + 1):(((i - 1) * freq) + freq)]
-    freq_vector <- as.numeric(!is.na(vec))
-    vec[is.na(vec)] <- 0
-
-    if (i == 1) {
-      sum_vec <- vec
-      freq_sum <- freq_vector
-
-    } else {
-
-      sum_vec <- sum_vec + vec
-      freq_sum <- freq_sum + freq_vector
-    }
-  }
-
-  final_ts <- numeric(0)
-
-  if (type == 1) {
-    final_ts <- sum_vec
-  } else if (type == 2) {
-
-    final_ts <- (sum_vec/freq_sum)
-  } else {
-    stop("Invalid type")
-  }
-
-  return(ts(rep(final_ts, years), frequency = freq, start = start_value))
-
-}
-
 
 egovs_forecasts <- function(series,
                             ts_model,
@@ -124,13 +75,6 @@ egovs_forecasts <- function(series,
     predictions
   }
 }
-
-# TODO Include functions to plot See if confidence interval has to be included #If yes, then they too have to be seasonlly adjusted
-
-
 # Example Call
 # egovs_forecasts(series, ts_model = "ets", ets.model="AAA", ets.damped=TRUE)
 # egovs_forecasts(series, ts_model = "arima", forecast_points = 5, arima.p = 3, arima.q = 2, arima.d = 1, arima.lambda=NULL)
-
-
-
