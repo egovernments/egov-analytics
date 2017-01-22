@@ -1,6 +1,7 @@
 
 #' @import dplyr
 #' @import forecast
+#' @import ggplot2
 #' @importFrom magrittr "%>%"
 NULL
 

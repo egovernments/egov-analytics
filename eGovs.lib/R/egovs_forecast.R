@@ -1,6 +1,28 @@
 ## TODO: ETS should also use lambda
 ## TODO: Add validation for model_args
 
+forecast_to_df <- function(predictions) {
+  mean_f <- predictions$mean
+  high_f <- predictions$upper
+  low_f <- predictions$lower
+
+  conf.intervals <- predictions$level
+
+  pred.frame <- data.frame(Year = floor(time(mean_f)),
+                           Month = month.abb[cycle(mean_f)],
+                           Forecast = zoo::coredata(mean_f))
+
+  forecast_points <- nrow(pred.frame)
+
+  idx <- 1
+  for(c in conf.intervals) {
+    pred.frame[[paste0("Low", c)]] <- low_f[1:forecast_points, idx]
+    pred.frame[[paste0("High", c)]] <- high_f[1:forecast_points, idx]
+    idx <- idx + 1
+  }
+
+  pred.frame
+}
 
 egovs_forecasts <- function(series,
                             ts_model,
@@ -76,24 +98,7 @@ egovs_forecasts <- function(series,
                           lambda=model_args$lambda)
 
   if(as.df) {
-    mean_f <- predictions$mean
-    high_f <- predictions$upper
-    low_f <- predictions$lower
-
-
-    pred.frame <- data.frame(Year = floor(time(mean_f)),
-                             Month = month.abb[cycle(mean_f)],
-                             Forecast = zoo::coredata(mean_f))
-
-
-    idx <- 1
-    for(c in conf.intervals) {
-      pred.frame[[paste0("Low-", c)]] <- low_f[1:forecast_points, paste0("Series ", idx)]
-      pred.frame[[paste0("High-", c)]] <- high_f[1:forecast_points, paste0("Series ", idx)]
-      idx <- idx + 1
-    }
-
-    pred.frame
+    forecast_to_df(predictions)
   } else {
     predictions
   }

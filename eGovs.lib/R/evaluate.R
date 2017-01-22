@@ -1,4 +1,17 @@
-library(R6)
+
+evaluate_forecasts <- function(predictions, test_series) {
+  stopifnot("forecast" %in% class(predictions))
+  acc <- as.data.frame(forecast::accuracy(predictions, test_series))
+  acc$Data.Set <- row.names(acc)
+  row.names(acc.df) <- NULL
+  acc
+}
+
+evaluate_rolling_forecasts <- function(predictions, test_series) {
+
+}
+
+evalute_forecasts_conf <- function()
 
 Evaluate <- R6Class("Evaluate",
     public = list(
