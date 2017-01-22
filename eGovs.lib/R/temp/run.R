@@ -5,9 +5,9 @@ suppressPackageStartupMessages(source("./egovs_forecast.R"))
 
 
 option_list = list(
-  make_option(c("-c", "--config"), type="character", default=NULL, 
+  make_option(c("-c", "--config"), type="character", default=NULL,
               help="Config file location", metavar="character"),
-  make_option(c("-o", "--output"), type="character", default=NULL, 
+  make_option(c("-o", "--output"), type="character", default=NULL,
               help="Output file location", metavar="character")
 )
 
@@ -30,12 +30,12 @@ for(complaint.type in config$getComplaintTypesToModel()) {
     series <- window(series, start=c(year(start.date), month(start.date)))
   }
   params <- config$getModelParams(complaint.type)
-  
+
   params[["series"]] <- series
   params[["ts_model"]] <- config$getModelType(complaint.type)
   params[["cleaned"]] <- config$isCleanOutliers(complaint.type)
   params[["stl_decompose"]] <- config$isSTLDecompose(complaint.type)
-  
+
   output[[complaint.type]] <- do.call(egovs_forecasts, params)
 }
 

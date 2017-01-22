@@ -1,7 +1,6 @@
-library(jsonlite)
 library(R6)
 
-
+#' A list of 'Constants'
 Constants <- list(
   allowed_params = c("arima.p", "arima.d", "arima.q", "ets.model", "ets.damped", "lambda")
 )
@@ -12,7 +11,7 @@ Config <- R6Class(
   public = list(
     config = NULL,
     initialize = function(config.path) {
-      self$config <- suppressWarnings(jsonlite::fromJSON(readLines(config.path), flatten = FALSE)) 
+      self$config <- suppressWarnings(jsonlite::fromJSON(readLines(config.path), flatten = FALSE))
     },
     getDataPath = function() {
       self$config[["data"]][["path"]]
@@ -28,7 +27,7 @@ Config <- R6Class(
     },
     getModelType = function(complaint.type) {
       self$getModelSpec(complaint.type)[["model"]]
-    }, 
+    },
     getStartDate = function(complaint.type) {
       start.date <- self$getModelSpec(complaint.type)[["start-date"]]
       if(is.null(start.date)) {
@@ -64,11 +63,8 @@ Config <- R6Class(
           paramList[[p]] = model_spec[[p]]
         }
       }
-      
+
       paramList
     }
   )
 )
-
-path <- "~/workspaces/datakind-ws/analytics/eGovs_lib/forecasts/example_config.json"
-config <- Config$new(path)
