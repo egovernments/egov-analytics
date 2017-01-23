@@ -1,6 +1,7 @@
 
 #' @import dplyr
 #' @import forecast
+#' @import ggplot2
 #' @importFrom magrittr "%>%"
 NULL
 
@@ -35,6 +36,7 @@ ComplaintsData <- R6Class(
         mutate(NumComplaints=1)
 
       self$data <- df
+
     },
     getComplaintFrequencyByType = function() {
       self$data %>%
@@ -59,7 +61,6 @@ ComplaintsData <- R6Class(
       }
 
       monthlyData <- data.frame(Date=zoo::index(series), Complaints=zoo::coredata(series))
-
       # create columns for join
       monthlyData$Month <- month.abb[lubridate::month(monthlyData$Date)]
       monthlyData$Year <- lubridate::year(monthlyData$Date)

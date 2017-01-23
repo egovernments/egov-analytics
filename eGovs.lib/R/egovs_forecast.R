@@ -1,6 +1,28 @@
 ## TODO: ETS should also use lambda
 ## TODO: Add validation for model_args
 
+forecast_to_df <- function(predictions) {
+  mean_f <- predictions$mean
+  high_f <- predictions$upper
+  low_f <- predictions$lower
+
+  conf.intervals <- predictions$level
+
+  pred.frame <- data.frame(Year = floor(time(mean_f)),
+                           Month = month.abb[cycle(mean_f)],
+                           Forecast = zoo::coredata(mean_f))
+
+  forecast_points <- nrow(pred.frame)
+
+  idx <- 1
+  for(c in conf.intervals) {
+    pred.frame[[paste0("Low", c)]] <- low_f[1:forecast_points, idx]
+    pred.frame[[paste0("High", c)]] <- high_f[1:forecast_points, idx]
+    idx <- idx + 1
+  }
+
+  pred.frame
+}
 
 egovs_forecasts <- function(series,
                             ts_model,
@@ -8,6 +30,7 @@ egovs_forecasts <- function(series,
                             as.df = TRUE,
                             cleaned = FALSE,
                             stl.decompose = FALSE,
+                            conf.intervals = c(80, 95),
                             ...) {
   model_args <- list(...)
 
@@ -47,12 +70,16 @@ egovs_forecasts <- function(series,
   } else if (ts_model == "ETS") {
     damped <- model_args$ets.damped
     ets.model <- model_args$ets.model
+    lambda <- model_args$lambda
     model_function <- function(y) {
       min_ts_value <- min(y)
       bias_value <- (-1 * min_ts_value) + 1
       ES_series <- y + bias_value
       ES_series[ES_series == 0] = 0.1
-      ets(ES_series, model = ets.model, damped = damped)
+      ets(ES_series,
+          model = ets.model,
+          damped = damped,
+          lambda=lambda)
     }
 
     if(stl.decompose) {
@@ -64,13 +91,14 @@ egovs_forecasts <- function(series,
     }
   }
 
-  predictions <- forecast(model, forecast_points)
+
+  predictions <- forecast(model,
+                          h=forecast_points,
+                          level=conf.intervals,
+                          lambda=model_args$lambda)
 
   if(as.df) {
-    pred.frame <- data.frame(Year = floor(time(predictions)),
-                             Month = month.abb[cycle(predictions)],
-                             Forecast = coredata(predictions))
-    pred.frame
+    forecast_to_df(predictions)
   } else {
     predictions
   }
