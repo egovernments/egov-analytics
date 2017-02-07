@@ -30,10 +30,11 @@ predictions <- egovs_forecasts(train_series,
                                stl.period="periodic",
                                cleaned = F,
                                ts_model = "arima",
-                               arima.p = 4,
-                               arima.d = 1,
-                               arima.q = 10,
+                               arima.p = 5,
+                               arima.d = 0,
+                               arima.q = 1,
                                as.df=F)
+plotForecast(train_series, predictions, test_series)
 evaluate_forecasts(predictions, test_series)
 
 # model - 2
@@ -42,9 +43,10 @@ predictions <- egovs_forecasts(train_series,
                                stl.period="periodic",
                                cleaned = T,
                                ts_model = "ets",
-                               ets.model = "MNN",
-                               ets.damped = F,
+                               ets.model = "MAN",
+                               ets.damped = T,
                                as.df=F)
+plotForecast(train_series, predictions, test_series)
 evaluate_forecasts(predictions, test_series)
 
 ### Dog menace
@@ -58,50 +60,53 @@ predictions <- egovs_forecasts(train_series,
                                stl.period="periodic",
                                cleaned = F,
                                ts_model = "arima",
-                               arima.p = 1,
-                               arima.d = 0,
-                               arima.q = 4,
+                               arima.p = 3,
+                               arima.d = 1,
+                               arima.q = 6,
                                as.df=F)
+plotForecast(train_series, predictions, test_series)
 evaluate_forecasts(predictions, test_series)
 
 # model - 2
 predictions <- egovs_forecasts(train_series,
-                               stl.decompose = F,
-                               cleaned = F,
+                               stl.decompose = T,
+                               cleaned = T,
                                ts_model = "ets",
-                               ets.model = "MNA",
+                               ets.model = "MNN",
                                ets.damped = F,
                                as.df=F)
+plotForecast(train_series, predictions, test_series)
 evaluate_forecasts(predictions, test_series)
 
 ### Removal of garbage
-split <- train_test_split("Removal of garbage", train_start=c(2012, 1))
+split <- train_test_split("Removal of garbage", train_start=c(2012, 4))
 train_series <- split$train
 test_series <- split$test
 
 # model - 1
 predictions <- egovs_forecasts(train_series,
                                stl.decompose = T,
-                               stl.period=6,
+                               stl.period="periodic",
                                cleaned = T,
-                               ts_model = "ets",
-                               ets.model = "MAN",
-                               ets.damped=F,
+                               ts_model = "arima",
+                               arima.p=1,
+                               arima.d=1,
+                               arima.q=9,
                                as.df=F)
+plotForecast(train_series, predictions, test_series)
 evaluate_forecasts(predictions, test_series)
 
 # model - 2
 predictions <- egovs_forecasts(train_series,
                                stl.decompose = T,
-                               stl.period=6,
-                               cleaned = F,
-                               ts_model = "arima",
-                               arima.p=0,
-                               arima.d=1,
-                               arima.q=12,
+                               stl.period="periodic",
+                               cleaned = T,
+                               ts_model = "ets",
+                               ets.model = "AAA",
+                               ets.damped=F,
                                as.df=F)
+plotForecast(train_series, predictions, test_series)
 evaluate_forecasts(predictions, test_series)
-
 
 
 ### Stagnation of water
@@ -112,13 +117,14 @@ test_series <- split$test
 # model - 1
 predictions <- egovs_forecasts(train_series,
                                stl.decompose = T,
-                               stl.period=6,
+                               stl.period="periodic",
                                cleaned = T,
                                ts_model = "arima",
-                               arima.p=8,
+                               arima.p=4,
                                arima.d=1,
-                               arima.q=11,
+                               arima.q=7,
                                as.df=F)
+plotForecast(train_series, predictions, test_series)
 evaluate_forecasts(predictions, test_series)
 
 # model - 2
@@ -129,6 +135,7 @@ predictions <- egovs_forecasts(train_series,
                                ets.model="ANA",
                                ets.damped=F,
                                as.df=F)
+plotForecast(train_series, predictions, test_series)
 evaluate_forecasts(predictions, test_series)
 
 
@@ -143,19 +150,20 @@ predictions <- egovs_forecasts(train_series,
                                stl.period=6,
                                cleaned = T,
                                ts_model = "arima",
-                               arima.p=11,
+                               arima.p=3,
                                arima.d=1,
-                               arima.q=12,
+                               arima.q=6,
                                as.df=F)
+plotForecast(train_series, predictions, test_series)
 evaluate_forecasts(predictions, test_series)
 
 # model - 2
 predictions <- egovs_forecasts(train_series,
-                               stl.decompose = T,
-                               stl.period = 6,
+                               stl.decompose = F,
                                cleaned = T,
                                ts_model = "ets",
-                               ets.model="ANN",
+                               ets.model="MNM",
                                ets.damped=F,
                                as.df=F)
+plotForecast(train_series, predictions, test_series)
 evaluate_forecasts(predictions, test_series)

@@ -3,7 +3,7 @@ evaluate_forecasts <- function(predictions, test_series) {
   stopifnot("forecast" %in% class(predictions))
   acc <- as.data.frame(forecast::accuracy(predictions, test_series))
   acc$Data.Set <- row.names(acc)
-  row.names(acc.df) <- NULL
+  row.names(acc) <- NULL
   acc
 }
 

@@ -44,7 +44,7 @@ plotForecast <- function(series, predictions,
     geom_line(data=series.df, aes(x = Time, y = Data))
 
   idx <- 1
-  alphas <- seq(from=0.75, to=0.5, length.out = length(predictions$level))
+  alphas <- seq(from=0.5, to=0.25, length.out = length(predictions$level))
   for(c in predictions$level) {
     hh <- paste0("High", c)
     ll <- paste0("Low", c)
