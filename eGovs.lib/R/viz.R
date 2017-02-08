@@ -7,6 +7,7 @@ ts.to.df <- function(series) {
              Data=zoo::coredata(series), stringsAsFactors = FALSE)
 }
 
+#' @export
 plotSeries <- function(series, title="Series") {
   series.df <- ts.to.df(series)
   ggplot(series.df, aes(x = Time, y = Data)) +
@@ -15,6 +16,7 @@ plotSeries <- function(series, title="Series") {
     ggtitle(title)
 }
 
+#' @export
 plotCleanedSeries <- function(series, cleaned) {
   series.df <- ts.to.df(series)
   cleaned.df <- ts.to.df(cleaned)
@@ -30,6 +32,7 @@ plotCleanedSeries <- function(series, cleaned) {
                         labels = c("Cleaned Series", 'Outliers','Original Series'))
 }
 
+#' @export
 plotForecast <- function(series, predictions,
                          test_series = NULL) {
   if(!("forecast" %in% class(predictions))) {
