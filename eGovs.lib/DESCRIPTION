@@ -22,7 +22,8 @@ Imports:
     zoo,
     optparse,
     ggplot2,
-    dplyr
+    dplyr,
+    AnomalyDetection
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown

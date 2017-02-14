@@ -1,12 +1,23 @@
+# TODO: right now, ts.to.df converts data to a monthly data-frame if the object is of class 'ts'
+# TODO: this behaviour needs to be changed
 
 # since ggplot2 requires dataframes, we need to convert `ts` objects to dataframs
 ts.to.df <- function(series) {
-  years.f <- floor(zoo::index(series))
-  months.f <- cycle(series)
-  data.frame(Time=as.POSIXct(paste0(years.f,"-", months.f, "-01")),
-             Data=zoo::coredata(series), stringsAsFactors = FALSE)
+  if("ts" %in% class(series)) {
+    years.f <- floor(zoo::index(series))
+    months.f <- cycle(series)
+    return (data.frame(Time=as.POSIXct(paste0(years.f,"-", months.f, "-01")),
+               Data=zoo::coredata(series), stringsAsFactors = FALSE))
+  } else if ("zoo" %in% class(series)) {
+
+    return (data.frame(Time=zoo::index(series),
+               Data=zoo::coredata(series), stringsAsFactors = FALSE))
+  }else {
+    stop("Unknown class. Can't convert to df")
+  }
 }
 
+#' @export
 plotSeries <- function(series, title="Series") {
   series.df <- ts.to.df(series)
   ggplot(series.df, aes(x = Time, y = Data)) +
@@ -15,6 +26,12 @@ plotSeries <- function(series, title="Series") {
     ggtitle(title)
 }
 
+plotAnoms <- function(series, anomalies, title="Anomalies") {
+  plotSeries(series) +
+    geom_point(data=anomalies, mapping = aes(x=timestamp, y=anoms), size=1, color="red")
+}
+
+#' @export
 plotCleanedSeries <- function(series, cleaned) {
   series.df <- ts.to.df(series)
   cleaned.df <- ts.to.df(cleaned)
@@ -30,6 +47,7 @@ plotCleanedSeries <- function(series, cleaned) {
                         labels = c("Cleaned Series", 'Outliers','Original Series'))
 }
 
+#' @export
 plotForecast <- function(series, predictions,
                          test_series = NULL) {
   if(!("forecast" %in% class(predictions))) {
@@ -44,7 +62,7 @@ plotForecast <- function(series, predictions,
     geom_line(data=series.df, aes(x = Time, y = Data))
 
   idx <- 1
-  alphas <- seq(from=0.75, to=0.5, length.out = length(predictions$level))
+  alphas <- seq(from=0.5, to=0.25, length.out = length(predictions$level))
   for(c in predictions$level) {
     hh <- paste0("High", c)
     ll <- paste0("Low", c)

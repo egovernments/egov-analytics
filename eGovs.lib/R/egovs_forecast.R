@@ -1,5 +1,3 @@
-## TODO: ETS should also use lambda
-## TODO: Add validation for model_args
 
 forecast_to_df <- function(predictions) {
   mean_f <- predictions$mean
@@ -16,14 +14,28 @@ forecast_to_df <- function(predictions) {
 
   idx <- 1
   for(c in conf.intervals) {
-    pred.frame[[paste0("Low", c)]] <- low_f[1:forecast_points, idx]
-    pred.frame[[paste0("High", c)]] <- high_f[1:forecast_points, idx]
+    pred.frame[[paste0("Low", "_", c)]] <- low_f[1:forecast_points, idx]
+    pred.frame[[paste0("High", "_", c)]] <- high_f[1:forecast_points, idx]
     idx <- idx + 1
   }
 
   pred.frame
 }
 
+#' Extract forecasts for a given time series.
+#' @param series a \code{ts} object
+#' @param ts_model the time series model to use. ex. \code{arima}
+#' @param forecast_points the number of periods to forecast
+#' @param as.df whether to return the results as a df. If false, a \code{forecast} object is returned
+#' @param cleaned if set to \code{TRUE}, the series is cleaned before forecasting
+#' @param stl.decompose if set to \code{TRUE} the series is decomposed using STL
+#' @param conf.intervals the confidence intervals. a vector of numbers between 1-100
+#' @param ... other model-specific params. see examples
+#' @return the forecasts
+#' @examples
+#' egovs_forecasts(series, ts_model = "ets", ets.model="AAA", ets.damped=TRUE)
+#' egovs_forecasts(series, ts_model = "arima", forecast_points = 5, arima.p = 3, arima.q = 2, arima.d = 1, lambda=NULL)
+#' @export
 egovs_forecasts <- function(series,
                             ts_model,
                             forecast_points = 3,
@@ -32,6 +44,8 @@ egovs_forecasts <- function(series,
                             stl.decompose = FALSE,
                             conf.intervals = c(80, 95),
                             ...) {
+  ## TODO: Add validation for model_args
+
   model_args <- list(...)
 
   # add some default params for stl if not present
@@ -103,6 +117,3 @@ egovs_forecasts <- function(series,
     predictions
   }
 }
-# Example Call
-# egovs_forecasts(series, ts_model = "ets", ets.model="AAA", ets.damped=TRUE)
-# egovs_forecasts(series, ts_model = "arima", forecast_points = 5, arima.p = 3, arima.q = 2, arima.d = 1, arima.lambda=NULL)
