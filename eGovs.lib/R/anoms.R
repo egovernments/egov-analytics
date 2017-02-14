@@ -22,81 +22,40 @@ detect_anomalies = function(series, start_date=NULL, end_date=NULL) {
   anomaly$anoms
 }
 
+#' Detect anomalies in the date specified
+#' @param series the time series
+#' @param date (optional) a Date object. If a date is not specified, the last day is chosen. Create with as.Date("2010/11/23")
+#' @param window.size (optional) the time period to consider while computing the anomalies
+#' @param model.alpha (optional) alpha param to pass to the algorithm
+#' @param model.max_anoms (optional) max_anoms param to pass to the algorithm
+#'
+detect_anomalies_last <- function(series,
+                                  date = NULL,
+                                  window.size=60,
+                                  model.alpha = 0.05,
+                                  model.max_anoms = 0.1) {
+  if(is.null(date)) {
+    date <- as.Date(zoo::index(series)[length(series)])
+  }
 
-anomalies.around <- function(xtsobj, date, window.size=60) {
   end_time <- date
   start_time <- date - (24 * 60 * 60 *  window.size)
-  subset_data <- window(xtsobj, start=start_time, end=end_time)
+  series <- window(series, start=start_time, end=end_time)
 
-  tryCatch({
-    if(!"anomalies" %in% ls()) rm(anomalies)
-    anomalies <- AnomalyDetectionVec(drop(zoo::coredata(subset_data)),period=24, plot=T, only_last = T, direction = param.direction,
-                                     alpha = param.alpha, max_anoms = param.max_anoms)
-
-    out_subset <- data.frame(Anom_points = subset_data[anomalies$anoms$index,])
-
-    if(nrow(out_subset) == 0){
-      out_subset <- data.frame(Anom_points = numeric(0))
-    }
-
-
-  },error = function(e){
-    if(grepl("detection needs at least 2 periods worth of data",as.character(e))){
-      out_subset <- data.frame(Anom_points = numeric(0))
-
-    }else{
-      print("Error: Unable to detect anomalies")
-      out_subset <- NULL
-    }
-
-    anomalies <- NULL
-
-
-  },finally = {
-
-    if(!"anomalies" %in% ls()) anomalies <- numeric(0)
-    anom_list <- list(anomalies = anomalies,anomaly_points = out_subset)
-    anom_list
-  })
-
-  return(anom_list)
-
-}
-
-
-#' Detecting anomaly for a particular day.
-#' @param series Hourly data
-#' @export
-detect_anomalies_1_day = function(subset_data,
-                                  data_level,
-                                  input_date,
-                                  ...) {
-  in_arguments <- list(...)
-
-  ifelse("param.alpha" %in% names(in_arguments),
-         param.alpha <- in_arguments$param.alpha,
-         param.alpha <- 0.05)
-
-  ifelse("param.direction" %in% names(in_arguments),
-         param.direction <- in_arguments$param.direction,
-         param.direction <- "pos")
-
-  ifelse("param.max_anoms" %in% names(in_arguments),
-         param.max_anoms <- in_arguments$param.max_anoms,
-         param.max_anoms <- 0.1)
-
-
-  anoms <- anomalies.around(subset_data, as.POSIXct(paste0(input_date," 23:59:59")))
-
-  anom_pts <- anoms$anomaly_points
-  anom_pts$Time_period <- row.names(anom_pts)
-  row.names(anom_pts) <- NULL
-  if(!is.null(anom_pts)){
-    if(nrow(anom_pts) == 0){
-      plot.new()
-    }else{
-      plot(anoms$anomalies$plot)
-    }
+  anomalies <- AnomalyDetection::AnomalyDetectionVec(drop(zoo::coredata(series)),
+                                                     period=24, plot=F,
+                                                     only_last = T,
+                                                     direction = "pos",
+                                                     alpha = model.alpha,
+                                                     max_anoms = model.max_anoms)
+  if(nrow(anomalies$anoms) == 0) {
+    warning("No anomalies found!")
+    return(NULL)
+  } else {
+    out_subset <- data.frame(Count = series[anomalies$anoms$index,])
+    out_subset$Time <- row.names(out_subset)
+    row.names(out_subset) <- NULL
   }
-  anom_pts
+
+  return(out_subset)
 }

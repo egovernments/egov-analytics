@@ -2,7 +2,6 @@
 
 export(ComplaintsData)
 export(detect_anomalies)
-export(detect_anomalies_1_day)
 export(egovs_forecasts)
 export(plotCleanedSeries)
 export(plotForecast)
