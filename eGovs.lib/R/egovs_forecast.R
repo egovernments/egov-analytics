@@ -14,8 +14,8 @@ forecast_to_df <- function(predictions) {
 
   idx <- 1
   for(c in conf.intervals) {
-    pred.frame[[paste0("Low", c)]] <- low_f[1:forecast_points, idx]
-    pred.frame[[paste0("High", c)]] <- high_f[1:forecast_points, idx]
+    pred.frame[[paste0("Low", "_", c)]] <- low_f[1:forecast_points, idx]
+    pred.frame[[paste0("High", "_", c)]] <- high_f[1:forecast_points, idx]
     idx <- idx + 1
   }
 

@@ -1,10 +1,20 @@
+# TODO: right now, ts.to.df converts data to a monthly data-frame if the object is of class 'ts'
+# TODO: this behaviour needs to be changed
 
 # since ggplot2 requires dataframes, we need to convert `ts` objects to dataframs
 ts.to.df <- function(series) {
-  years.f <- floor(zoo::index(series))
-  months.f <- cycle(series)
-  data.frame(Time=as.POSIXct(paste0(years.f,"-", months.f, "-01")),
-             Data=zoo::coredata(series), stringsAsFactors = FALSE)
+  if("ts" %in% class(series)) {
+    years.f <- floor(zoo::index(series))
+    months.f <- cycle(series)
+    return (data.frame(Time=as.POSIXct(paste0(years.f,"-", months.f, "-01")),
+               Data=zoo::coredata(series), stringsAsFactors = FALSE))
+  } else if ("zoo" %in% class(series)) {
+
+    return (data.frame(Time=zoo::index(series),
+               Data=zoo::coredata(series), stringsAsFactors = FALSE))
+  }else {
+    stop("Unknown class. Can't convert to df")
+  }
 }
 
 #' @export
@@ -14,6 +24,11 @@ plotSeries <- function(series, title="Series") {
     geom_line() +
     geom_point(size=0.5) +
     ggtitle(title)
+}
+
+plotAnoms <- function(series, anomalies, title="Anomalies") {
+  plotSeries(series) +
+    geom_point(data=anomalies, mapping = aes(x=timestamp, y=anoms), size=1, color="red")
 }
 
 #' @export

@@ -127,12 +127,14 @@ AlertsData <- R6Class("AlertsData",
      stopifnot(data_level %in% c("CITY","COMPLAINT","WARD"))
 
      if(data_level == "WARD"){
-       subset_data <- self$wardLevel(ward,periodicity)
+       subset_data <- self$wardLevel(ward, periodicity)
      }else if(data_level == "COMPLAINT"){
-       subset_data <- self$complaintLevel(complaint.type,periodicity)
+       subset_data <- self$complaintLevel(complaint.type, periodicity)
      }else{
        subset_data <- self$cityLevel(periodicity)
      }
+
+     subset_data
    }
   )
 )
