@@ -4,7 +4,8 @@
 \alias{detect_anomalies}
 \title{Detect anomalies in a given series}
 \usage{
-detect_anomalies(series, start_date = NULL, end_date = NULL)
+detect_anomalies(series, start_date = NULL, end_date = NULL,
+  model.alpha = 0.05, model.max_anoms = 0.1)
 }
 \arguments{
 \item{series, }{a time-series}
@@ -12,6 +13,10 @@ detect_anomalies(series, start_date = NULL, end_date = NULL)
 \item{start_date}{(optional) the start date to consider when detecting anoms}
 
 \item{end_date}{(optional) the end date to consider when detecting anoms}
+
+\item{model.alpha}{(optional) alpha param to pass to the algorithm}
+
+\item{model.max_anoms}{(optional) max_anoms param to pass to the algorithm}
 }
 \description{
 Detect anomalies in a given series

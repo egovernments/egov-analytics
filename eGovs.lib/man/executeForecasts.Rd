@@ -4,13 +4,10 @@
 \alias{executeForecasts}
 \title{Execute the full loop for forecasts}
 \usage{
-executeForecasts(configFilePath, outputFilePath)
+executeForecasts(configFilePath)
 }
 \arguments{
 \item{configFilePath}{the path of the config file}
-
-\item{outputFilePath}{the path to write into. Will be overwritten if it already exists
-converts the series into a format that we can export}
 }
 \description{
 Execute the full loop for forecasts
