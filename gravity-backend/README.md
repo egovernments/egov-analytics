@@ -20,7 +20,7 @@ python server.py
 Returns highlights.
 
 Example response:
-```json
+```
 {
   "alerts": [
     ...
@@ -38,12 +38,12 @@ Example response:
 
 ### 2. [/v1/alerts/](http://localhost:5000/v1/alerts/)
 
-Return data associated with alerts. 
+Return data associated with alerts.
 
 Example Response:
 
 
-```json
+```
 {
   "data": [
     {
@@ -87,7 +87,7 @@ Return data associated with forecasts
 Example Response:
 
 
-```json
+```
 {
   "data": [
     {
@@ -136,7 +136,3 @@ Example Response:
 
 This is currently available only for complaint level:
 ##### [Complaint Level Forecasts: /v1/forecasts/complaint_type/complaint_type_name](http://localhost:5000/v1/forecasts/complaint_type/Non%20Burning%20of%20Street%20Lights)
-
-
-
-
