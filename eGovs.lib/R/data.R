@@ -135,6 +135,12 @@ AlertsData <- R6Class("AlertsData",
      }
 
      subset_data
+   },
+   getWards = function() {
+     unique(self$complaints.data$Ward)
+   },
+   getComplaintTypes = function() {
+     unique(self$complaints.data$Complaint.Type)
    }
   )
 )

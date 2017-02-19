@@ -1,22 +1,54 @@
 {
-	"model-spec" : {
-		"Mosquito menace " : {
-			"model" : "ARIMA",
-			"arima.p" : 1,
-			"arima.d" : 2,
-			"arima.q" : 2,
-			"lambda" : null,
-			"stl" : true,
-			"clean-outliers" : true,
-			"start-date" : "11/26/2012"
-		}, 
-		"Non Burning of Street Lights" : {
-			"model" : "ETS",
-			"ets.model" : "AAA",
-			"ets.damped" : false
-		}
-	}, 
-	"data" : {
-	  "path" : "~/workspaces/datakind-ws/cocUptoJuly2016.csv"
-	}
+  "data": {
+    "path": "~/workspaces/datakind-ws/cocUptoJuly2016.csv"
+  },
+  "forecasts": {
+    "model-spec": {
+      "Mosquito menace ": {
+        "model": "ARIMA",
+        "arima.p": 1,
+        "arima.d": 2,
+        "arima.q": 2,
+        "lambda": null,
+        "stl": true,
+        "clean-outliers": true,
+        "start-date": "11/26/2012"
+      },
+      "Non Burning of Street Lights": {
+        "model": "ETS",
+        "ets.model": "AAA",
+        "ets.damped": false
+      }
+    }
+  },
+  "alerts": {
+    "city_level": {
+      "alpha": 0.05,
+      "max_anoms": 0.1
+    },
+    "ward_level": {
+      "defaults": {
+        "alpha": 0.1,
+        "max_anoms": 0.15
+      },
+      "wards": {
+        "N188": {
+          "alpha": 0.05,
+          "max_anoms": 0.05
+        }
+      }
+    },
+    "complaint_level": {
+      "defaults": {
+        "alpha": 0.75,
+        "max_anoms": 0.199
+      },
+      "complaints": {
+        "Non Burning of Street Lights": {
+          "alpha": 0.06,
+          "max_anoms": 0.1
+        }
+      }
+    }
+  }
 }
