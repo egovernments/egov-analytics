@@ -13,7 +13,7 @@ export.series <- function(series, split.times = T) {
 
 #' Execute the full loop for forecasts
 #' @param configFilePath the path of the config file
-executeForecasts <- function(configFilePath) {
+forecasts.execute <- function(configFilePath) {
 
   config <- ForecastsConfig$new(configFilePath)
 
@@ -45,15 +45,14 @@ executeForecasts <- function(configFilePath) {
 }
 
 #' @param outputFilePath the path to write into. Will be overwritten if it already exists
-executeAndWriteForecasts <- function(configFilePath, outputFilePath) {
-  output <- executeForecasts(configFilePath)
+forecasts.execute.write <- function(configFilePath, outputFilePath) {
+  output <- forecasts.execute(configFilePath)
   fileConn<-file(outputFilePath)
   writeLines(jsonlite::toJSON(output), fileConn)
   close(fileConn)
 }
 
-
-executeAnomalyDetection <- function(configFilePath, only_last = T) {
+anomaly.execute <- function(configFilePath, only_last = T) {
 
   detect_anoms <- function(series, config, only_last) {
     anom_det_func <- NULL
@@ -114,19 +113,18 @@ executeAnomalyDetection <- function(configFilePath, only_last = T) {
   return(output)
 }
 
-
-executeAndWriteAnomalyDetection <- function(configFilePath, outputFilePath, only_last = T) {
-  output <- executeAnomalyDetection(configFilePath, only_last)
+anomaly.execute.write <- function(configFilePath, outputFilePath, only_last = T) {
+  output <- anomaly.execute(configFilePath, only_last)
   fileConn<-file(outputFilePath)
   writeLines(jsonlite::toJSON(output), fileConn)
   close(fileConn)
 }
 
 
-executeAndWriteEGovs <- function(configFilePath, outputFilePath, only_last = T) {
+execute.all <- function(configFilePath, outputFilePath, only_last = T) {
   output <- list()
-  output[["forecasts"]] <- executeForecasts(configFilePath)
-  output[["alerts"]] <- executeAnomalyDetection(configFilePath, only_last)
+  output[["forecasts"]] <- forecasts.execute(configFilePath)
+  output[["alerts"]] <- anomaly.execute(configFilePath, only_last)
 
   fileConn<-file(outputFilePath)
   writeLines(jsonlite::toJSON(output), fileConn)
