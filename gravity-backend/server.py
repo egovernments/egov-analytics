@@ -1,7 +1,7 @@
-from flask import Flask, request, url_for
-from flask_restful import Resource, Api, reqparse
-import logging
+from flask import Flask
 from flask_cors import CORS
+from flask_restful import Resource, Api
+
 from data_api import data_api
 
 # instantiating Flask application
