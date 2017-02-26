@@ -1,14 +1,32 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import HighlightsTab from './highlight.js';
 import './App.css';
-
+import { store } from "./redux_store.js";
+import { connect } from 'react-redux';
+import ForecastsTab from './forecast.js';
+import "./metricsgraphics.css";
+import "./metricsgraphics_dark.css";
+import dk_logo from "./DataKindBLR.png";
+import egov_logo from "./egov-logo.png";
 
 class App extends Component {
 
   handleSelect(index, last) {
     console.log('Selected tab: ' + index + ', Last tab: ' + last);
+    // TODO dispatch events to redux as the tab changed
   }
+
+ componentWillMount() {
+   store.dispatch({
+     "type" : "UPDATE_HIGHLIGHTS"
+   });
+
+   store.dispatch({
+     "type" : "UPDATE_FORECASTS"
+   });
+ }
 
   render() {
     return (
@@ -19,13 +37,11 @@ class App extends Component {
             <Tabs onSelect={this.handleSelect} selectedIndex={0}>
               <TabList>
                 <Tab>Highlights</Tab>
-                <Tab>Alerts</Tab>
+                <Tab>Alerts<span className='tab-num-stat'>32</span></Tab>
                 <Tab>Forecast</Tab>
               </TabList>
               <TabPanel>
-                <div>
-                  Highlights container
-                </div>
+                <HighlightsTab />
               </TabPanel>
               <TabPanel>
                 <div>
@@ -33,60 +49,22 @@ class App extends Component {
                 </div>
               </TabPanel>
               <TabPanel>
-                <div>
-                  Forecast container
-                </div>
+                <ForecastsTab />
               </TabPanel>
             </Tabs>
 
 
-          <div className='row stats-row'>
-            <label className='stat-label'>Summary</label>
-            <div className='stat-tile'>
-              <label>Label</label>
-              <span>32</span>
-            </div>
-            <div className='stat-tile'>
-              <label>Label</label>
-              <span>1</span>
-            </div>
-          </div>
-
-          <div className='row stats-row'>
-            <label className='stat-label'>Alerts</label>
-            <div className='stat-tile'>
-              <label>Label</label>
-              <span>32</span>
-            </div>
-            <div className='stat-tile'>
-              <label>Label</label>
-              <span>1</span>
-            </div>
-          </div>
-
-
-          <div className='row stats-row'>
-            <label className='stat-label'>Forecast</label>
-            <div className='stat-tile'>
-              <label>Label</label>
-              <span>7</span>
-            </div>
-            <div className='stat-tile'>
-              <label>Label</label>
-              <span>1</span>
-            </div>
-          </div>
-
         </div>
         <footer>
-          <a href='#'>About Us</a>
-          <a href='#'>Credits</a>
-          <a href='#'>Partners</a>
-          <a href='#'>Fork this on GitHub</a>
+          <a href='http://www.datakind.org/chapters/datakind-blr'><img src={egov_logo} height="30px" className="vertical-middle"/></a>
+          <a href='http://www.datakind.org/chapters/datakind-blr'><img src={dk_logo} height="25px" className="vertical-middle"/></a>
+          <a href='https://github.com/egovernments/analytics/blob/master/CONTRIBUTORS.md'>Contributors</a>
+          <a href='https://github.com/egovernments/analytics/'>GitHub</a>
         </footer>
       </div>
     );
   }
 }
+
 
 export default App;

@@ -40,6 +40,7 @@ a:hover{
 
 .container{
   width:1000px;
+  min-height:550px;
   margin:0 auto;
 }
 
@@ -70,6 +71,7 @@ footer > a{
   color:#63B0E4;
   text-align: center;
   font-weight: bold;
+  text-transform: capitalize;
 }
 
 .stat-tile{
@@ -85,6 +87,7 @@ footer > a{
   height: 60px;
   line-height: 60px;
   color: #63B0E4;
+  overflow: hidden;
 }
 
 .stat-tile > span{
@@ -95,7 +98,57 @@ footer > a{
   font-weight: bold;
 }
 
+.tab-num-stat{
+  background-color:red;
+  color:#fff;
+  border-radius: 50%;
+  margin:3px;
+  padding:3px;
+  font-size: 9px;
+}
 
+
+
+.forecasts-panel{
+  padding:15px 0;
+  border-bottom:1px solid #435E73;
+  display: inline-block;
+  width:100%;
+}
+
+.forecasts-panel > h3{
+  color:#fff;
+  font-size: 14px;
+}
+
+.forecasts-panel > div{
+  float:left;
+  width:49%;
+  padding:10px 0;
+  box-sizing: border-box;
+}
+
+.forecasts-panel > div:nth-child(2){
+  margin-right: 2%;
+}
+
+.forecasts-panel > .forecasts-chart{
+
+}
+
+.forecasts-panel > .forecasts-table{
+
+}
+
+.forecasts-panel > .forecasts-chart > div{
+  width:100%;
+}
+
+.forecasts-panel > .forecasts-table > div{
+  width:100%;
+  min-height: 120px;
+  border:1px solid #435E73;
+}
 
 
 /* React tabs  */
@@ -107,6 +160,11 @@ footer > a{
 .react-tabs > ul{
   border:0 !important;
   background-color:#000;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  padding:0 calc( ( 100% - 1000px ) / 2 ) !important;
 }
 
 .ReactTabs__Tab{
@@ -128,6 +186,15 @@ footer > a{
   box-shadow:none !important;
 }
 
+.ReactTabs__TabPanel--selected{
+  margin-top:50px;
+}
+
 .ReactTabs__Tab--selected:after{
   display: none;
+}
+
+
+.vertical-middle {
+  vertical-align: middle;
 }
