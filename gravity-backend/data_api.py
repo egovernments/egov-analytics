@@ -28,7 +28,7 @@ class DataAPI(object):
         }
 
         for highlight in highlights_list:
-            highlights[highlight.type] = highlight.compute(self.data)._asdict()
+            highlights[highlight.type].append(highlight.compute(self.data)._asdict())
 
         return highlights
 
@@ -60,5 +60,15 @@ class DataAPI(object):
 
         return self.data["forecasts"][sub_level]
 
+    def get_meta_data(self):
+        return {
+            "alerts" : {
+             "wards" : self.data["alerts"][DataLevels.WARD].keys(),
+             "complaint_types": self.data["alerts"][DataLevels.COMPLAINT_TYPE].keys()
+            },
+            "forecasts" : {
+             "complaint_types" : list(self.forecasts_complaint_types)
+            }
+        }
 
 data_api = DataAPI()
