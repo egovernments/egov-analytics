@@ -76,7 +76,9 @@ ComplaintsData <- R6Class(
 
       # sort it by year-month
       joined <- joined[order(zoo::as.yearmon(paste0(joined$Year, "-", joined$Month), "%Y-%b")), ]
-      joined[is.na(joined$Complaints), ]$Complaints <- 0
+      if(any(is.na(joined$Complaints))) {
+        joined[is.na(joined$Complaints), ]$Complaints <- 0
+      }
       series_ts <- ts(joined$Complaints, start = c(min(as.numeric(joined$Year)),1), frequency = 12)
       max_date <- max(self$data$Complaint.Date)
       window(series_ts, end=c(lubridate::year(max_date), lubridate::month(max_date)))
@@ -98,51 +100,89 @@ periodicity_ <- function(complaints.frame, periodicity) {
 }
 
 AlertsData <- R6Class("AlertsData",
- public = list(
-   complaints.data = NULL,
-   initialize = function(data_path){
-     raw <- read.csv(data_path, stringsAsFactors = F)
-     raw <- select(raw, Ward, Complaint.Type, Complaint.Date)
-     raw$Complaint.Date <- as.POSIXct(raw$Complaint.Date, format = "%m/%d/%Y %H:%M:%S")
-     complaints.data <- raw[raw$Complaint.Date >= strptime("01/01/2012 00:00:00", format = "%m/%d/%Y %H:%M:%S"), ]
-     complaints.data$NumComplaints <- 1
-     self$complaints.data <- complaints.data
-   },
+                      public = list(
+                        complaints.data = NULL,
+                        initialize = function(data_path){
+                          raw <- read.csv(data_path, stringsAsFactors = F)
+                          raw <- select(raw, Ward, Complaint.Type, Complaint.Date)
+                          raw$Complaint.Date <- as.POSIXct(raw$Complaint.Date, format = "%m/%d/%Y %H:%M:%S")
+                          complaints.data <- raw[raw$Complaint.Date >= strptime("01/01/2012 00:00:00", format = "%m/%d/%Y %H:%M:%S"), ]
+                          complaints.data$NumComplaints <- 1
+                          self$complaints.data <- complaints.data
+                        },
 
-   cityLevel = function(periodicity) {
-     periodicity_(self$complaints.data, periodicity)
-   },
+                        cityLevel = function(periodicity) {
+                          periodicity_(self$complaints.data, periodicity)
+                        },
 
-   complaintLevel = function(complaint.type, periodicity) {
-     df <- filter(self$complaints.data, Complaint.Type == complaint.type)
-     periodicity_(df, periodicity)
-   },
+                        complaintLevel = function(complaint.type, periodicity) {
+                          df <- filter(self$complaints.data, Complaint.Type == complaint.type)
+                          periodicity_(df, periodicity)
+                        },
 
-   wardLevel = function(ward, periodicity) {
-     df <- filter(self$complaints.data, Ward == ward)
-     periodicity_(df, periodicity)
-   },
-   get = function(data_level, periodicity) {
-     data_level <- toupper(data_level)
-     stopifnot(data_level %in% c("CITY","COMPLAINT","WARD"))
+                        wardLevel = function(ward, periodicity) {
+                          df <- filter(self$complaints.data, Ward == ward)
+                          periodicity_(df, periodicity)
+                        },
+                        get = function(data_level, periodicity) {
+                          data_level <- toupper(data_level)
+                          stopifnot(data_level %in% c("CITY","COMPLAINT","WARD"))
 
-     if(data_level == "WARD"){
-       subset_data <- self$wardLevel(ward, periodicity)
-     }else if(data_level == "COMPLAINT"){
-       subset_data <- self$complaintLevel(complaint.type, periodicity)
-     }else{
-       subset_data <- self$cityLevel(periodicity)
-     }
+                          if(data_level == "WARD"){
+                            subset_data <- self$wardLevel(ward, periodicity)
+                          }else if(data_level == "COMPLAINT"){
+                            subset_data <- self$complaintLevel(complaint.type, periodicity)
+                          }else{
+                            subset_data <- self$cityLevel(periodicity)
+                          }
 
-     subset_data
-   },
-   getWards = function() {
-     unique(self$complaints.data$Ward)
-   },
-   getComplaintTypes = function() {
-     unique(self$complaints.data$Complaint.Type)
-   }
-  )
+                          subset_data
+                        },
+                        getWards = function() {
+                          unique(self$complaints.data$Ward)
+                        },
+                        getComplaintTypes = function() {
+                          unique(self$complaints.data$Complaint.Type)
+                        }
+                      )
 )
 
 
+
+
+#' Generate 'fake' data
+#' @param n_complaint_types number of complaint types
+#' @param n_wards number of wards
+#' @param n_complaints number of complaints to generate
+#' @param file_loc location to write csv file to
+#' @param start_date the start date to sample dates from
+#' @param end_date the end date to sample dates from
+#' @export
+data_gen <- function(n_complaint_types,
+                     n_wards,
+                     n_complaints,
+                     file_loc, start_date = "2012-01-01", end_date = "2016-12-31") {
+
+  # http://stackoverflow.com/questions/14720983/efficiently-generate-a-random-sample-of-times-and-dates-between-two-dates
+  # @param N the number of dates
+  # @param st the start date
+  # @param et the end date
+  latemail <- function(N, st, et) {
+    st <- as.POSIXct(as.Date(st))
+    et <- as.POSIXct(as.Date(et))
+    dt <- as.numeric(difftime(et,st,unit="sec"))
+    ev <- sort(runif(N, 0, dt))
+    rt <- st + ev
+  }
+
+  wards <- paste0("Ward-", seq(1, n_wards))
+  complaints <- paste0("Complaint-", seq(1, n_complaint_types))
+
+  dates <- latemail(n_complaints, start_date, end_date)
+  df <- data.frame(
+    Complaint.Date=format(dates, "%m/%d/%Y %H:%M:%S"),
+    Ward=sample(wards, n_complaints, replace=T),
+    Complaint.Type=sample(complaints, n_complaints, replace=T),
+    stringsAsFactors = F)
+  write.csv(df, file = file_loc, row.names = F)
+}
