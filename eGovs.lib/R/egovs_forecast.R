@@ -8,6 +8,7 @@ forecast_to_df <- function(predictions) {
 
   pred.frame <- data.frame(Year = floor(time(mean_f)),
                            Month = month.abb[cycle(mean_f)],
+                           Time = paste0(floor(time(mean_f)), "-", sprintf("%02d", cycle(mean_f)), "-01"),
                            Forecast = zoo::coredata(mean_f))
 
   forecast_points <- nrow(pred.frame)
