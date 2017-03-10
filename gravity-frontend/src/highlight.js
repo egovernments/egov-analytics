@@ -4,9 +4,6 @@ import { store } from "./redux_store.js";
 import { connect } from 'react-redux';
 
 class HighlightsPanel extends Component {
-  constructor() {
-    super();
-  }
 
   componentWillMount(){
   }

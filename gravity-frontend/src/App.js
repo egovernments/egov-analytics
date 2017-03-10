@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import HighlightsTab from './highlight.js';
+import AlertsTab from './alerts.js';
 import './App.css';
 import { store } from "./redux_store.js";
-import { connect } from 'react-redux';
 import ForecastsTab from './forecast.js';
 import "./metricsgraphics.css";
 import "./metricsgraphics_dark.css";
@@ -45,7 +44,7 @@ class App extends Component {
               </TabPanel>
               <TabPanel>
                 <div>
-                  Alerts container
+                  <AlertsTab />
                 </div>
               </TabPanel>
               <TabPanel>

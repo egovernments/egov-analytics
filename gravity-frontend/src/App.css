@@ -150,6 +150,17 @@ footer > a{
   border:1px solid #435E73;
 }
 
+/* alerts css */
+#ward-map {
+  height: 350px;
+}
+
+#select-panel {
+  margin-top: 10px;
+  padding: 10px;
+}
+
+
 
 /* React tabs  */
 
