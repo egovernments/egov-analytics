@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { store } from "./redux_store.js";
 import { connect } from 'react-redux';
 import { HighlightsPanel } from "./highlight.js";
-
 import MetricsGraphics from 'react-metrics-graphics';
+import ReactTable from 'react-table';
+
 
 class ForecastsPanel extends Component {
   render() {
@@ -27,6 +28,26 @@ class ForecastsPanel extends Component {
       })
     })
 
+    const columnSpec = [{
+      header: "Year",
+      accessor: "Year",
+      id: "year"
+    }, {
+      header: "Month",
+      accessor: "Month",
+      id: "month"
+    }, {
+      header: "Point Forecast",
+      accessor: props => Math.floor(props.Forecast),
+      id: "pf"
+    }, {
+      header: "80% Confidence Range",
+      accessor: props => <span>{Math.floor(props.Low_80)} to {Math.floor(props.High_80)}</span>,
+      id: "conf-80"
+    }];
+
+
+
     return (
       <div className='forecasts-panel'>
         <h3>{this.props.complaint_type}</h3>
@@ -45,7 +66,12 @@ class ForecastsPanel extends Component {
           />
         </div>
         <div className="forecasts-table">
-          <div>table</div>
+          <ReactTable
+            data={this.props.data.forecasts}
+            columns={columnSpec}
+            showPagination={false}
+            showPageSizeOptions={false}
+            defaultPageSize={this.props.data.forecasts.length} />
         </div>
       </div>
     );

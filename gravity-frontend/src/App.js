@@ -9,6 +9,7 @@ import "./metricsgraphics.css";
 import "./metricsgraphics_dark.css";
 import dk_logo from "./DataKindBLR.png";
 import egov_logo from "./egov-logo.png";
+import 'react-table/react-table.css'
 
 class App extends Component {
 
@@ -36,7 +37,7 @@ class App extends Component {
             <Tabs onSelect={this.handleSelect} selectedIndex={0}>
               <TabList>
                 <Tab>Highlights</Tab>
-                <Tab>Alerts<span className='tab-num-stat'>32</span></Tab>
+                <Tab>Alerts</Tab>
                 <Tab>Forecast</Tab>
               </TabList>
               <TabPanel>

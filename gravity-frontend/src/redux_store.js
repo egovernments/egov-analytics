@@ -74,8 +74,11 @@ const alertsReducer = function(state, action) {
       complaint_types : [],
       selected_ward : null, // no ward selected by default
       selected_complaint_type: null, // no complaint selected by default
-      seleted_date: new Date(), // today's date by default
-      ward_geo_json: {} // geojson for rendering wards
+      selected_date: new Date(), // today's date by default
+      ward_geo_json: {}, // geojson for rendering wards
+      selected_hour: new Date().getHours(), // hour selection,
+      current_data: [],
+      current_anomalies: [],
     };
 
     // populate initial variables from the API
@@ -106,6 +109,60 @@ const alertsReducer = function(state, action) {
   if(action.type === "ALERTS_GEO_INIT_STATE") {
     new_state = Object.assign({}, state, {ward_geo_json: action.ward_geo_json});
   }
+
+
+  if(action.type === "ALERTS_UPDATE_STATE") {
+    // clone the object
+    var action_state = Object.assign({}, action);
+    // delete type, so it won't be saved in the state
+    delete action_state.type;
+    delete action_state.force_call;
+    new_state = Object.assign({}, state, action_state);
+
+    if(new_state.selected_ward !== null && new_state.selected_complaint_type !== null) {
+      // THIS IS A PROBLEM AND SHOULD NEVER HAPPEN
+    }
+
+    var url = null;
+
+    // see if we can avoid a needless HTTP call.
+    // if the ward, complaint type has not changed,
+    // don't make a HTTP call to fetch the data
+    if(action.force_call || state.selected_ward !== new_state.selected_ward ||
+      state.selected_complaint_type !== new_state.selected_complaint_type) {
+        // fetch or change data according to selection
+        if(new_state.selected_ward === null && new_state.selected_complaint_type === null) {
+          // get city level
+          url = "/v1/alerts/city/";
+        } else if(new_state.selected_ward !== null) {
+          // get ward level
+          url = "/v1/alerts/ward/" + encodeURIComponent(new_state.selected_ward);
+        } else if(new_state.selected_complaint_type !== null) {
+          // get complaint type
+          url = "/v1/alerts/complaint_type/" + encodeURIComponent(new_state.selected_complaint_type);
+        }
+
+        instance.get(url).then(function(response) {
+          // TODO transform the data to get what we want
+          store.dispatch({
+            type: "ALERTS_UPDATE_DATA",
+            current_data: response.data.data,
+            current_anomalies: response.data.anomalies
+          });
+        }).catch(function(error) {
+          handleHttpError(error);
+        });
+
+      }
+  }
+
+  if(action.type === "ALERTS_UPDATE_DATA") {
+    new_state = Object.assign({}, state, {current_data: action.current_data,
+      current_anomalies: action.current_anomalies});
+  }
+
+
+  console.log(new_state);
 
   return new_state || state;
 }
