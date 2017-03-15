@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import HighlightsTab from './highlight.js';
+import AlertsTab from './alerts.js';
 import './App.css';
 import { store } from "./redux_store.js";
-import { connect } from 'react-redux';
 import ForecastsTab from './forecast.js';
 import "./metricsgraphics.css";
 import "./metricsgraphics_dark.css";
 import dk_logo from "./DataKindBLR.png";
 import egov_logo from "./egov-logo.png";
+import 'react-table/react-table.css'
 
 class App extends Component {
 
@@ -37,7 +37,7 @@ class App extends Component {
             <Tabs onSelect={this.handleSelect} selectedIndex={0}>
               <TabList>
                 <Tab>Highlights</Tab>
-                <Tab>Alerts<span className='tab-num-stat'>32</span></Tab>
+                <Tab>Alerts</Tab>
                 <Tab>Forecast</Tab>
               </TabList>
               <TabPanel>
@@ -45,7 +45,7 @@ class App extends Component {
               </TabPanel>
               <TabPanel>
                 <div>
-                  Alerts container
+                  <AlertsTab />
                 </div>
               </TabPanel>
               <TabPanel>

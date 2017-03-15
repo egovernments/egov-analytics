@@ -1,5 +1,6 @@
 import { createStore, combineReducers } from 'redux';
 import axios from 'axios';
+import ward_geo_json from "./Chennai.geojson";
 
 var instance = axios.create({
   baseURL: "http://localhost:5000"
@@ -12,15 +13,12 @@ function handleHttpError(error) {
 const highlightsReducer = function(state, action) {
   var new_state = null;
   if(state === undefined) {
-    console.log("Initializing the state!")
     new_state = {
       "general" : [],
       "alerts" : [],
       "forecasts" : []
     };
   }
-
-  console.log("highlightsReducer received action " + JSON.stringify(action));
 
   if(action.type === "UPDATE_HIGHLIGHTS") {
     instance.get("/v1/highlights/").then(function(response) {
@@ -30,7 +28,6 @@ const highlightsReducer = function(state, action) {
       })
     }).catch(function (error) {
       handleHttpError(error);
-      console.error(JSON.stringify(error));
     });
   } else if (action.type === "HIGHLIGHTS_STATE_UPDATED") {
     new_state = Object.assign({}, state, action.data);
@@ -47,7 +44,6 @@ const forecastsReducer = function(state = {}, action) {
     instance.get("/v1/metadata").then(function(response) {
       response.data.forecasts.complaint_types.forEach(function(value) {
         instance.get("/v1/forecasts/complaint_type/" + encodeURIComponent(value)).then(function(response) {
-          console.log("Value is indeed: " + value);
           store.dispatch({
             type : "FORECASTS_STATE_UPDATED",
             complaint_type: value,
@@ -61,7 +57,7 @@ const forecastsReducer = function(state = {}, action) {
       handleHttpError(error);
     })
   } else if (action.type === "FORECASTS_STATE_UPDATED") {
-    var o = new Object();
+    var o = {};
     o[action.complaint_type] = action.data;
     new_state = Object.assign({}, state, o);
   }
@@ -69,10 +65,113 @@ const forecastsReducer = function(state = {}, action) {
   return new_state || state;
 }
 
+const alertsReducer = function(state, action) {
+  var new_state = null;
+
+  if(state === undefined) {
+    new_state = {
+      wards : [],
+      complaint_types : [],
+      selected_ward : null, // no ward selected by default
+      selected_complaint_type: null, // no complaint selected by default
+      selected_date: new Date(), // today's date by default
+      ward_geo_json: {}, // geojson for rendering wards
+      selected_hour: new Date().getHours(), // hour selection,
+      current_data: [],
+      current_anomalies: [],
+    };
+
+    // populate initial variables from the API
+    instance.get("/v1/metadata").then(function(response) {
+      store.dispatch({
+        type : "ALERTS_INIT_STATE",
+        wards : response.data.alerts.wards,
+        complaint_types: response.data.alerts.complaint_types
+      });
+    }).catch(function(error) {
+      handleHttpError(error);
+    });
+
+    axios.get(ward_geo_json).then(function(response) {
+      store.dispatch({
+        type: "ALERTS_GEO_INIT_STATE",
+        ward_geo_json: response.data
+      });
+    }).catch(function(error) {
+      handleHttpError(error);
+    });
+  }
+
+  if(action.type === "ALERTS_INIT_STATE") {
+    new_state = Object.assign({}, state, {wards: action.wards, complaint_types: action.complaint_types});
+  }
+
+  if(action.type === "ALERTS_GEO_INIT_STATE") {
+    new_state = Object.assign({}, state, {ward_geo_json: action.ward_geo_json});
+  }
+
+
+  if(action.type === "ALERTS_UPDATE_STATE") {
+    // clone the object
+    var action_state = Object.assign({}, action);
+    // delete type, so it won't be saved in the state
+    delete action_state.type;
+    delete action_state.force_call;
+    new_state = Object.assign({}, state, action_state);
+
+    if(new_state.selected_ward !== null && new_state.selected_complaint_type !== null) {
+      // THIS IS A PROBLEM AND SHOULD NEVER HAPPEN
+    }
+
+    var url = null;
+
+    // see if we can avoid a needless HTTP call.
+    // if the ward, complaint type has not changed,
+    // don't make a HTTP call to fetch the data
+    if(action.force_call || state.selected_ward !== new_state.selected_ward ||
+      state.selected_complaint_type !== new_state.selected_complaint_type) {
+        // fetch or change data according to selection
+        if(new_state.selected_ward === null && new_state.selected_complaint_type === null) {
+          // get city level
+          url = "/v1/alerts/city/";
+        } else if(new_state.selected_ward !== null) {
+          // get ward level
+          url = "/v1/alerts/ward/" + encodeURIComponent(new_state.selected_ward);
+        } else if(new_state.selected_complaint_type !== null) {
+          // get complaint type
+          url = "/v1/alerts/complaint_type/" + encodeURIComponent(new_state.selected_complaint_type);
+        }
+
+        instance.get(url).then(function(response) {
+          // TODO transform the data to get what we want
+          store.dispatch({
+            type: "ALERTS_UPDATE_DATA",
+            current_data: response.data.data,
+            current_anomalies: response.data.anomalies
+          });
+        }).catch(function(error) {
+          handleHttpError(error);
+        });
+
+      }
+  }
+
+  if(action.type === "ALERTS_UPDATE_DATA") {
+    new_state = Object.assign({}, state, {current_data: action.current_data,
+      current_anomalies: action.current_anomalies});
+  }
+
+
+  console.log(new_state);
+
+  return new_state || state;
+}
+
 // Combine Reducers
 const reducers = combineReducers({
   highlights: highlightsReducer,
-  forecasts : forecastsReducer
+  forecasts : forecastsReducer,
+  alerts: alertsReducer
 });
 
 const store = createStore(reducers);

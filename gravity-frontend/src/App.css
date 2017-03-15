@@ -150,11 +150,26 @@ footer > a{
   border:1px solid #435E73;
 }
 
+/* alerts css */
+#ward-map {
+  height: 350px;
+  margin-top: 75px;
+}
+
+#select-panel {
+  margin-top: 10px;
+  padding: 10px;
+}
+
+
 
 /* React tabs  */
 
-.react-tabs{
+.ReactTabs__TabList {
+  z-index: 10000;
+}
 
+.react-tabs{
 }
 
 .react-tabs > ul{
@@ -188,6 +203,7 @@ footer > a{
 
 .ReactTabs__TabPanel--selected{
   margin-top:50px;
+  z-index: 1000;
 }
 
 .ReactTabs__Tab--selected:after{
