@@ -273,7 +273,7 @@ class AlertsTab extends Component {
     return (
       <div id="alerts-tab">
         <HighlightsPanel label='alerts'
-          highlights={this.props.highlights.alerts}/>
+                         highlights={this.props.highlights.alerts}/>
         <SelectPanel wards={this.props.wards}
           complaint_types={this.props.complaint_types}
           selected_ward={this.props.selected_ward}
