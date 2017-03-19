@@ -2,24 +2,62 @@ import json
 
 from highlights import highlights_list, HighlightType
 from datetime import datetime
-
-
-class DataLevels(object):
-    CITY = "city"
-    COMPLAINT_TYPE = "complaint_type"
-    WARD = "ward"
+from common import DataLevels
 
 
 class DataAPI(object):
     def __init__(self):
         self.data = json.load(open("data/data.json"))
+        self.parsed_data = None
         self.date_format = "%Y-%m-%d %H:%M:%S"
         self._parse_data()
         self.data_levels = {DataLevels.CITY, DataLevels.COMPLAINT_TYPE, DataLevels.WARD}
         self.forecasts_complaint_types = set(self.data["forecasts"].keys())
 
+    def parse_time_series(self, data, time_accessor=None):
+        new_data = []
+        for d in data:
+            if isinstance(d, dict):
+                _ = dict(d.items())
+                _[time_accessor] = datetime.strptime(d[time_accessor], self.date_format)
+                new_data.append(_)
+            elif isinstance(d, str) or isinstance(d, unicode):
+                new_data.append(datetime.strptime(d, self.date_format))
+            else:
+                raise NotImplementedError()
+        return new_data
+
     def _parse_data(self):
-        pass
+        self.parsed_data = dict()
+        # parse alerts data
+        self.parsed_data["alerts"] = {
+            DataLevels.WARD: {},
+            DataLevels.COMPLAINT_TYPE: {},
+            DataLevels.CITY: {
+                "data": self.parse_time_series(self.data["alerts"][DataLevels.CITY]["data"], "Time"),
+                "anomalies": self.parse_time_series(self.data["alerts"][DataLevels.CITY]["anomalies"], None)
+            }
+        }
+
+        for ward, data in self.data["alerts"][DataLevels.WARD].iteritems():
+            self.parsed_data["alerts"][DataLevels.WARD][ward] = {
+                "data": self.parse_time_series(data["data"], "Time"),
+                "anomalies": self.parse_time_series(data["anomalies"])
+            }
+
+        for complaint_type, data in self.data["alerts"][DataLevels.COMPLAINT_TYPE].iteritems():
+            self.parsed_data["alerts"][DataLevels.COMPLAINT_TYPE][complaint_type] = {
+                "data": self.parse_time_series(data["data"], "Time"),
+                "anomalies": self.parse_time_series(data["anomalies"])
+            }
+
+        self.parsed_data["forecasts"] = {}
+
+        for level in self.data["forecasts"]:
+            self.parsed_data["forecasts"][level] = {
+                "forecasts": self.data["forecasts"][level]["forecasts"][:],
+                "data": self.data["forecasts"][level]["data"][:]
+            }
 
     def get_highlights(self):
         highlights = {
@@ -29,7 +67,7 @@ class DataAPI(object):
         }
 
         for highlight in highlights_list:
-            highlights[highlight.type].append(highlight.compute(self.data)._asdict())
+            highlights[highlight.type].append(highlight.compute(self.parsed_data)._asdict())
 
         return highlights
 
@@ -73,23 +111,12 @@ class DataAPI(object):
         }
 
     def get_ward_counts(self, date):
-
-        def parse_data(data):
-            new_data = []
-            for d in data:
-                new_data.append({
-                    "Data": d["Data"],
-                    "Time": datetime.strptime(d["Time"], self.date_format)
-                })
-            return new_data
-
         counts = {}
         for i in range(0, 24):
             counts[i] = {}
 
-        for ward, data in self.data["alerts"][DataLevels.WARD].iteritems():
-            data = parse_data(data["data"])
-            data = filter(lambda _: _["Time"].date() == date.date(), data)
+        for ward, data in self.parsed_data["alerts"][DataLevels.WARD].iteritems():
+            data = filter(lambda _: _["Time"].date() == date.date(), data["data"])
             data.sort(key=lambda _: _["Time"], reverse=True)
 
             for item in data:
@@ -102,4 +129,4 @@ class DataAPI(object):
 data_api = DataAPI()
 
 if __name__ == '__main__':
-    data_api.get_ward_counts(datetime(2016, 1, 1))
+    print data_api.parsed_data["alerts"][DataLevels.CITY]

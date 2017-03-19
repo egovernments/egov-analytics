@@ -25,34 +25,45 @@
     "city_level": {
       "alpha": 0.05,
       "max_anoms": 0.1,
-      "threshold": 3
+      "threshold": 5
     },
     "ward_level": {
       "defaults": {
-        "alpha": 0.1,
-        "max_anoms": 0.15,
+        "alpha": 0.01,
+        "max_anoms": 0.1,
         "threshold": 3
-      },
-      "wards": {
-        "N188": {
-          "alpha": 0.05,
-          "max_anoms": 0.05,
-          "threshold": 3
-        }
       }
     },
     "complaint_level": {
       "defaults": {
-        "alpha": 0.75,
-        "max_anoms": 0.199,
-        "threshold": 2
+        "alpha": 0.01,
+        "max_anoms": 0.1,
+        "threshold": 3
       },
-      "complaints": {
-        "Non Burning of Street Lights": {
-          "alpha": 0.06,
-          "max_anoms": 0.1,
-          "threshold": 1
-        }
+      "Non Burning of Street Lights": {
+        "alpha": 0.01,
+        "max_anoms": 0.1,
+        "threshold": 6
+      },
+      "Stagnation of water": {
+        "alpha": 0.01,
+        "max_anoms": 0.1,
+        "threshold": 4
+      },
+      "Removal of garbage": {
+        "alpha": 0.01,
+        "max_anoms": 0.1,
+        "threshold": 4
+      },
+      "Mosquito menace ": {
+        "alpha": 0.01,
+        "max_anoms": 0.1,
+        "threshold": 4
+      },
+      "Dog menace ": {
+        "alpha": 0.01,
+        "max_anoms": 0.1,
+        "threshold": 4
       }
     }
   }

@@ -5,7 +5,7 @@
 \title{Detect anomalies in the date specified}
 \usage{
 detect_anomalies_last(series, date = NULL, window.size = 60,
-  model.alpha = 0.05, model.max_anoms = 0.1)
+  model.alpha = 0.05, model.max_anoms = 0.1, threshold = 0)
 }
 \arguments{
 \item{series}{the time series}
@@ -17,6 +17,8 @@ detect_anomalies_last(series, date = NULL, window.size = 60,
 \item{model.alpha}{(optional) alpha param to pass to the algorithm}
 
 \item{model.max_anoms}{(optional) max_anoms param to pass to the algorithm}
+
+\item{threshold}{(optional) the minimum number of complaints for detecting anomalies}
 }
 \description{
 Detect anomalies in the date specified
