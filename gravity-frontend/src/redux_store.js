@@ -1,6 +1,7 @@
 import { createStore, combineReducers } from 'redux';
 import axios from 'axios';
 import ward_geo_json from "./Chennai.geojson";
+import moment from 'moment';
 
 var instance = axios.create({
   baseURL: "http://localhost:5000"
@@ -65,6 +66,51 @@ const forecastsReducer = function(state = {}, action) {
   return new_state || state;
 }
 
+const wardMapReducer = function(state, action) {
+  var new_state = null;
+
+  if(state === undefined) {
+    var date = moment("2014-11-23").toDate(); // TODO make this today later on
+    new_state = {
+      selected_hour : 0, // default select 0
+      ward_geo_json: {}, // geojson for rendering wards
+      data: {},
+    };
+
+    axios.get(ward_geo_json).then(function(response) {
+      store.dispatch({
+        type: "GEO_INIT_STATE",
+        ward_geo_json: response.data
+      });
+    }).catch(function(error) {
+      handleHttpError(error);
+    });
+
+
+    instance.get("/v1/alerts/counts/ward/" + moment(date).format("YYYY-MM-DD"))
+      .then(function(response) {
+        store.dispatch({
+          type: "GEO_UPDATE_DATA",
+          data: response.data
+        });
+      }).catch(function(error) {
+        handleHttpError(error);
+      });
+  }
+
+  if(action.type === "GEO_INIT_STATE") {
+    new_state = Object.assign({}, state, {ward_geo_json: action.ward_geo_json});
+  }
+
+  if(action.type === "GEO_UPDATE_DATA") {
+    new_state = Object.assign({}, state, {data: action.data});
+  }
+
+  console.log(new_state);
+
+  return new_state || state;
+}
+
 const alertsReducer = function(state, action) {
   var new_state = null;
 
@@ -74,9 +120,10 @@ const alertsReducer = function(state, action) {
       complaint_types : [],
       selected_ward : null, // no ward selected by default
       selected_complaint_type: null, // no complaint selected by default
-      selected_date: new Date(), // today's date by default
+      selected_date_start: moment(new Date()).subtract(7, "days").toDate(), // default is a one week period
+      selected_date_end: new Date(), // date to,
+      selected_date_range: "last_week", // by default, show last week
       ward_geo_json: {}, // geojson for rendering wards
-      selected_hour: new Date().getHours(), // hour selection,
       current_data: [],
       current_anomalies: [],
     };
@@ -91,24 +138,13 @@ const alertsReducer = function(state, action) {
     }).catch(function(error) {
       handleHttpError(error);
     });
-
-    axios.get(ward_geo_json).then(function(response) {
-      store.dispatch({
-        type: "ALERTS_GEO_INIT_STATE",
-        ward_geo_json: response.data
-      });
-    }).catch(function(error) {
-      handleHttpError(error);
-    });
   }
 
   if(action.type === "ALERTS_INIT_STATE") {
     new_state = Object.assign({}, state, {wards: action.wards, complaint_types: action.complaint_types});
   }
 
-  if(action.type === "ALERTS_GEO_INIT_STATE") {
-    new_state = Object.assign({}, state, {ward_geo_json: action.ward_geo_json});
-  }
+
 
 
   if(action.type === "ALERTS_UPDATE_STATE") {
@@ -171,7 +207,8 @@ const alertsReducer = function(state, action) {
 const reducers = combineReducers({
   highlights: highlightsReducer,
   forecasts : forecastsReducer,
-  alerts: alertsReducer
+  alerts: alertsReducer,
+  ward_map: wardMapReducer
 });
 
 const store = createStore(reducers);

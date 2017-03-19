@@ -1,6 +1,7 @@
 import json
 
 from highlights import highlights_list, HighlightType
+from datetime import datetime
 
 
 class DataLevels(object):
@@ -62,13 +63,43 @@ class DataAPI(object):
 
     def get_meta_data(self):
         return {
-            "alerts" : {
-             "wards" : self.data["alerts"][DataLevels.WARD].keys(),
-             "complaint_types": self.data["alerts"][DataLevels.COMPLAINT_TYPE].keys()
+            "alerts": {
+                "wards": self.data["alerts"][DataLevels.WARD].keys(),
+                "complaint_types": self.data["alerts"][DataLevels.COMPLAINT_TYPE].keys()
             },
-            "forecasts" : {
-             "complaint_types" : list(self.forecasts_complaint_types)
+            "forecasts": {
+                "complaint_types": list(self.forecasts_complaint_types)
             }
         }
 
+    def get_ward_counts(self, date):
+
+        def parse_data(data):
+            new_data = []
+            for d in data:
+                new_data.append({
+                    "Data": d["Data"],
+                    "Time": datetime.strptime(d["Time"], self.date_format)
+                })
+            return new_data
+
+        counts = {}
+        for i in range(0, 24):
+            counts[i] = {}
+
+        for ward, data in self.data["alerts"][DataLevels.WARD].iteritems():
+            data = parse_data(data["data"])
+            data = filter(lambda _: _["Time"].date() == date.date(), data)
+            data.sort(key=lambda _: _["Time"], reverse=True)
+
+            for item in data:
+                d = item["Time"]
+                counts[d.hour][ward] = item["Data"] + counts[d.hour].get(ward, 0)
+
+        return counts
+
+
 data_api = DataAPI()
+
+if __name__ == '__main__':
+    data_api.get_ward_counts(datetime(2016, 1, 1))

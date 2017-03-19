@@ -39,6 +39,23 @@ class MapPanel extends Component {
   componentWillMount() {
   }
 
+  mapStyle(feature) {
+    console.log(feature.properties);
+    return {
+      fillColor: '#FC4E2A',
+      weight: 2,
+      opacity: 1,
+      color: 'white',
+      dashArray: '3',
+      fillOpacity: 0.7
+    };
+  }
+
+  hourSelectOnChange(e) {
+    var value = e.target.value;
+    console.log("Hour Selected: " + value);
+  }
+
   render() {
     var url = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
     var attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
@@ -47,6 +64,7 @@ class MapPanel extends Component {
 
     return(
       <div>
+        <input id="hour_select" type="range" min="0" max="24" step="1" onChange={this.hourSelectOnChange} />
         <Map id="ward-map"
           center={mapCenter}
           zoom={zoomLevel} >
@@ -54,7 +72,8 @@ class MapPanel extends Component {
             attribution={attribution}
             url={url} />
           <GeoJSON
-            data={this.props.ward_geo_json} />
+            data={this.props.ward_geo_json}
+            style={this.mapStyle} />
         </Map>
       </div>
     );
@@ -81,7 +100,7 @@ class HighlightsTab extends Component {
 const mapStateToProps = function(store) {
   return {
     highlights: store.highlights,
-    ward_geo_json: store.alerts.ward_geo_json
+    ward_geo_json: store.ward_map.ward_geo_json
   };
 }
 
