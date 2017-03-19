@@ -1,6 +1,7 @@
 import { createStore, combineReducers } from 'redux';
 import axios from 'axios';
 import ward_geo_json from "./Chennai.geojson";
+import moment from 'moment';
 
 var instance = axios.create({
   baseURL: "http://localhost:5000"
@@ -74,7 +75,9 @@ const alertsReducer = function(state, action) {
       complaint_types : [],
       selected_ward : null, // no ward selected by default
       selected_complaint_type: null, // no complaint selected by default
-      selected_date: new Date(), // today's date by default
+      selected_date_start: moment(new Date()).subtract(7, "days").toDate(), // default is a one week period
+      selected_date_end: new Date(), // date to,
+      selected_date_range: "last_week", // by default, show last week
       ward_geo_json: {}, // geojson for rendering wards
       selected_hour: new Date().getHours(), // hour selection,
       current_data: [],

@@ -11,11 +11,38 @@ import ReactTable from 'react-table'
 
 class SelectPanel extends Component {
 
-  dateSelectionHandler(dateString, { dateMoment, timestamp }) {
+  dateSelectionOnChange(e) {
+    var select = e.target;
+    var selectValue = select[select.selectedIndex].value;
+
     store.dispatch({
       type: "ALERTS_UPDATE_STATE",
-      selected_date: dateMoment.toDate()
+      selected_date_range: selectValue
     });
+
+    var dateStart = null;
+    var dateEnd = null;
+
+    if(selectValue === "last_day") {
+      dateEnd = new Date();
+      dateStart = moment(dateEnd).subtract(1, "days").toDate();
+    } else if (selectValue === "last_week") {
+      dateEnd = new Date();
+      dateStart = moment(dateEnd).subtract(7, "days").toDate();
+    } else if (selectValue === "last_month") {
+      dateEnd = new Date();
+      dateStart = moment(dateEnd).subtract(30, "days").toDate();
+    } else if (selectValue === "custom") {
+      return;
+    }
+
+
+    store.dispatch({
+      type: "ALERTS_UPDATE_STATE",
+      selected_date_start: dateStart,
+      selected_date_end: dateEnd
+    });
+
   }
 
   wardSelectionHandler(e) {
@@ -56,6 +83,21 @@ class SelectPanel extends Component {
     });
   }
 
+
+  dateStartChange(dateString, {dateMoment, timestamp}) {
+    store.dispatch({
+      type: "ALERTS_UPDATE_STATE",
+      selected_date_start: dateMoment.toDate()
+    });
+  }
+
+  dateEndChange(dateString, {dateMoment, timestamp}) {
+    store.dispatch({
+      type: "ALERTS_UPDATE_STATE",
+      selected_date_end: dateMoment.toDate()
+    });
+  }
+
   render() {
     var ward_options = this.props.wards.map(function(w) {
       return (<option key={w} value={w} >{w}</option>);
@@ -65,6 +107,26 @@ class SelectPanel extends Component {
       return (<option key={c} value={c} >{c}</option>);
     });
 
+    var customDateRange = [];
+    if(this.props.selected_date_range === "custom") {
+      customDateRange.push(
+        <DateField
+          id="start_date"
+          key="start_date"
+          dateFormat="YYYY-MM-DD"
+          defaultValue={this.props.selected_date_start}
+          onChange={this.dateStartChange} />
+      );
+
+      customDateRange.push(
+        <DateField
+          id="end_date"
+          key="end_date"
+          dateFormat="YYYY-MM-DD"
+          defaultValue={this.props.selected_date_end}
+          onChange={this.dateEndChange} />
+      );
+    }
 
     return (
       <div id="select-panel">
@@ -76,10 +138,13 @@ class SelectPanel extends Component {
             <option value=""></option>
             {ct_options}
           </select>
-          <DateField
-            dateFormat="YYYY-MM-DD"
-            defaultValue={this.props.selected_date}
-            onChange={this.dateSelectionHandler} />
+          <select id="date-select" onChange={this.dateSelectionOnChange}>
+            <option value="last_week">Last Week</option>
+            <option value="last_day">Last Day</option>
+            <option value="last_month">Last 30 days</option>
+            <option value="custom">Custom Date Range</option>
+          </select>
+          {customDateRange}
       </div>
     );
   }
@@ -89,67 +154,67 @@ class SelectPanel extends Component {
 class ChartAndTablePanel extends Component {
   render() {
     var data = [];
-    const daysAfter = 5;
-    const daysBefore = 15;
 
-
-    const dateBefore = moment(this.props.selected_date)
-                        .subtract(daysBefore, 'days').toDate();
-    const dateAfter = moment(this.props.selected_date)
-                        .add(daysAfter, 'days').toDate();
-
-    console.log(dateBefore);
-    console.log(dateAfter);
+    console.log("End Date : " +  this.props.selected_date_end);
+    console.log("Start Date : " + this.props.selected_date_start);
 
     var dateToCount = {};
 
+    var dateStart = this.props.selected_date_start;
+    var dateEnd = this.props.selected_date_end;
+
+    if(dateStart >= dateEnd) {
+      return(
+        <div>
+          <h3>Start date should come before end date </h3>
+        </div>
+      );
+    }
+
     this.props.data.forEach(function(d) {
       var date = new Date(d.Time);
-      if(date > dateAfter) {
-        return;
-      }
-      if(date < dateBefore) {
-        return;
-      }
-      data.push({
-        value : d.Data,
-        date: date
-      });
 
-      dateToCount[d.Time] = d.Data;
+      if(date >= dateStart && date <= dateEnd) {
+        data.push({
+          value : d.Data,
+          date: date
+        });
+
+        dateToCount[d.Time] = d.Data;
+      }
     });
 
     if(data.length == 0) {
-      return (<div><h5>No data available for the selected date</h5></div>);
+      return (
+        <div>
+          <h3>Showing data from {this.props.selected_date_start.toDateString()}
+            to {this.props.selected_date_end.toDateString()}</h3>
+          <h5>No data available for the selected date</h5>
+        </div>
+      );
     }
 
-    var markers = [{
-        'date': this.props.selected_date,
-        'label': 'Selected Date'
-    }];
+    var markers = [];
 
     var anomsForTable = [];
 
     this.props.anomalies.forEach(function(d) {
       var date = new Date(d);
-      if(date > dateAfter) {
-        return;
-      }
-      if(date < dateBefore) {
-        return;
-      }
-      markers.push({
-        date: date,
-        label: "",
-        value: 30
-      });
 
-      var formattedDate = moment(date).format("MMMM Do YYYY, h a");
+      if(date >= dateStart && date <= dateEnd) {
+        markers.push({
+          date: date,
+          label: "",
+          value: 30
+        });
 
-      anomsForTable.push({
-        date: formattedDate,
-        count: dateToCount[d]
-      });
+        var formattedDate = moment(date).format("MMMM Do YYYY, h a");
+
+        anomsForTable.push({
+          date: formattedDate,
+          count: dateToCount[d]
+        });
+      }
     });
 
     console.log(anomsForTable);
@@ -169,6 +234,8 @@ class ChartAndTablePanel extends Component {
     }
     return (
       <div id="chart-panel">
+        <h3>Showing data from {this.props.selected_date_start.toDateString()}
+            to {this.props.selected_date_end.toDateString()}</h3>
         <MetricsGraphics
           title="Downloads"
           description="This graphic shows a time-series of downloads."
@@ -180,8 +247,6 @@ class ChartAndTablePanel extends Component {
           y_accessor="value"
           transition_on_update={false}
           area={false}
-          min_x={dateBefore}
-          max_x={dateAfter}
           min_y={0}/>
         <ReactTable
           data={anomsForTable}
@@ -214,8 +279,10 @@ class AlertsTab extends Component {
           selected_ward={this.props.selected_ward}
           selected_complaint_type={this.props.selected_complaint_type}
           selected_date={this.props.selected_date}
-          selected_hour={this.props.selected_hour} />
-        <ChartAndTablePanel selected_date={this.props.selected_date}
+          selected_hour={this.props.selected_hour}
+          selected_date_range={this.props.selected_date_range} />
+        <ChartAndTablePanel selected_date_start={this.props.selected_date_start}
+          selected_date_end={this.props.selected_date_end}
           data={this.props.current_data}
           anomalies={this.props.current_anomalies} />
       </div>
@@ -229,7 +296,9 @@ const mapStateToProps = function(store) {
     complaint_types: store.alerts.complaint_types,
     selected_ward: store.alerts.selected_ward,
     selected_complaint_type: store.alerts.selected_complaint_type,
-    selected_date: store.alerts.selected_date,
+    selected_date_range: store.alerts.selected_date_range,
+    selected_date_start: store.alerts.selected_date_start,
+    selected_date_end: store.alerts.selected_date_end,
     current_data: store.alerts.current_data,
     current_anomalies: store.alerts.current_anomalies
   };
