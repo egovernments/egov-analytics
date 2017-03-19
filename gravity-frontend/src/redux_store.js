@@ -106,6 +106,10 @@ const wardMapReducer = function(state, action) {
     new_state = Object.assign({}, state, {data: action.data});
   }
 
+  if(action.type === "GEO_HOUR_CHANGE") {
+    new_state = Object.assign({}, state, {selected_hour: action.selected_hour});
+  }
+
   console.log(new_state);
 
   return new_state || state;
