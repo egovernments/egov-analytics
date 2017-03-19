@@ -63,7 +63,7 @@ class MapPanel extends Component {
     const zoomLevel = 10.5;
 
     return(
-      <div>
+      <div className="content-wrapper-fixed-height">
         <input id="hour_select" type="range" min="0" max="24" step="1" onChange={this.hourSelectOnChange} />
         <Map id="ward-map"
           center={mapCenter}
@@ -75,6 +75,37 @@ class MapPanel extends Component {
             data={this.props.ward_geo_json}
             style={this.mapStyle} />
         </Map>
+        <div className="summary-stats-container">
+          <div className="stat-category">
+            <h3>Summary</h3>
+            <div>
+              <span>32</span>
+              <label>Alerts in the hour</label>
+            </div>
+            <div>
+              <span>32</span>
+              <label>Alerts in the week</label>
+            </div>
+            <div>
+              <span>32</span>
+              <label>Alerts in the month</label>
+            </div>
+          </div>
+          <div className="stat-category">
+            <h3>Alerts</h3>
+            <div>
+              <span>32</span>
+              <label>Label</label>
+            </div>
+          </div>
+          <div className="stat-category">
+            <h3>Forecast</h3>
+            <div>
+              <span>32</span>
+              <label>Label</label>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -87,13 +118,17 @@ class HighlightsTab extends Component {
     return (
       <div>
         <MapPanel ward_geo_json={this.props.ward_geo_json} />
-        <HighlightsPanel label='summary' highlights={this.props.highlights.general} ></HighlightsPanel>
-        <HighlightsPanel label='alerts' highlights={this.props.highlights.alerts}></HighlightsPanel>
-        <HighlightsPanel label='forecasts' highlights={this.props.highlights.forecasts}></HighlightsPanel>
       </div>
     );
   }
 }
+
+/*
+
+ <HighlightsPanel label='summary' highlights={this.props.highlights.general} ></HighlightsPanel>
+ <HighlightsPanel label='alerts' highlights={this.props.highlights.alerts}></HighlightsPanel>
+ <HighlightsPanel label='forecasts' highlights={this.props.highlights.forecasts}></HighlightsPanel>
+ */
 
 
 

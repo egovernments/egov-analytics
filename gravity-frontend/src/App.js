@@ -19,20 +19,21 @@ class App extends Component {
   }
 
  componentWillMount() {
-   store.dispatch({
-     "type" : "UPDATE_HIGHLIGHTS"
-   });
 
-   store.dispatch({
-     "type" : "UPDATE_FORECASTS"
-   });
+      [
+          { "type" : "UPDATE_HIGHLIGHTS" },
+          { "type" : "UPDATE_FORECASTS" }
+      ].forEach((e) => {
+          store.dispatch(e);
+      });
+
  }
 
   render() {
     return (
       <div className="App">
         <header className='header'></header>
-        <div className='container'>
+        <div>
 
             <Tabs onSelect={this.handleSelect} selectedIndex={0}>
               <TabList>
@@ -44,12 +45,14 @@ class App extends Component {
                 <HighlightsTab />
               </TabPanel>
               <TabPanel>
-                <div>
+                <div className="container">
                   <AlertsTab />
                 </div>
               </TabPanel>
               <TabPanel>
-                <ForecastsTab />
+                  <div className="container">
+                      <ForecastsTab />
+                  </div>
               </TabPanel>
             </Tabs>
 
