@@ -65,7 +65,8 @@ anomaly.execute <- function(configFilePath, only_last = T) {
     anoms <- tryCatch({
       anom_det_func(series,
                     model.alpha = config$alpha,
-                    model.max_anoms = config$max_anoms)
+                    model.max_anoms = config$max_anoms,
+                    threshold = config$threshold)
     }, error = function(e) {
       # TODO = how do I fix this?
       warning(as.character(e), immediate. = T)

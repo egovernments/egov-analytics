@@ -1,0 +1,124 @@
+{
+  "data": {
+    "path": "~/fake_data.csv"
+  },
+  "forecasts": {
+    "model-spec": {
+      "Complaint-1": {
+        "model": "ARIMA",
+        "arima.p": 1,
+        "arima.d": 2,
+        "arima.q": 2,
+        "lambda": null,
+        "stl": true,
+        "clean-outliers": true,
+        "start-date": "11/26/2012"
+      },
+      "Complaint-2": {
+        "model": "ARIMA",
+        "arima.p": 1,
+        "arima.d": 2,
+        "arima.q": 2,
+        "lambda": null,
+        "stl": true,
+        "clean-outliers": true,
+        "start-date": "11/26/2012"
+      },
+      "Complaint-3": {
+        "model": "ARIMA",
+        "arima.p": 1,
+        "arima.d": 2,
+        "arima.q": 2,
+        "lambda": null,
+        "stl": true,
+        "clean-outliers": true,
+        "start-date": "11/26/2012"
+      },
+      "Complaint-4": {
+        "model": "ETS",
+        "ets.model": "AAA",
+        "ets.damped": false
+      },
+      "Complaint-5": {
+        "model": "ARIMA",
+        "arima.p": 1,
+        "arima.d": 2,
+        "arima.q": 2,
+        "lambda": null,
+        "stl": true,
+        "clean-outliers": true,
+        "start-date": "11/26/2012"
+      },
+      "Complaint-6": {
+        "model": "ARIMA",
+        "arima.p": 1,
+        "arima.d": 2,
+        "arima.q": 2,
+        "lambda": null,
+        "stl": true,
+        "clean-outliers": true,
+        "start-date": "11/26/2012"
+      },
+      "Complaint-7": {
+        "model": "ETS",
+        "ets.model": "AAA",
+        "ets.damped": false
+      },
+      "Complaint-8": {
+        "model": "ETS",
+        "ets.model": "AAA",
+        "ets.damped": false
+      },
+      "Complaint-9": {
+        "model": "ARIMA",
+        "arima.p": 1,
+        "arima.d": 2,
+        "arima.q": 2,
+        "lambda": null,
+        "stl": true,
+        "clean-outliers": true,
+        "start-date": "11/26/2012"
+      },
+      "Complaint-10": {
+        "model": "ETS",
+        "ets.model": "AAA",
+        "ets.damped": false
+      }
+    }
+  },
+  "alerts": {
+    "city_level": {
+      "alpha": 0.05,
+      "max_anoms": 0.1,
+      "threshold": 3
+    },
+    "ward_level": {
+      "defaults": {
+        "alpha": 0.1,
+        "max_anoms": 0.15,
+        "threshold": 3
+      },
+      "wards": {
+        "N188": {
+          "alpha": 0.05,
+          "max_anoms": 0.05,
+          "threshold": 3
+        }
+      }
+    },
+    "complaint_level": {
+      "defaults": {
+        "alpha": 0.75,
+        "max_anoms": 0.199,
+        "threshold": 2
+      },
+      "complaints": {
+        "Non Burning of Street Lights": {
+          "alpha": 0.06,
+          "max_anoms": 0.1,
+          "threshold": 1
+        }
+      }
+    }
+  }
+}
