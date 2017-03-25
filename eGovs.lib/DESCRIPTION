@@ -6,7 +6,8 @@ Authors@R: c(
   person("Murugesan", "Ramakrishnan", email = "arv.ram108@gmail.com", role = c("aut")),
   person("Sahil", "Maheshwari", email = "sahil030288@gmail.com", role = c("ctb"))
   )
-Description: What the package does (one paragraph).
+Description: Forecasts and Alerts for the eGovernment's 
+    Foundation Public Grievance Redressal System. 
 Depends:
     R (>= 3.3.2)
 License: MIT
@@ -28,3 +29,4 @@ RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
+Remotes: twitter/AnomalyDetection
