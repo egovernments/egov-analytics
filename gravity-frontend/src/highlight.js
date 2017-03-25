@@ -3,7 +3,6 @@ import HighlightPill from './pill.js';
 import { store } from "./redux_store.js";
 import { connect } from 'react-redux';
 import L from 'leaflet';
-import Choropleth from 'react-leaflet-choropleth';
 import 'leaflet/dist/leaflet.css';
 import { Map, TileLayer, GeoJSON, ZoomControl } from 'react-leaflet';
 
@@ -114,7 +113,12 @@ class MapPanel extends Component {
         <input id="hour_select" type="range" min="0" max="24" step="1" value={this.props.selected_hour} onChange={this.hourSelectOnChange} />
         <Map id="ward-map"
           center={mapCenter}
-          zoom={zoomLevel} >
+          zoom={zoomLevel}
+          zoomControl={false}
+          dragging={false}
+          scrollWheelZoom={false}
+          doubleClickZoom={false}
+          boxZoom={false} >
           <TileLayer
             attribution={attribution}
             url={url} />

@@ -169,11 +169,13 @@ const alertsReducer = function(state, action) {
     // if the ward, complaint type has not changed,
     // don't make a HTTP call to fetch the data
     if(action.force_call || state.selected_ward !== new_state.selected_ward ||
-      state.selected_complaint_type !== new_state.selected_complaint_type) {
+      state.selected_complaint_type !== new_state.selected_complaint_type ||
+      state.selected_date_start !== new_state.selected_date_start ||
+      state.selected_date_end !== new_state.selected_date_end) {
         // fetch or change data according to selection
         if(new_state.selected_ward === null && new_state.selected_complaint_type === null) {
           // get city level
-          url = "/v1/alerts/city/";
+          url = "/v1/alerts/city";
         } else if(new_state.selected_ward !== null) {
           // get ward level
           url = "/v1/alerts/ward/" + encodeURIComponent(new_state.selected_ward);
@@ -182,7 +184,12 @@ const alertsReducer = function(state, action) {
           url = "/v1/alerts/complaint_type/" + encodeURIComponent(new_state.selected_complaint_type);
         }
 
-        instance.get(url).then(function(response) {
+        instance.get(url,{
+          params: {
+            start_date: moment(new_state.selected_date_start).format("YYYY-MM-DD"),
+            end_date: moment(new_state.selected_date_end).format("YYYY-MM-DD"),
+          }
+        }).then(function(response) {
           // TODO transform the data to get what we want
           store.dispatch({
             type: "ALERTS_UPDATE_DATA",
