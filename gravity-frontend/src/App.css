@@ -55,7 +55,7 @@ footer > a{
 
 .stats-row{
   padding:20px 0;
-  border-bottom:1px solid #435E73;
+  //border-bottom:1px solid #435E73;
 }
 
 .stats-row:last-child{
@@ -111,7 +111,7 @@ footer > a{
 
 .forecasts-panel{
   padding:15px 0;
-  border-bottom:1px solid #435E73;
+  //border-bottom:1px solid #435E73;
   display: inline-block;
   width:100%;
 }
@@ -167,6 +167,36 @@ footer > a{
   margin-top: 10px;
   padding: 10px;
 }
+
+.alert-filters label{
+  margin:0 15px 0 5px;
+  font-size: 12px;
+}
+
+.alert-filters input{
+  margin-left:10px;
+}
+
+.alert-filters select{
+  margin-left:40px;
+}
+
+.alert-time-filters{
+  padding:25px 0;
+}
+
+.alert-time-filters > button{
+  margin-right: 15px;
+  width:100px;
+  padding:5px;
+  cursor: pointer;
+  outline: none;
+}
+
+.active-time-filter{
+  background-color:#ccc;
+}
+
 
 .summary-stats-container{
   width:400px;

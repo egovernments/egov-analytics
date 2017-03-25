@@ -11,6 +11,7 @@ import ReactTable from 'react-table'
 
 class SelectPanel extends Component {
 
+
   dateSelectionOnChange(e) {
     var select = e.target;
     var selectValue = select[select.selectedIndex].value;
@@ -44,6 +45,29 @@ class SelectPanel extends Component {
     });
 
   }
+
+  changeDataType(e){
+    console.log(e);
+  }
+
+  filters = {
+
+    filterType : "week",
+
+    time : {
+      activeType : "week"
+    }
+
+  }
+
+
+
+    changeTimeFilter(d){
+      this.filters.time.activeType = d;
+    }
+
+  filterType = "ward";
+
 
   wardSelectionHandler(e) {
     console.log("Ward Changed");
@@ -130,6 +154,30 @@ class SelectPanel extends Component {
 
     return (
       <div id="select-panel">
+
+        <div className="alert-filters">
+          <input type="radio" name="filterType" id="ft-all" value="all" checked={this.filterType === "all"} onChange={this.changeDataType} />
+          <label htmlFor="ft-all">All</label>
+          <input type="radio" name="filterType" id="ft-ward" value="ward" checked={this.filterType === "ward"} onChange={this.changeDataType}  />
+          <label htmlFor="ft-ward">Ward No.</label>
+          <input type="radio" name="filterType" id="ft-complaint" value="complaint" checked={this.filterType === "complaint"} onChange={this.changeDataType}  />
+          <label htmlFor="ft-complaint">Complaint type</label>
+
+          <select>
+            <option>Lorem Epsum</option>
+          </select>
+        </div>
+
+        <div className="alert-time-filters">
+          <button className={this.filters.time.activeType === "today" ? "active-time-filter" : ""} onClick={()=>this.changeTimeFilter("today")}>Today</button>
+          <button className={this.filters.time.activeType === "week" ? "active-time-filter" : ""} onClick={()=>this.changeTimeFilter("week")}>Last 7 days</button>
+          <button className={this.filters.time.activeType === "month" ? "active-time-filter" : ""}  onClick={()=>this.changeTimeFilter("month")}>Last 30 days</button>
+          <button className={this.filters.time.activeType === "year" ? "active-time-filter" : ""}  onClick={()=>this.changeTimeFilter("year")}>Last year</button>
+          <button className={this.filters.time.activeType === "custom" ? "active-time-filter" : "", "custom-time"}  onClick={()=>this.changeTimeFilter("custom")}>Custom</button>
+          {customDateRange}
+        </div>
+
+          <br/><br/><br/>
           <select id="ward-selector" onChange={this.wardSelectionHandler}>
             <option value=""></option>
             {ward_options}
@@ -184,7 +232,7 @@ class ChartAndTablePanel extends Component {
       }
     });
 
-    if(data.length == 0) {
+    if( !data.length ) {
       return (
         <div>
           <h3>Showing data from {this.props.selected_date_start.toDateString()}
@@ -217,7 +265,7 @@ class ChartAndTablePanel extends Component {
       }
     });
 
-    console.log(anomsForTable);
+    //console.log(anomsForTable);
 
     const columnSpec = [{
       header: 'Time',
