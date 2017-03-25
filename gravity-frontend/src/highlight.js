@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import HighlightPill from './pill.js';
 import { store } from "./redux_store.js";
 import { connect } from 'react-redux';
-import 'leaflet';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Map, TileLayer, GeoJSON } from 'react-leaflet';
+import { Map, TileLayer, GeoJSON, ZoomControl } from 'react-leaflet';
 
 class HighlightsPanel extends Component {
 
@@ -39,41 +39,94 @@ class MapPanel extends Component {
   componentWillMount() {
   }
 
-  mapStyle(feature) {
-    console.log(feature.properties);
-    return {
-      fillColor: '#FC4E2A',
-      weight: 2,
-      opacity: 1,
-      color: 'white',
-      dashArray: '3',
-      fillOpacity: 0.7
-    };
-  }
-
   hourSelectOnChange(e) {
     var value = e.target.value;
     console.log("Hour Selected: " + value);
+    store.dispatch({
+      type: "GEO_HOUR_CHANGE",
+      selected_hour: value
+    });
+  }
+
+
+
+
+  onEachFeatureFn(component, feature, layer) {
+    // var highlightFeature = function(e) {
+    //     var layer = e.target;
+    //
+    //     layer.setStyle({
+    //         weight: 5,
+    //         color: '#666',
+    //         dashArray: '',
+    //         fillOpacity: 0.7
+    //     });
+    //
+    // }
+    //
+    //
+    // var resetHighlight = function(component,e) {
+    //   component.refs.geojson.leafletElement.resetStyle(component.refs.geojson);
+    // }
+    //
+    //
+    //
+    // layer.on({
+    //     mouseover: highlightFeature,
+    //     mouseout: resetHighlight.bind(null, component)
+    // });
   }
 
   render() {
     var url = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
     var attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
-    const mapCenter = [13.0827, 80.2707];
+    const mapCenter = [12.9850, 80.2707];
     const zoomLevel = 10.5;
+    var props = this.props;
+
+    var mapStyle = function(feature) {
+      var hourData = props.ward_counts[props.selected_hour];
+      var colorChoice = "#1c1c1c";
+      if(hourData !== undefined) {
+        var key = "Ward-" + feature.properties.WARD_NO;
+        var count = hourData[key] || 0;
+        if(count > 0) {
+          colorChoice = "#FED976";
+        } else if (count > 1) {
+          colorChoice = "#FEB24C";
+        } else if (count > 2) {
+          colorChoice = "#FD8D3C";
+        }
+      }
+      return {
+        fillColor: colorChoice,
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.7
+      };
+    };
 
     return(
       <div className="content-wrapper-fixed-height">
-        <input id="hour_select" type="range" min="0" max="24" step="1" onChange={this.hourSelectOnChange} />
+        <input id="hour_select" type="range" min="0" max="24" step="1" value={this.props.selected_hour} onChange={this.hourSelectOnChange} />
         <Map id="ward-map"
           center={mapCenter}
-          zoom={zoomLevel} >
+          zoom={zoomLevel}
+          zoomControl={false}
+          dragging={false}
+          scrollWheelZoom={false}
+          doubleClickZoom={false}
+          boxZoom={false} >
           <TileLayer
             attribution={attribution}
             url={url} />
           <GeoJSON
             data={this.props.ward_geo_json}
-            style={this.mapStyle} />
+            style={mapStyle}
+            onEachFeature={this.onEachFeatureFn.bind(null, this)}
+            ref="geojson" />
         </Map>
         <div className="summary-stats-container">
           <div className="stat-category">
@@ -117,7 +170,9 @@ class HighlightsTab extends Component {
   render() {
     return (
       <div>
-        <MapPanel ward_geo_json={this.props.ward_geo_json} />
+        <MapPanel ward_geo_json={this.props.ward_geo_json}
+          selected_hour={this.props.selected_hour}
+          ward_counts={this.props.ward_counts} />
       </div>
     );
   }
@@ -135,7 +190,9 @@ class HighlightsTab extends Component {
 const mapStateToProps = function(store) {
   return {
     highlights: store.highlights,
-    ward_geo_json: store.ward_map.ward_geo_json
+    ward_geo_json: store.ward_map.ward_geo_json,
+    selected_hour: store.ward_map.selected_hour,
+    ward_counts: store.ward_map.data
   };
 }
 

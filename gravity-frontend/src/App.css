@@ -153,7 +153,7 @@ footer > a{
 /* alerts css */
 
 #hour_select{
-  display: none;
+  // display: none;
 }
 
 #ward-map {
