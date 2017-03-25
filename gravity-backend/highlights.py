@@ -1,6 +1,6 @@
 from collections import namedtuple
-import random
 from datetime import datetime, timedelta
+
 from common import DataLevels
 
 
