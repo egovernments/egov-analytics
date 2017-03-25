@@ -1,8 +1,8 @@
 import json
-
-from highlights import highlights_list, HighlightType
 from datetime import datetime
+
 from common import DataLevels
+from highlights import highlights_list, HighlightType
 
 
 class DataAPI(object):
@@ -71,18 +71,32 @@ class DataAPI(object):
 
         return highlights
 
-    def get_alerts(self, level, sub_level=None):
+    def _filter_alerts_data(self, data, start_date, end_date):
+        filtered_data = {"data": [], "anomalies": []}
+        for d in data["data"]:
+            if start_date <= d["Time"] <= end_date:
+                filtered_data["data"].append(d)
+
+        for d in data["anomalies"]:
+            if start_date <= d <= end_date:
+                filtered_data["anomalies"].append(d)
+
+        return filtered_data
+
+    def get_alerts(self, level, start_date, end_date, sub_level=None):
         if level not in self.data_levels:
             raise ValueError("invalid level {}".format(level))
 
         if level == DataLevels.CITY:
-            return self.data["alerts"][DataLevels.CITY]
+            return self._filter_alerts_data(self.parsed_data["alerts"][DataLevels.CITY], start_date, end_date)
 
         if level == DataLevels.COMPLAINT_TYPE:
-            return self.data["alerts"][DataLevels.COMPLAINT_TYPE][sub_level]
-
+            return self._filter_alerts_data(self.parsed_data["alerts"][DataLevels.COMPLAINT_TYPE][sub_level],
+                                            start_date,
+                                            end_date)
         if level == DataLevels.WARD:
-            return self.data["alerts"][DataLevels.WARD][sub_level]
+            return self._filter_alerts_data(self.parsed_data["alerts"][DataLevels.WARD][sub_level], start_date,
+                                            end_date)
 
     def get_forecasts(self, level, sub_level=None):
         # the current data doesn't support levels other than a few complaint types, but that may change in the future

@@ -1,20 +1,48 @@
+import json
+from datetime import datetime
+
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Resource, Api
 
 from data_api import data_api
-from datetime import datetime
+from flask_restful import reqparse
+
+
+# DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+
+class MyJSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, datetime):
+            return o.isoformat()
+        return json.JSONEncoder.default(self, o)
+
+
+# instantiating Flask application
+class MyConfig(object):
+    RESTFUL_JSON = {"cls": MyJSONEncoder}
+
 
 # instantiating Flask application
 app = Flask(__name__)
+app.config.from_object(MyConfig)
 CORS(app)
 api = Api(app)
 
 
 class AlertsResourceV1(Resource):
     def get(self, level, sub_level=None):
+        parser = reqparse.RequestParser()
+        parser.add_argument('start_date', required=True, help="state_date needs to be provided")
+        parser.add_argument('end_date', required=True, help="end_date needs to be provided")
+
+        args = parser.parse_args()
+
+        start_date = datetime.strptime(args["start_date"], "%Y-%m-%d")
+        end_date = datetime.strptime(args["end_date"], "%Y-%m-%d")
         try:
-            return data_api.get_alerts(level, sub_level)
+            return data_api.get_alerts(level, start_date, end_date, sub_level)
         except (ValueError, KeyError) as e:
             return {
                        "error": e.message
@@ -48,7 +76,7 @@ class WardCountsResourceV1(Resource):
 
 
 # setting endpoints
-api.add_resource(AlertsResourceV1, "/v1/alerts/<string:level>/", "/v1/alerts/<string:level>/<string:sub_level>")
+api.add_resource(AlertsResourceV1, "/v1/alerts/<string:level>", "/v1/alerts/<string:level>/<string:sub_level>")
 api.add_resource(ForecastsResourceV1, "/v1/forecasts/<string:level>/",
                  "/v1/forecasts/<string:level>/<string:sub_level>")
 api.add_resource(WardCountsResourceV1, "/v1/alerts/counts/ward/<string:date>")
