@@ -2,10 +2,14 @@
 % Please edit documentation in R/exec.R
 \name{forecasts.execute.write}
 \alias{forecasts.execute.write}
+\title{Execute forecasts and write output to a file}
 \usage{
 forecasts.execute.write(configFilePath, outputFilePath)
 }
 \arguments{
 \item{outputFilePath}{the path to write into. Will be overwritten if it already exists}
+}
+\description{
+Execute forecasts and write output to a file
 }
 

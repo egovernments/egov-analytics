@@ -43,7 +43,7 @@ forecasts.execute <- function(configFilePath) {
 
   return(output)
 }
-
+#' Execute forecasts and write output to a file
 #' @param outputFilePath the path to write into. Will be overwritten if it already exists
 forecasts.execute.write <- function(configFilePath, outputFilePath) {
   output <- forecasts.execute(configFilePath)
