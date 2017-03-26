@@ -27,6 +27,9 @@ class DataAPI(object):
                 raise NotImplementedError()
         return new_data
 
+    def sum_series(self, data):
+        return sum(map(lambda _: _["Data"], data))
+
     def _parse_data(self):
         self.parsed_data = dict()
         # parse alerts data
@@ -35,20 +38,26 @@ class DataAPI(object):
             DataLevels.COMPLAINT_TYPE: {},
             DataLevels.CITY: {
                 "data": self.parse_time_series(self.data["alerts"][DataLevels.CITY]["data"], "Time"),
-                "anomalies": self.parse_time_series(self.data["alerts"][DataLevels.CITY]["anomalies"], None)
+                "anomalies": self.parse_time_series(self.data["alerts"][DataLevels.CITY]["anomalies"], None),
+                "complaints_count": self.sum_series(self.data["alerts"][DataLevels.CITY]["data"]),
+                "anomalies_count": len(self.data["alerts"][DataLevels.CITY]["anomalies"])
             }
         }
 
         for ward, data in self.data["alerts"][DataLevels.WARD].iteritems():
             self.parsed_data["alerts"][DataLevels.WARD][ward] = {
                 "data": self.parse_time_series(data["data"], "Time"),
-                "anomalies": self.parse_time_series(data["anomalies"])
+                "anomalies": self.parse_time_series(data["anomalies"]),
+                "complaints_count": self.sum_series(data["data"]),
+                "anomalies_count": len(data["anomalies"])
             }
 
         for complaint_type, data in self.data["alerts"][DataLevels.COMPLAINT_TYPE].iteritems():
             self.parsed_data["alerts"][DataLevels.COMPLAINT_TYPE][complaint_type] = {
                 "data": self.parse_time_series(data["data"], "Time"),
-                "anomalies": self.parse_time_series(data["anomalies"])
+                "anomalies": self.parse_time_series(data["anomalies"]),
+                "complaints_count": self.sum_series(data["data"]),
+                "anomalies_count": len(data["anomalies"])
             }
 
         self.parsed_data["forecasts"] = {}
@@ -72,14 +81,25 @@ class DataAPI(object):
         return highlights
 
     def _filter_alerts_data(self, data, start_date, end_date):
-        filtered_data = {"data": [], "anomalies": []}
+        filtered_data = {
+            "data": [],
+            "anomalies": []
+        }
+        complaints_count = 0
+        anomalies_count = 0
+
         for d in data["data"]:
             if start_date <= d["Time"] <= end_date:
                 filtered_data["data"].append(d)
+                complaints_count += d["Data"]
 
         for d in data["anomalies"]:
             if start_date <= d <= end_date:
                 filtered_data["anomalies"].append(d)
+                anomalies_count += 1
+
+        filtered_data["complaints_count"] = complaints_count
+        filtered_data["anomalies_count"] = anomalies_count
 
         return filtered_data
 

@@ -11,59 +11,6 @@ import ReactTable from 'react-table'
 
 class SelectPanel extends Component {
 
-  constructor() {
-    super();
-  }
-
-  filterData(t, d) {
-
-    var dateEnd = new Date(),
-        dateStart = moment(dateEnd).subtract(7, "days").toDate(),
-        categoryType = document.querySelector('input[name="filterType"]:checked').value,
-        selectedWard = document.getElementById("wardOptions"),
-        selectedComplaint = document.getElementById("complaintOptions"),
-        categoryOption;
-
-    if( ( categoryType === "ward" && selectedWard && !selectedWard.value ) ||
-      ( categoryType === "complaint" && selectedComplaint && !selectedComplaint.value ) ){
-      return;
-    }
-
-    if( categoryType === "ward" ){
-      categoryOption = selectedWard.value;
-    }
-    else if( categoryType === "complaint"  ){
-      categoryOption = selectedComplaint.value;
-    }
-
-    if(this.state.filters.selectedTimeRange === "today") {
-      dateEnd = new Date();
-      dateStart = moment(dateEnd).subtract(1, "days").toDate();
-    } else if (this.state.filters.selectedTimeRange === "week") {
-      dateEnd = new Date();
-      dateStart = moment(dateEnd).subtract(7, "days").toDate();
-    } else if (this.state.filters.selectedTimeRange === "month") {
-      dateEnd = new Date();
-      dateStart = moment(dateEnd).subtract(30, "days").toDate();
-    }else if (this.state.filters.selectedTimeRange === "year") {
-      dateEnd = new Date();
-      dateStart = moment(dateEnd).subtract(365, "days").toDate();
-    } else if (this.state.filters.selectedTimeRange === "custom") {
-      return;
-    }
-
-    store.dispatch({
-      type: "ALERTS_UPDATE_STATE",
-      selected_date_start: dateStart,
-      selected_date_end: dateEnd,
-      categoryType : categoryType,
-      categoryOption : categoryOption
-    });
-
-    //this.setState(new_state);
-  }
-
-
   dateSelectionOnChange(e) {
     var selectValue = e.target.value,
         dateStart = null,
@@ -95,10 +42,26 @@ class SelectPanel extends Component {
   }
 
   categoryTypeSelectionOnChange(e) {
-    store.dispatch({
-      type: "ALERTS_UPDATE_STATE",
-      categoryType: e.target.value
-    });
+    var newCategoryType = e.target.value;
+    if(newCategoryType === "ward") {
+      store.dispatch({
+        type: "ALERTS_UPDATE_STATE",
+        categoryType: newCategoryType,
+        selected_ward: this.props.wards[0]
+      });
+    } else if (newCategoryType === "complaint") {
+      store.dispatch({
+        type: "ALERTS_UPDATE_STATE",
+        categoryType: newCategoryType,
+        selected_complaint_type: this.props.complaint_types[0]
+      });
+    } else {
+      store.dispatch({
+        type: "ALERTS_UPDATE_STATE",
+        categoryType: newCategoryType
+      });
+    }
+
   }
 
   wardSelectionHandler(e) {
@@ -171,12 +134,10 @@ class SelectPanel extends Component {
     var categoryOptions = null;
     if( this.props.categoryType === "ward" ) {
       categoryOptions =  <select id='wardOptions' onChange={this.wardSelectionHandler}>
-                          <option value=''>Select ward number</option>
                           {ward_options}
                          </select>;
     } else if ( this.props.categoryType === "complaint" ) {
       categoryOptions = <select id='complaintOptions' onChange={this.complaintTypeSelectionHandler}>
-                        <option value=''>Select complaint type</option>
                           {ct_options}
                         </select>;
     }
@@ -185,11 +146,17 @@ class SelectPanel extends Component {
       <div id="select-panel">
         <div className="alert-filters">
           <div>
-            <input type="radio" name="filterType" id="ft-all" value="all" checked={this.props.categoryType === "all"} onChange={this.categoryTypeSelectionOnChange}/>
+            <input type="radio" name="filterType" id="ft-all" value="all"
+              checked={this.props.categoryType === "all"}
+              onChange={this.categoryTypeSelectionOnChange.bind(this)}/>
             <label htmlFor="ft-all">All</label>
-            <input type="radio" name="filterType" id="ft-ward" value="ward" checked={this.props.categoryType === "ward"}  onChange={this.categoryTypeSelectionOnChange} />
+            <input type="radio" name="filterType" id="ft-ward" value="ward"
+              checked={this.props.categoryType === "ward"}
+              onChange={this.categoryTypeSelectionOnChange.bind(this)} />
             <label htmlFor="ft-ward">Ward No.</label>
-            <input type="radio" name="filterType" id="ft-complaint" value="complaint" checked={this.props.categoryType === "complaint"} onChange={this.categoryTypeSelectionOnChange}/>
+            <input type="radio" name="filterType" id="ft-complaint" 
+              value="complaint" checked={this.props.categoryType === "complaint"}
+              onChange={this.categoryTypeSelectionOnChange.bind(this)}/>
             <label htmlFor="ft-complaint">Complaint type</label>
             { categoryOptions }
           </div>
@@ -203,7 +170,7 @@ class SelectPanel extends Component {
             onClick={this.dateSelectionOnChange} value="last_month">30D</button>
           <button className={this.props.selected_date_range === "last_year" ? "active-time-filter" : ""}
             onClick={this.dateSelectionOnChange} value="last_year">YTD</button>
-          <button className={this.props.selected_date_range === "custom" ? "active-time-filter" : "", "custom-time"}
+          <button className={this.props.selected_date_range === "custom" ? "active-time-filter" : ""}
             onClick={this.dateSelectionOnChange} value={"custom"}>Custom</button>
           {customDateRange}
         </div>
@@ -314,7 +281,7 @@ class ChartAndTablePanel extends Component {
         <h3 className="alerts-chart-title">{this.props.selected_date_start.toDateString() } - {this.props.selected_date_end.toDateString()}</h3>
         <div>
           <label className="alerts-chart-stat">
-            Complaints: 321 | Anomalies: 12
+            Complaints: {this.props.complaints_count} | Anomalies: {this.props.anomalies_count}
             <a href="javascript:void(0)" onClick={this.toggleChartView.bind(this)} className="toggle-alerts-view">List anomalies</a>
           </label>
 
@@ -340,7 +307,7 @@ class AlertsTab extends Component {
     var highlights = this.props.highlights.alerts.map(function(highlight) {
       // TODO there should be a tool tip for description
       return(
-        <div className="stat-box">
+        <div className="stat-box" key={highlight.name} >
           <span>{highlight.value}</span>
           <label>{highlight.name}</label>
         </div>
@@ -361,7 +328,9 @@ class AlertsTab extends Component {
           <ChartAndTablePanel selected_date_start={this.props.selected_date_start}
             selected_date_end={this.props.selected_date_end}
             data={this.props.current_data}
-            anomalies={this.props.current_anomalies} />
+            anomalies={this.props.current_anomalies}
+            complaints_count={this.props.complaints_count}
+            anomalies_count={this.props.anomalies_count} />
         </div>
         <div className="col-small">
           {highlights}
@@ -384,7 +353,9 @@ const mapStateToProps = function(store) {
     selected_date_end: store.alerts.selected_date_end,
     current_data: store.alerts.current_data,
     current_anomalies: store.alerts.current_anomalies,
-    categoryType: store.alerts.categoryType
+    categoryType: store.alerts.categoryType,
+    anomalies_count: store.alerts.anomalies_count,
+    complaints_count: store.alerts.complaints_count
   };
 }
 

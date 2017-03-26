@@ -1,11 +1,7 @@
 import { createStore, combineReducers } from 'redux';
-import axios from 'axios';
+import {axios, instance} from './http_api.js';
 import ward_geo_json from "./Chennai.geojson";
 import moment from 'moment';
-
-var instance = axios.create({
-  baseURL: "http://localhost:5000"
-});
 
 function handleHttpError(error) {
   console.log(error);
@@ -129,6 +125,8 @@ const alertsReducer = function(state, action) {
       ward_geo_json: {}, // geojson for rendering wards
       current_data: [],
       current_anomalies: [],
+      anomalies_count: 0,
+      complaints_count: 0
     };
 
     // populate initial variables from the API
@@ -178,21 +176,25 @@ const alertsReducer = function(state, action) {
         end_date: moment(new_state.selected_date_end).format("YYYY-MM-DD"),
       }
     }).then(function(response) {
-      // TODO transform the data to get what we want
       store.dispatch({
         type: "ALERTS_UPDATE_DATA",
         current_data: response.data.data,
-        current_anomalies: response.data.anomalies
+        current_anomalies: response.data.anomalies,
+        complaints_count: response.data.complaints_count,
+        anomalies_count: response.data.anomalies_count
       });
     }).catch(function(error) {
       handleHttpError(error);
     });
-
   }
 
   if(action.type === "ALERTS_UPDATE_DATA") {
-    new_state = Object.assign({}, state, {current_data: action.current_data,
-      current_anomalies: action.current_anomalies});
+    new_state = Object.assign({}, state, {
+      current_data: action.current_data,
+      current_anomalies: action.current_anomalies,
+      anomalies_count: action.anomalies_count,
+      complaints_count: action.complaints_count
+    });
   }
 
   return new_state || state;
