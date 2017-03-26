@@ -158,10 +158,6 @@ const alertsReducer = function(state, action) {
     delete action_state.force_call;
     new_state = Object.assign({}, state, action_state);
 
-    if(new_state.selected_ward !== null && new_state.selected_complaint_type !== null) {
-      // THIS IS A PROBLEM AND SHOULD NEVER HAPPEN
-    }
-
     var url = null;
 
     // fetch or change data according to selection
@@ -170,10 +166,10 @@ const alertsReducer = function(state, action) {
       url = "/v1/alerts/city";
     } else if(new_state.categoryType === "ward") {
       // get ward level
-      url = "/v1/alerts/ward/" + encodeURIComponent(new_state.categoryOption);
+      url = "/v1/alerts/ward/" + encodeURIComponent(new_state.selected_ward);
     } else if(new_state.categoryType === "complaint") {
       // get complaint type
-      url = "/v1/alerts/complaint_type/" + encodeURIComponent(new_state.categoryOption);
+      url = "/v1/alerts/complaint_type/" + encodeURIComponent(new_state.selected_complaint_type);
     }
 
     instance.get(url,{
