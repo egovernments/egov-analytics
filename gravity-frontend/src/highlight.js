@@ -36,7 +36,20 @@ class HighlightsPanel extends Component {
 
 class MapPanel extends Component {
 
-  componentWillMount() {
+  componentDidUpdate() {
+    console.log()
+    var map = document.getElementById("map_container");
+    var hourSelect = document.getElementById("hour_select");
+    console.log(map);
+    console.log(hourSelect);
+    if(map !== null) {
+      var pos = map.getBoundingClientRect();
+
+      hourSelect.style.left = (50) + "px";
+      hourSelect.style.top = (pos.top + 10) + "px";
+      hourSelect.style.zIndex = 5000;
+    }
+
   }
 
   hourSelectOnChange(e) {
@@ -106,21 +119,11 @@ class MapPanel extends Component {
       }
     }
 
-    var map = document.getElementById("ward-map");
-    var hourSelectStyle = {};
-    if(map !== null) {
-      var pos = map.getBoundingClientRect();
-
-      hourSelectStyle.left = (pos.right - 175) + "px";
-      hourSelectStyle.top = (pos.top + 10) + "px";
-      hourSelectStyle.zIndex = 5000;
-    }
 
     return(
-      <div className="content-wrapper-fixed-height">
+      <div id="map_container" className="content-wrapper-fixed-height">
         <input id="hour_select" type="range" min="0" max="24" step="1"
-          value={this.props.selected_hour} onChange={this.hourSelectOnChange}
-          style={hourSelectStyle} />
+          value={this.props.selected_hour} onChange={this.hourSelectOnChange} />
         <Map id="ward-map"
           center={mapCenter}
           zoom={zoomLevel}

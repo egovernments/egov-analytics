@@ -34,7 +34,7 @@ a:hover{
 }
 
 .hide{
-  display:  none !important;
+  display:  none !important
 }
 
 .row{
@@ -158,6 +158,9 @@ footer > a{
 
 #hour_select{
   position: absolute;
+  top: 60px;
+  left: 30px;
+  z-index: 5000;
 }
 
 #ward-map {
