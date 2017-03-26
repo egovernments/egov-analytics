@@ -1,11 +1,7 @@
 import { createStore, combineReducers } from 'redux';
-import axios from 'axios';
+import {axios, instance} from './http_api.js';
 import ward_geo_json from "./Chennai.geojson";
 import moment from 'moment';
-
-var instance = axios.create({
-  baseURL: "http://localhost:5000"
-});
 
 function handleHttpError(error) {
   console.log(error);
