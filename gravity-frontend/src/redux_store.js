@@ -110,7 +110,6 @@ const wardMapReducer = function(state, action) {
     new_state = Object.assign({}, state, {selected_hour: action.selected_hour});
   }
 
-  //console.log(new_state);
 
   return new_state || state;
 }
@@ -123,7 +122,7 @@ const alertsReducer = function(state, action) {
       wards : [],
       complaint_types : [],
       categoryType : "all",
-      categoryOption: null, 
+      categoryOption: null,
       selected_date_start: moment(new Date()).subtract(7, "days").toDate(), // default is a one week period
       selected_date_end: new Date(), // date to,
       selected_date_range: "last_week", // by default, show last week
@@ -199,9 +198,6 @@ const alertsReducer = function(state, action) {
     new_state = Object.assign({}, state, {current_data: action.current_data,
       current_anomalies: action.current_anomalies});
   }
-
-
-  //console.log(new_state);
 
   return new_state || state;
 }
