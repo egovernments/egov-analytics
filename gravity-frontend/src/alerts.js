@@ -183,7 +183,7 @@ class SelectPanel extends Component {
     });
 
     var customDateRange = null;
-    if(this.state.filters.selectedTimeRange === "custom") {
+    //if(this.state.filters.selectedTimeRange === "custom") {
       customDateRange = [
         <DateField
           id="start_date"
@@ -198,7 +198,7 @@ class SelectPanel extends Component {
             defaultValue={this.props.selected_date_end}
             onChange={this.dateEndChange} />
       ];
-    }
+    //}
 
     var categoryOptions = null;
     if( this.state.filters.categoryType === "ward" ){
@@ -229,10 +229,10 @@ class SelectPanel extends Component {
         </div>
 
         <div className="alert-time-filters">
-          <button className={this.filters.time.activeType === "today" ? "active-time-filter" : ""} onClick={()=>this.filterData("timeRange", "today")}>Today</button>
-          <button className={this.filters.time.activeType === "week" ? "active-time-filter" : ""} onClick={()=>this.filterData("timeRange", "week")}>Last 7 days</button>
-          <button className={this.filters.time.activeType === "month" ? "active-time-filter" : ""}  onClick={()=>this.filterData("timeRange", "month")}>Last 30 days</button>
-          <button className={this.filters.time.activeType === "year" ? "active-time-filter" : ""}  onClick={()=>this.filterData("timeRange", "year")}>Last year</button>
+          <button className={this.filters.time.activeType === "today" ? "active-time-filter" : ""} onClick={()=>this.filterData("timeRange", "today")}>1D</button>
+          <button className={this.filters.time.activeType === "week" ? "active-time-filter" : ""} onClick={()=>this.filterData("timeRange", "week")}>7D</button>
+          <button className={this.filters.time.activeType === "month" ? "active-time-filter" : ""}  onClick={()=>this.filterData("timeRange", "month")}>30D</button>
+          <button className={this.filters.time.activeType === "year" ? "active-time-filter" : ""}  onClick={()=>this.filterData("timeRange", "year")}>YTD</button>
           <button className={this.filters.time.activeType === "custom" ? "active-time-filter" : "", "custom-time"}  onClick={()=>this.filterData("timeRange", "custom")}>Custom</button>
           {customDateRange}
         </div>
@@ -353,12 +353,6 @@ class ChartAndTablePanel extends Component {
       accessor: 'count'
     }];
 
-    var parentTab = document.getElementById("alerts-tab");
-    var width = 600;
-    if(parentTab) {
-      width = parentTab.offsetWidth;
-    }
-
     var view = null;
 
     if(this.state.chartViewType === "chart") {
@@ -367,7 +361,7 @@ class ChartAndTablePanel extends Component {
           description="This graphic shows a time-series of downloads."
           markers={markers}
           data={data}
-          width={width}
+          width={600}
           height={250}
           x_accessor="date"
           y_accessor="value"
@@ -425,24 +419,54 @@ class AlertsTab extends Component {
     // <MapPanel ward_geo_json={this.props.ward_geo_json} />
     return (
       <div id="alerts-tab">
-        <HighlightsPanel label='alerts'
-                         highlights={this.props.highlights.alerts}/>
-        <SelectPanel wards={this.props.wards}
-          complaint_types={this.props.complaint_types}
-          selected_ward={this.props.selected_ward}
-          selected_complaint_type={this.props.selected_complaint_type}
-          selected_date={this.props.selected_date}
-          selected_hour={this.props.selected_hour}
-          selected_date_range={this.props.selected_date_range} />
-        <ChartAndTablePanel selected_date_start={this.props.selected_date_start}
-          selected_date_end={this.props.selected_date_end}
-          data={this.props.current_data}
-          anomalies={this.props.current_anomalies} />
+        <div className="page-title">
+          <h3>
+            Alerts
+          </h3>
+          <p>
+            In quis tempor nisi. Morbi ornare, odio eget mollis imperdiet, tortor mauris viverra felis
+          </p>
+        </div>
+        <div className="col-large">
+          <SelectPanel wards={this.props.wards}
+            complaint_types={this.props.complaint_types}
+            selected_ward={this.props.selected_ward}
+            selected_complaint_type={this.props.selected_complaint_type}
+            selected_date={this.props.selected_date}
+            selected_hour={this.props.selected_hour}
+            selected_date_range={this.props.selected_date_range} />
+          <ChartAndTablePanel selected_date_start={this.props.selected_date_start}
+            selected_date_end={this.props.selected_date_end}
+            data={this.props.current_data}
+            anomalies={this.props.current_anomalies} />
+        </div>
+        <div className="col-small">
+          <div className="stat-box">
+            <span>12</span>
+            <label>Alerts in an hour</label>
+          </div>
+          <div className="stat-box">
+            <span>12</span>
+            <label>Alerts in an hour</label>
+          </div>
+          <div className="stat-box">
+            <span>12</span>
+            <label>Alerts in an hour</label>
+          </div>
+          <div className="stat-box">
+            <span>12</span>
+            <label>Alerts in an hour</label>
+          </div>
+        </div>
+        <div className="spacer"></div>
       </div>
     );
   }
 }
-
+/*
+<HighlightsPanel label='alerts'
+               highlights={this.props.highlights.alerts}/>
+*/
 
 const mapStateToProps = function(store) {
   return {

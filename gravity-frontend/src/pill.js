@@ -5,8 +5,8 @@ class HighlightPill extends Component {
   render() {
     return (
         <div className='stat-tile'>
-          <label>{this.props.label}</label>
           <span>{this.props.value}</span>
+          <label>{this.props.label}</label>
         </div>
     )
   }
