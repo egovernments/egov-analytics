@@ -145,6 +145,29 @@ footer > a{
 }
 
 
+.filter-buttons-container{
+  list-style: none;
+  padding:20px;
+  margin:0;
+}
+
+.filter-buttons-container > li{
+  margin:0 5px;
+  padding: 3px 5px;
+  float:left;
+  border:1px solid #ccc;
+  background-color:#fff;
+  cursor: pointer;
+  outline: none;
+  font-size: 10px;
+  color: #333;
+}
+
+.filter-buttons-container > li.active-filter{
+  background-color: #aaa;
+  color: #fff;
+  border: 0;
+}
 
 .forecasts-panel{
   padding:15px 0;
@@ -195,6 +218,9 @@ footer > a{
 
 #hour_select{
   position: absolute;
+  top:65px;
+  left:10px;
+  z-index:9999;
   background-color:#153651;
   padding:10px 15px;
   width:200px;
@@ -203,6 +229,7 @@ footer > a{
 }
 
 #hour_select > input{
+  cursor: -webkit-grab;
   width:calc(100% - 55px);
 }
 
@@ -301,10 +328,13 @@ footer > a{
 }
 
 .summary-stats-container{
+  float:left;
   width:550px;
   display: inline-block;
   background-color: #fff;
   height:100%;
+  height:750px;
+  overflow-y: auto;
   box-shadow: inset 2px 0px 5px 1px #ccc;
   -webkit-box-shadow: inset 2px 0px 5px 1px #ccc;
 }
@@ -314,18 +344,17 @@ footer > a{
 }
 
 .stat-category{
-  //border-bottom:1px solid #aaa;
-  height:calc(750px / 3);
   box-sizing: border-box;
   width:100%;
   display: inline-block;
   color:#333;
+  padding-left:10px;
 }
 
 .stat-category > h3{
   margin:0;
   padding:5px 0;
-  text-indent: 15px;
+  text-indent: 5px;
   font-weight: normal;
   font-size: 16px;
 }
@@ -343,8 +372,8 @@ footer > a{
   background-color:#E3F1FC;
 }
 
-.stat-category > div:nth-child(2){
-  margin-left:10px;
+.stat-category > div:nth-child(2), .stat-category > div:nth-child(2){
+  //margin-left:10px;
 }
 
 .stat-category span{
@@ -368,8 +397,14 @@ footer > a{
   float:left;
   width:120px;
   height:150px;
-  border-bottom:1px solid #fff;
   margin:20px;
+  box-shadow: 0 0 1px 1px #ccc;
+  background-color: #E3F1FC;
+  color:#333;
+}
+
+.stat-box:hover{
+  box-shadow: 0 0 5px 1px #ccc;
 }
 
 .stat-box > span{
@@ -377,7 +412,7 @@ footer > a{
   display: block;
   height:70px;
   font-size:25px;
-  line-height: 35px;
+  line-height: 70px;
   text-align: center;
 }
 

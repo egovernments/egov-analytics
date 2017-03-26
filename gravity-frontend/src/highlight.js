@@ -41,9 +41,9 @@ class MapPanel extends Component {
         hourSelect = document.getElementById("hour_select");
     if(map !== null) {
       var pos = map.getBoundingClientRect();
-      hourSelect.style.left = (10) + "px";
-      hourSelect.style.top = (pos.top + 10) + "px";
-      hourSelect.style.zIndex = 5000;
+      //hourSelect.style.left = (10) + "px";
+      //hourSelect.style.top = (pos.top + 10) + "px";
+      //hourSelect.style.zIndex = 5000;
     }
   }
 
@@ -115,6 +115,14 @@ class MapPanel extends Component {
     }
 
 
+    var statTemplater = (d) => {
+      return ( <div className="stat-box" key={d.name} ><span>{d.value}</span><label>{d.name}</label></div> )
+    };
+    var summary_stats = this.props.highlights.general.map(statTemplater);
+    var alert_stats = this.props.highlights.alerts.map(statTemplater);
+    var forecast_stats = this.props.highlights.forecasts.map(statTemplater);
+
+    
     return(
       <div id="map_container" className="content-wrapper-fixed-height">
         <div id='hour_select'>
@@ -143,34 +151,18 @@ class MapPanel extends Component {
         <div className="summary-stats-container">
           <div className="stat-category">
             <h3>Summary</h3>
-            <div>
-              <span>32</span>
-              <label>Alerts in the hour</label>
-            </div>
-            <div>
-              <span>32</span>
-              <label>Alerts in the week</label>
-            </div>
-            <div>
-              <span>32</span>
-              <label>Alerts in the month</label>
-            </div>
+            {summary_stats}
           </div>
           <div className="stat-category">
             <h3>Alerts</h3>
-            <div>
-              <span>32</span>
-              <label>Label</label>
-            </div>
+            {alert_stats}
           </div>
           <div className="stat-category">
             <h3>Forecast</h3>
-            <div>
-              <span>32</span>
-              <label>Label</label>
-            </div>
+            {forecast_stats}
           </div>
         </div>
+        <div className="spacer"></div>
       </div>
     );
   }
@@ -184,7 +176,8 @@ class HighlightsTab extends Component {
       <div>
         <MapPanel ward_geo_json={this.props.ward_geo_json}
           selected_hour={this.props.selected_hour}
-          ward_counts={this.props.ward_counts} />
+          ward_counts={this.props.ward_counts}
+          highlights={this.props.highlights} />
       </div>
     );
   }
