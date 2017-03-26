@@ -110,7 +110,7 @@ const wardMapReducer = function(state, action) {
     new_state = Object.assign({}, state, {selected_hour: action.selected_hour});
   }
 
-  console.log(new_state);
+  //console.log(new_state);
 
   return new_state || state;
 }
@@ -122,8 +122,8 @@ const alertsReducer = function(state, action) {
     new_state = {
       wards : [],
       complaint_types : [],
-      selected_ward : null, // no ward selected by default
-      selected_complaint_type: null, // no complaint selected by default
+      categoryType : "all",
+      categoryOption: null, 
       selected_date_start: moment(new Date()).subtract(7, "days").toDate(), // default is a one week period
       selected_date_end: new Date(), // date to,
       selected_date_range: "last_week", // by default, show last week
@@ -165,42 +165,34 @@ const alertsReducer = function(state, action) {
 
     var url = null;
 
-    // see if we can avoid a needless HTTP call.
-    // if the ward, complaint type has not changed,
-    // don't make a HTTP call to fetch the data
-    if(action.force_call || state.selected_ward !== new_state.selected_ward ||
-      state.selected_complaint_type !== new_state.selected_complaint_type ||
-      state.selected_date_start !== new_state.selected_date_start ||
-      state.selected_date_end !== new_state.selected_date_end) {
-        // fetch or change data according to selection
-        if(new_state.selected_ward === null && new_state.selected_complaint_type === null) {
-          // get city level
-          url = "/v1/alerts/city";
-        } else if(new_state.selected_ward !== null) {
-          // get ward level
-          url = "/v1/alerts/ward/" + encodeURIComponent(new_state.selected_ward);
-        } else if(new_state.selected_complaint_type !== null) {
-          // get complaint type
-          url = "/v1/alerts/complaint_type/" + encodeURIComponent(new_state.selected_complaint_type);
-        }
+    // fetch or change data according to selection
+    if(new_state.categoryType === "all") {
+      // get city level
+      url = "/v1/alerts/city";
+    } else if(new_state.categoryType === "ward") {
+      // get ward level
+      url = "/v1/alerts/ward/" + encodeURIComponent(new_state.categoryOption);
+    } else if(new_state.categoryType === "complaint") {
+      // get complaint type
+      url = "/v1/alerts/complaint_type/" + encodeURIComponent(new_state.categoryOption);
+    }
 
-        instance.get(url,{
-          params: {
-            start_date: moment(new_state.selected_date_start).format("YYYY-MM-DD"),
-            end_date: moment(new_state.selected_date_end).format("YYYY-MM-DD"),
-          }
-        }).then(function(response) {
-          // TODO transform the data to get what we want
-          store.dispatch({
-            type: "ALERTS_UPDATE_DATA",
-            current_data: response.data.data,
-            current_anomalies: response.data.anomalies
-          });
-        }).catch(function(error) {
-          handleHttpError(error);
-        });
-
+    instance.get(url,{
+      params: {
+        start_date: moment(new_state.selected_date_start).format("YYYY-MM-DD"),
+        end_date: moment(new_state.selected_date_end).format("YYYY-MM-DD"),
       }
+    }).then(function(response) {
+      // TODO transform the data to get what we want
+      store.dispatch({
+        type: "ALERTS_UPDATE_DATA",
+        current_data: response.data.data,
+        current_anomalies: response.data.anomalies
+      });
+    }).catch(function(error) {
+      handleHttpError(error);
+    });
+
   }
 
   if(action.type === "ALERTS_UPDATE_DATA") {
@@ -209,7 +201,7 @@ const alertsReducer = function(state, action) {
   }
 
 
-  console.log(new_state);
+  //console.log(new_state);
 
   return new_state || state;
 }

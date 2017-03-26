@@ -33,6 +33,10 @@ a:hover{
   color:#eee;
 }
 
+.hide{
+  display: none !important;
+}
+
 .row{
   width:100%;
   display: inline-block;
@@ -153,7 +157,7 @@ footer > a{
 /* alerts css */
 
 #hour_select{
-  // display: none;
+  display: none;
 }
 
 #ward-map {
@@ -166,6 +170,11 @@ footer > a{
 #select-panel {
   margin-top: 10px;
   padding: 10px;
+}
+
+.alert-filters > div{
+  //margin:0 auto;
+  //width:600px;
 }
 
 .alert-filters label{
@@ -182,7 +191,7 @@ footer > a{
 }
 
 .alert-time-filters{
-  padding:25px 0;
+  margin-top:25px;
 }
 
 .alert-time-filters > button{
@@ -197,6 +206,26 @@ footer > a{
   background-color:#ccc;
 }
 
+.alerts-chart-title{
+  font-size: 14px;
+  //text-align: center;
+  color:#fff;
+}
+
+.toggle-alerts-view, .toggle-alerts-view:hover{
+  color:#fff;
+  float:right;
+  text-decoration: underline;
+}
+
+.alerts-chart-stat{
+  color:#ffd300;
+  //margin-right:10px;
+  font-size: 12px;
+  width:100%;
+  display: inline-block;
+  text-align: center;
+}
 
 .summary-stats-container{
   width:400px;
