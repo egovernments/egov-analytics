@@ -195,6 +195,9 @@ footer > a{
 
 #hour_select{
   position: absolute;
+  top:65px;
+  left:10px;
+  z-index:99999;
   background-color:#153651;
   padding:10px 15px;
   width:200px;
@@ -203,6 +206,7 @@ footer > a{
 }
 
 #hour_select > input{
+  cursor: -webkit-grab;
   width:calc(100% - 55px);
 }
 
@@ -368,8 +372,10 @@ footer > a{
   float:left;
   width:120px;
   height:150px;
-  border-bottom:1px solid #fff;
   margin:20px;
+  box-shadow: 0 0 1px 1px #ccc;
+  background-color: #E3F1FC;
+  color:#333;
 }
 
 .stat-box > span{
@@ -377,7 +383,7 @@ footer > a{
   display: block;
   height:70px;
   font-size:25px;
-  line-height: 35px;
+  line-height: 70px;
   text-align: center;
 }
 

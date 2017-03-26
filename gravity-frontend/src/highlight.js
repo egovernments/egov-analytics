@@ -41,9 +41,9 @@ class MapPanel extends Component {
         hourSelect = document.getElementById("hour_select");
     if(map !== null) {
       var pos = map.getBoundingClientRect();
-      hourSelect.style.left = (10) + "px";
-      hourSelect.style.top = (pos.top + 10) + "px";
-      hourSelect.style.zIndex = 5000;
+      //hourSelect.style.left = (10) + "px";
+      //hourSelect.style.top = (pos.top + 10) + "px";
+      //hourSelect.style.zIndex = 5000;
     }
   }
 
