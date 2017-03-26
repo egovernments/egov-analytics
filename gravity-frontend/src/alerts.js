@@ -154,7 +154,7 @@ class SelectPanel extends Component {
               checked={this.props.categoryType === "ward"}
               onChange={this.categoryTypeSelectionOnChange.bind(this)} />
             <label htmlFor="ft-ward">Ward No.</label>
-            <input type="radio" name="filterType" id="ft-complaint" 
+            <input type="radio" name="filterType" id="ft-complaint"
               value="complaint" checked={this.props.categoryType === "complaint"}
               onChange={this.categoryTypeSelectionOnChange.bind(this)}/>
             <label htmlFor="ft-complaint">Complaint type</label>
@@ -257,13 +257,19 @@ class ChartAndTablePanel extends Component {
 
     var view = null;
 
+    var parentTab = document.getElementById("alerts-tab");
+    var width = 600;
+    if(parentTab) {
+      width = parentTab.offsetWidth;
+    }
+
     if(this.state.chartViewType === "chart") {
       view = <MetricsGraphics
           title="Downloads"
           description="This graphic shows a time-series of downloads."
           markers={markers}
           data={data}
-          width={600}
+          width={width}
           height={250}
           x_accessor="date"
           y_accessor="value"
@@ -304,19 +310,22 @@ class AlertsTab extends Component {
 
   render() {
 
-    var highlights = this.props.highlights.alerts.map(function(highlight) {
-      // TODO there should be a tool tip for description
-      return(
-        <div className="stat-box" key={highlight.name} >
-          <span>{highlight.value}</span>
-          <label>{highlight.name}</label>
-        </div>
-      );
-    });
+    // var highlights = this.props.highlights.alerts.map(function(highlight) {
+    //   // TODO there should be a tool tip for description
+    //   return(
+    //     <div className="stat-box" key={highlight.name} >
+    //       <span>{highlight.value}</span>
+    //       <label>{highlight.name}</label>
+    //     </div>
+    //   );
+    // });
+    // <div className="col-small"> className="col-large"
+    //   {highlights}
+    // </div>
 
     return (
       <div id="alerts-tab">
-        <div className="col-large">
+        <div>
           <SelectPanel wards={this.props.wards}
             complaint_types={this.props.complaint_types}
             selected_ward={this.props.selected_ward}
@@ -332,9 +341,7 @@ class AlertsTab extends Component {
             complaints_count={this.props.complaints_count}
             anomalies_count={this.props.anomalies_count} />
         </div>
-        <div className="col-small">
-          {highlights}
-        </div>
+
         <div className="spacer"></div>
       </div>
     );

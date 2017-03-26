@@ -145,6 +145,29 @@ footer > a{
 }
 
 
+.filter-buttons-container{
+  list-style: none;
+  padding:20px;
+  margin:0;
+}
+
+.filter-buttons-container > li{
+  margin:0 5px;
+  padding: 3px 5px;
+  float:left;
+  border:1px solid #ccc;
+  background-color:#fff;
+  cursor: pointer;
+  outline: none;
+  font-size: 10px;
+  color: #333;
+}
+
+.filter-buttons-container > li.active-filter{
+  background-color: #aaa;
+  color: #fff;
+  border: 0;
+}
 
 .forecasts-panel{
   padding:15px 0;

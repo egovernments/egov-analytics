@@ -131,27 +131,67 @@ class ForecastsPanel extends Component {
 }
 
 class ForecastsTab extends Component {
+
+  constructor() {
+    super();
+    this.state = {
+      currentComplaint: null
+    };
+  }
+
+  componentWillMount() {
+    this.setState({
+      currentComplaint: Object.keys(this.props.forecasts)[0]
+    });
+  }
+
+  showForecastFor(e){
+    this.setState({
+      currentComplaint: e.target.innerHTML
+    });
+  }
+
+
   render() {
-    var panels = [];
+    var panel = null,
+        complaintTypeButtons = [];
+
+    var currentComplaint = this.state.currentComplaint;
     for (var key in this.props.forecasts) {
-      if (!this.props.forecasts.hasOwnProperty(key)) {
+      if ( !this.props.forecasts.hasOwnProperty(key) ) {
         continue;
       }
 
-      panels.push(
-        <ForecastsPanel key={key} complaint_type={key} data={this.props.forecasts[key]} />
-      );
+      if(key === currentComplaint) {
+        panel = <ForecastsPanel key={key} complaint_type={key} data={this.props.forecasts[key]} />;
+        complaintTypeButtons.push(
+          <li className="active-filter" onClick={this.showForecastFor.bind(this)}>{key}</li>
+        );
+      } else {
+        complaintTypeButtons.push(
+          <li onClick={this.showForecastFor.bind(this)}>{key}</li>
+        );
+      }
+
+
+
+
     }
 
     return (
       <div>
-        <HighlightsPanel label='forecasts' highlights={this.props.highlights.forecasts}></HighlightsPanel>
-        {panels}
+        <ul className="filter-buttons-container">
+          {complaintTypeButtons}
+        </ul>
+        {panel}
       </div>
     );
   }
 }
 
+/*
+  <HighlightsPanel label='forecasts' highlights={this.props.highlights.forecasts}></HighlightsPanel>
+*/
 
 
 const mapStateToProps = function(store) {
