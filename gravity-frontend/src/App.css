@@ -245,22 +245,21 @@ footer > a{
 }
 
 .alert-time-filters > button{
-  /*margin-right: 15px;
-  width:100px;
-  padding:5px;
-  cursor: pointer;
-  outline: none;*/
   margin:0 5px 0 0;
   padding:3px 5px;
   border:1px solid #ccc;
   cursor: pointer;
   outline: none;
   background-color:#fff;
-  width:50px;
+  min-width:30px;
+  font-size: 10px;
+  color:#333;
 }
 
-.active-time-filter{
-  background-color:#ccc;
+.alert-time-filters > button.active-time-filter{
+  background-color:#aaa;
+  color:#fff;
+  border:0;
 }
 
 .alerts-chart-title{
