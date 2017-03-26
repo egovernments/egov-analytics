@@ -6,9 +6,58 @@ import MetricsGraphics from 'react-metrics-graphics';
 import ReactTable from 'react-table';
 
 
-class ForecastsPanel extends Component {
-  render() {
+function offset(element){
+    var body = document.body,
+        win = document.defaultView,
+        docElem = document.documentElement,
+        box = document.createElement('div');
+    box.style.paddingLeft = box.style.width = "1px";
+    body.appendChild(box);
+    var isBoxModel = box.offsetWidth == 2;
+    body.removeChild(box);
+    box = element.getBoundingClientRect();
+    var clientTop  = docElem.clientTop  || body.clientTop  || 0,
+        clientLeft = docElem.clientLeft || body.clientLeft || 0,
+        scrollTop  = win.pageYOffset || isBoxModel && docElem.scrollTop  || body.scrollTop,
+        scrollLeft = win.pageXOffset || isBoxModel && docElem.scrollLeft || body.scrollLeft;
+    return {
+        top : box.top  + scrollTop  - clientTop,
+        left: box.left + scrollLeft - clientLeft
+    };
+}
 
+class ForecastsPanel extends Component {
+
+  mouseOver(d, i) {
+    const selectPoint = document.getElementsByClassName("mg-active-datapoint")[0];
+    var elems = document.getElementsByClassName("mg-line-rollover-circle");
+    var selectedCircle = null;
+    for(i in elems) {
+      var elem = elems[i];
+      if(elem.style && elem.style.opacity == 1) {
+        selectedCircle = elem;
+      }
+    }
+
+    if(selectedCircle === null) {
+      return;
+    }
+
+    const pos = offset(selectedCircle);
+    var tooltip = document.getElementById("forecasts-tooltip");
+    tooltip.style.display = "block";
+    tooltip.style.position = "absolute";
+    tooltip.style.top = pos.top + "px";
+    tooltip.style.left = pos.left + "px";
+
+    tooltip.innerHTML = "Hello World!";
+  }
+
+  mouseOut(d, i) {
+    var tooltip = document.getElementById("forecasts-tooltip").style.display = "none";
+  }
+
+  render() {
     var data = this.props.data.data.map(function(d) {
       return {
         value : d.Data,
@@ -52,6 +101,7 @@ class ForecastsPanel extends Component {
       <div className='forecasts-panel'>
         <h3>{this.props.complaint_type}</h3>
         <div className="forecasts-chart">
+          <div id="forecasts-tooltip" className="data-tooltip" />
           <MetricsGraphics
             title="Downloads"
             description="This graphic shows a time-series of downloads."
@@ -63,6 +113,8 @@ class ForecastsPanel extends Component {
             show_confidence_band = {["upper", "lower"]}
             color_accessor={"color"}
             area={false}
+            mouseover={this.mouseOver}
+            mouseout={this.mouseOut}
           />
         </div>
         <div className="forecasts-table">
