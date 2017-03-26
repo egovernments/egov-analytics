@@ -116,12 +116,13 @@ class MapPanel extends Component {
 
 
     var statTemplater = (d) => {
-      return ( <div className="stat-box"><span>{d.value}</span><label>{d.name}</label></div> )
+      return ( <div className="stat-box" key={d.name} ><span>{d.value}</span><label>{d.name}</label></div> )
     };
     var summary_stats = this.props.highlights.general.map(statTemplater);
-    var alert_stats = this.props.highlights.general.map(statTemplater);
-    var forecast_stats = this.props.highlights.general.map(statTemplater);
+    var alert_stats = this.props.highlights.alerts.map(statTemplater);
+    var forecast_stats = this.props.highlights.forecasts.map(statTemplater);
 
+    
     return(
       <div id="map_container" className="content-wrapper-fixed-height">
         <div id='hour_select'>
@@ -161,6 +162,7 @@ class MapPanel extends Component {
             {forecast_stats}
           </div>
         </div>
+        <div className="spacer"></div>
       </div>
     );
   }

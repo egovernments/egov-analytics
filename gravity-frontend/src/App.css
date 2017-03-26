@@ -197,7 +197,7 @@ footer > a{
   position: absolute;
   top:65px;
   left:10px;
-  z-index:99999;
+  z-index:9999;
   background-color:#153651;
   padding:10px 15px;
   width:200px;
@@ -305,6 +305,7 @@ footer > a{
 }
 
 .summary-stats-container{
+  float:left;
   width:550px;
   display: inline-block;
   background-color: #fff;
@@ -377,6 +378,10 @@ footer > a{
   box-shadow: 0 0 1px 1px #ccc;
   background-color: #E3F1FC;
   color:#333;
+}
+
+.stat-box:hover{
+  box-shadow: 0 0 5px 1px #ccc;
 }
 
 .stat-box > span{
