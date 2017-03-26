@@ -9,19 +9,86 @@ import moment from 'moment';
 import MG from 'metrics-graphics';
 import ReactTable from 'react-table'
 
+
+
+
+
 class SelectPanel extends Component {
 
+  constructor() {
+    super();
+    this.state = {
+      filters : {
+        categoryType : "all",
+        selectedTimeRange : "week"
+      }
+    };
+  }
+
+  filterData(t, d) {
+
+    var dateEnd = new Date(),
+        dateStart = moment(dateEnd).subtract(7, "days").toDate(),
+        categoryType = document.querySelector('input[name="filterType"]:checked').value,
+        selectedWard = document.getElementById("wardOptions"),
+        selectedComplaint = document.getElementById("complaintOptions"),
+        categoryOption;
+
+    this.setState(Object.assign({}, this.state, {
+      filters : {
+        categoryType : categoryType,
+        selectedTimeRange : t === "timeRange" ? d : this.state.filters.selectedTimeRange
+      }
+    }));
+
+    if( ( categoryType === "ward" && selectedWard && !selectedWard.value ) || ( categoryType === "complaint" && selectedComplaint && !selectedComplaint.value ) ){
+      return;
+    }
+
+    if( categoryType === "ward" ){
+      categoryOption = selectedWard.value;
+    }
+    else if( categoryType === "complaint"  ){
+      categoryOption = selectedComplaint.value;
+    }
+
+    if(this.state.filters.selectedTimeRange === "today") {
+      dateEnd = new Date();
+      dateStart = moment(dateEnd).subtract(1, "days").toDate();
+    } else if (this.state.filters.selectedTimeRange === "week") {
+      dateEnd = new Date();
+      dateStart = moment(dateEnd).subtract(7, "days").toDate();
+    } else if (this.state.filters.selectedTimeRange === "month") {
+      dateEnd = new Date();
+      dateStart = moment(dateEnd).subtract(30, "days").toDate();
+    }else if (this.state.filters.selectedTimeRange === "year") {
+      dateEnd = new Date();
+      dateStart = moment(dateEnd).subtract(365, "days").toDate();
+    } else if (this.state.filters.selectedTimeRange === "custom") {
+      return;
+    }
+
+    store.dispatch({
+      type: "ALERTS_UPDATE_STATE",
+      selected_date_start: dateStart,
+      selected_date_end: dateEnd,
+      categoryType : categoryType,
+      categoryOption : categoryOption
+    });
+
+    //this.setState(new_state);
+  }
+
   dateSelectionOnChange(e) {
-    var select = e.target;
-    var selectValue = select[select.selectedIndex].value;
+    var select = e.target,
+        selectValue = select[select.selectedIndex].value,
+        dateStart = null,
+        dateEnd = null;
 
     store.dispatch({
       type: "ALERTS_UPDATE_STATE",
       selected_date_range: selectValue
     });
-
-    var dateStart = null;
-    var dateEnd = null;
 
     if(selectValue === "last_day") {
       dateEnd = new Date();
@@ -35,28 +102,43 @@ class SelectPanel extends Component {
     } else if (selectValue === "custom") {
       return;
     }
-
-
     store.dispatch({
       type: "ALERTS_UPDATE_STATE",
       selected_date_start: dateStart,
       selected_date_end: dateEnd
     });
+  }
+
+  /*changeDataType(e){
+      this.setState({ filterType: e.currentTarget.value });
+      this.setState(this.state);
+  }*/
+
+
+
+  filters = {
+
+    filterType : "week",
+
+    time : {
+      activeType : "week"
+    }
 
   }
 
+
+
+  changeTimeFilter(d){
+    this.filters.time.activeType = d;
+  }
+
+  filterType = "ward";
+
+
   wardSelectionHandler(e) {
-    console.log("Ward Changed");
-    var select = e.target;
-
-    var selectValue = select[select.selectedIndex].value;
-    if(selectValue === "") {
-      selectValue = null;
-    }
-
-    // set complaint_type to ""
+    var select = e.target,
+        selectValue = select[select.selectedIndex].value || null;
     document.getElementById("complaint-type-selector").selectedIndex = 0;
-
     store.dispatch({
       type: "ALERTS_UPDATE_STATE",
       selected_ward: selectValue,
@@ -65,17 +147,9 @@ class SelectPanel extends Component {
   }
 
   complaintTypeSelectionHandler(e) {
-    console.log("Complaint Type Changed");
-    var select = e.target;
-
-    var selectValue = select[select.selectedIndex].value;
-    if(selectValue === "") {
-      selectValue = null;
-    }
-
-    // set complaint_type to ""
+    var select = e.target,
+        selectValue = select[select.selectedIndex].value || null;
     document.getElementById("ward-selector").selectedIndex = 0;
-
     store.dispatch({
       type: "ALERTS_UPDATE_STATE",
       selected_ward: null,
@@ -98,6 +172,7 @@ class SelectPanel extends Component {
     });
   }
 
+
   render() {
     var ward_options = this.props.wards.map(function(w) {
       return (<option key={w} value={w} >{w}</option>);
@@ -107,63 +182,112 @@ class SelectPanel extends Component {
       return (<option key={c} value={c} >{c}</option>);
     });
 
-    var customDateRange = [];
-    if(this.props.selected_date_range === "custom") {
-      customDateRange.push(
+    var customDateRange = null;
+    if(this.state.filters.selectedTimeRange === "custom") {
+      customDateRange = [
         <DateField
           id="start_date"
           key="start_date"
           dateFormat="YYYY-MM-DD"
           defaultValue={this.props.selected_date_start}
-          onChange={this.dateStartChange} />
-      );
-
-      customDateRange.push(
+          onChange={this.dateStartChange} />,
         <DateField
-          id="end_date"
-          key="end_date"
-          dateFormat="YYYY-MM-DD"
-          defaultValue={this.props.selected_date_end}
-          onChange={this.dateEndChange} />
-      );
+            id="end_date"
+            key="end_date"
+            dateFormat="YYYY-MM-DD"
+            defaultValue={this.props.selected_date_end}
+            onChange={this.dateEndChange} />
+      ];
+    }
+
+    var categoryOptions = null;
+    if( this.state.filters.categoryType === "ward" ){
+      categoryOptions =  <select id='wardOptions' onChange={ ()=>this.filterData("categoryOption", this.value) }>
+                          <option value=''>Select ward number</option>
+                          {ward_options}
+                         </select>;
+    }else if( this.state.filters.categoryType === "complaint" ){
+      categoryOptions = <select id='complaintOptions' onChange={ ()=>this.filterData("categoryOption", this.value) }>
+                        <option value=''>Select complaint type</option>
+                          {ct_options}
+                        </select>;
     }
 
     return (
       <div id="select-panel">
-          <select id="ward-selector" onChange={this.wardSelectionHandler}>
-            <option value=""></option>
-            {ward_options}
-          </select>
-          <select id="complaint-type-selector" onChange={this.complaintTypeSelectionHandler}>
-            <option value=""></option>
-            {ct_options}
-          </select>
-          <select id="date-select" onChange={this.dateSelectionOnChange}>
-            <option value="last_week">Last Week</option>
-            <option value="last_day">Last Day</option>
-            <option value="last_month">Last 30 days</option>
-            <option value="custom">Custom Date Range</option>
-          </select>
+
+        <div className="alert-filters">
+          <div>
+            <input type="radio" name="filterType" id="ft-all" value="all" checked={this.state.filters.categoryType === "all"} onChange={()=>this.filterData("categoryType", "all")} />
+            <label htmlFor="ft-all">All</label>
+            <input type="radio" name="filterType" id="ft-ward" value="ward" checked={this.state.filters.categoryType === "ward"} onChange={()=>this.filterData("categoryType", "ward")}  />
+            <label htmlFor="ft-ward">Ward No.</label>
+            <input type="radio" name="filterType" id="ft-complaint" value="complaint" checked={this.state.filters.categoryType === "complaint"} onChange={()=>this.filterData("categoryType", "complaint")}  />
+            <label htmlFor="ft-complaint">Complaint type</label>
+            { categoryOptions }
+          </div>
+        </div>
+
+        <div className="alert-time-filters">
+          <button className={this.filters.time.activeType === "today" ? "active-time-filter" : ""} onClick={()=>this.filterData("timeRange", "today")}>Today</button>
+          <button className={this.filters.time.activeType === "week" ? "active-time-filter" : ""} onClick={()=>this.filterData("timeRange", "week")}>Last 7 days</button>
+          <button className={this.filters.time.activeType === "month" ? "active-time-filter" : ""}  onClick={()=>this.filterData("timeRange", "month")}>Last 30 days</button>
+          <button className={this.filters.time.activeType === "year" ? "active-time-filter" : ""}  onClick={()=>this.filterData("timeRange", "year")}>Last year</button>
+          <button className={this.filters.time.activeType === "custom" ? "active-time-filter" : "", "custom-time"}  onClick={()=>this.filterData("timeRange", "custom")}>Custom</button>
           {customDateRange}
+        </div>
+
+          <div className="hide">
+            <br/><br/><br/>
+            <select id="ward-selector" onChange={this.wardSelectionHandler}>
+              <option value=""></option>
+                {ward_options}
+            </select>
+            <select id="complaint-type-selector" onChange={this.complaintTypeSelectionHandler}>
+              <option value=""></option>
+                {ct_options}
+            </select>
+            <select id="date-select" onChange={this.dateSelectionOnChange}>
+              <option value="last_week">Last Week</option>
+              <option value="last_day">Last Day</option>
+              <option value="last_month">Last 30 days</option>
+              <option value="custom">Custom Date Range</option>
+            </select>
+              {customDateRange}
+          </div>
+
       </div>
     );
   }
 }
 
 
+
+
+
+
+
+
+
 class ChartAndTablePanel extends Component {
+    constructor() {
+      super();
+      this.state = {
+        chartViewType: "chart"
+      };
+    }
+    toggleChartView() {
+      var newViewType = this.state.chartViewType === "chart" ? "table" : "chart";
+      this.setState(Object.assign({}, this.state, {chartViewType: newViewType}));
+    }
+
   render() {
-    var data = [];
+    var data = [],
+        dateToCount = {},
+        dateStart = this.props.selected_date_start,
+        dateEnd = this.props.selected_date_end;
 
-    console.log("End Date : " +  this.props.selected_date_end);
-    console.log("Start Date : " + this.props.selected_date_start);
-
-    var dateToCount = {};
-
-    var dateStart = this.props.selected_date_start;
-    var dateEnd = this.props.selected_date_end;
-
-    if(dateStart >= dateEnd) {
+    if( dateStart >= dateEnd ) {
       return(
         <div>
           <h3>Start date should come before end date </h3>
@@ -173,26 +297,28 @@ class ChartAndTablePanel extends Component {
 
     this.props.data.forEach(function(d) {
       var date = new Date(d.Time);
-
       if(date >= dateStart && date <= dateEnd) {
         data.push({
           value : d.Data,
           date: date
         });
-
         dateToCount[d.Time] = d.Data;
       }
     });
 
-    if(data.length == 0) {
+    if( !data.length ) {
       return (
         <div>
-          <h3>Showing data from {this.props.selected_date_start.toDateString()}
+          <h3 className="alerts-chart-title">Showing data from {this.props.selected_date_start.toDateString()}
             to {this.props.selected_date_end.toDateString()}</h3>
           <h5>No data available for the selected date</h5>
         </div>
       );
     }
+
+
+
+
 
     var markers = [];
 
@@ -217,7 +343,7 @@ class ChartAndTablePanel extends Component {
       }
     });
 
-    console.log(anomsForTable);
+    //console.log(anomsForTable);
 
     const columnSpec = [{
       header: 'Time',
@@ -232,11 +358,11 @@ class ChartAndTablePanel extends Component {
     if(parentTab) {
       width = parentTab.offsetWidth;
     }
-    return (
-      <div id="chart-panel">
-        <h3>Showing data from {this.props.selected_date_start.toDateString()}
-            to {this.props.selected_date_end.toDateString()}</h3>
-        <MetricsGraphics
+
+    var view = null;
+
+    if(this.state.chartViewType === "chart") {
+      view = <MetricsGraphics
           title="Downloads"
           description="This graphic shows a time-series of downloads."
           markers={markers}
@@ -247,18 +373,45 @@ class ChartAndTablePanel extends Component {
           y_accessor="value"
           transition_on_update={false}
           area={false}
-          min_y={0}/>
-        <ReactTable
+          min_y={0}/>;
+    } else {
+      view =   <ReactTable
           data={anomsForTable}
-          columns={columnSpec} />
+          columns={columnSpec} />;
+    }
+
+    return (
+      <div id="chart-panel">
+        <h3 className="alerts-chart-title">{this.props.selected_date_start.toDateString() } - {this.props.selected_date_end.toDateString()}</h3>
+        <div>
+          <label className="alerts-chart-stat">
+            Complaints: 321 | Anomalies: 12
+            <a href="javascript:void(0)" onClick={this.toggleChartView.bind(this)} className="toggle-alerts-view">List anomalies</a>
+          </label>
+
+        </div>
+          {view}
       </div>
     );
   }
 }
 
+
+
+
+
+
 class AnomaliesTable {
 
 }
+
+
+
+
+
+
+
+
 
 class AlertsTab extends Component {
   componentWillMount() {
@@ -289,6 +442,8 @@ class AlertsTab extends Component {
     );
   }
 }
+
+
 const mapStateToProps = function(store) {
   return {
     highlights: store.highlights,
