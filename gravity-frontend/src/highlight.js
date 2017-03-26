@@ -50,33 +50,6 @@ class MapPanel extends Component {
 
 
 
-
-  onEachFeatureFn(component, feature, layer) {
-    // var highlightFeature = function(e) {
-    //     var layer = e.target;
-    //
-    //     layer.setStyle({
-    //         weight: 5,
-    //         color: '#666',
-    //         dashArray: '',
-    //         fillOpacity: 0.7
-    //     });
-    //
-    // }
-    //
-    //
-    // var resetHighlight = function(component,e) {
-    //   component.refs.geojson.leafletElement.resetStyle(component.refs.geojson);
-    // }
-    //
-    //
-    //
-    // layer.on({
-    //     mouseover: highlightFeature,
-    //     mouseout: resetHighlight.bind(null, component)
-    // });
-  }
-
   render() {
     var url = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
     var attribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
@@ -84,11 +57,15 @@ class MapPanel extends Component {
     const zoomLevel = 10.5;
     var props = this.props;
 
+    const getKey = function(wardNo) {
+      return "Ward-" + wardNo;
+    }
+
     var mapStyle = function(feature) {
       var hourData = props.ward_counts[props.selected_hour];
       var colorChoice = "#1c1c1c";
       if(hourData !== undefined) {
-        var key = "Ward-" + feature.properties.WARD_NO;
+        var key = getKey(feature.properties.WARD_NO);
         var count = hourData[key] || 0;
         if(count > 0) {
           colorChoice = "#FED976";
@@ -108,9 +85,42 @@ class MapPanel extends Component {
       };
     };
 
+    var component = this;
+
+    var onEachFeature = function(feature, layer) {
+      if(feature.properties.WARD_NO) {
+        const getMessage = function() {
+          const wardNo = feature.properties.WARD_NO;
+          const hourData = component.props.ward_counts[component.props.selected_hour];
+          console.log(props);
+          var count = 0;
+          if(hourData !== undefined) {
+            count =  hourData[getKey(wardNo)] || 0;
+          }
+          return "Ward: " + wardNo  + " Complaints: " + count;
+        }
+
+        layer.bindPopup(getMessage);
+      } else {
+          console.log(feature.properties);
+      }
+    }
+
+    var map = document.getElementById("ward-map");
+    var hourSelectStyle = {};
+    if(map !== null) {
+      var pos = map.getBoundingClientRect();
+
+      hourSelectStyle.left = (pos.right - 175) + "px";
+      hourSelectStyle.top = (pos.top + 10) + "px";
+      hourSelectStyle.zIndex = 5000;
+    }
+
     return(
       <div className="content-wrapper-fixed-height">
-        <input id="hour_select" type="range" min="0" max="24" step="1" value={this.props.selected_hour} onChange={this.hourSelectOnChange} />
+        <input id="hour_select" type="range" min="0" max="24" step="1"
+          value={this.props.selected_hour} onChange={this.hourSelectOnChange}
+          style={hourSelectStyle} />
         <Map id="ward-map"
           center={mapCenter}
           zoom={zoomLevel}
@@ -125,7 +135,7 @@ class MapPanel extends Component {
           <GeoJSON
             data={this.props.ward_geo_json}
             style={mapStyle}
-            onEachFeature={this.onEachFeatureFn.bind(null, this)}
+            onEachFeature={onEachFeature}
             ref="geojson" />
         </Map>
         <div className="summary-stats-container">

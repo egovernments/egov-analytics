@@ -34,7 +34,7 @@ a:hover{
 }
 
 .hide{
-  display: none !important;
+  display: nohour_selectne !important;
 }
 
 .row{
@@ -157,7 +157,7 @@ footer > a{
 /* alerts css */
 
 #hour_select{
-  display: none;
+  position: absolute;
 }
 
 #ward-map {
