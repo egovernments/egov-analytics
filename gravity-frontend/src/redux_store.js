@@ -8,7 +8,7 @@ var instance = axios.create({
 });
 
 function handleHttpError(error) {
-  alert(error);
+  console.log(error);
 }
 
 const highlightsReducer = function(state, action) {
