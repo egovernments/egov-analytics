@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { HighlightsPanel } from "./highlight.js";
 import MetricsGraphics from 'react-metrics-graphics';
 import ReactTable from 'react-table';
-
+import moment from 'moment';
 
 function offset(element){
     var body = document.body,
@@ -43,14 +43,24 @@ class ForecastsPanel extends Component {
       return;
     }
 
+
     const pos = offset(selectedCircle);
     var tooltip = document.getElementById("forecasts-tooltip");
     tooltip.style.display = "block";
     tooltip.style.position = "absolute";
-    tooltip.style.top = pos.top + "px";
-    tooltip.style.left = pos.left + "px";
+    var dateString = moment(d.date).format("MMMM YYYY");
+    if(d.upper) {
+      // d.upper is defined only for forecasts, different tool tip for it
+      tooltip.innerHTML = "Forecast " + dateString + ": " + d.value;
+    } else {
+      tooltip.innerHTML =  dateString + ": " + d.value;
+    }
 
-    tooltip.innerHTML = "Hello World!";
+    var width = tooltip.getBoundingClientRect().width;
+
+    tooltip.style.top = (pos.top - 70)+ "px";
+    tooltip.style.left = (pos.left - width / 2)+ "px";
+
   }
 
   mouseOut(d, i) {
@@ -95,6 +105,10 @@ class ForecastsPanel extends Component {
       id: "conf-80"
     }];
 
+    var markers = [{
+        'date': new Date(),
+        'label': 'Today'
+    }];
 
 
     return (
@@ -107,6 +121,10 @@ class ForecastsPanel extends Component {
             description="This graphic shows a time-series of downloads."
             data={data}
             width={500}
+            y_extended_ticks={true}
+            x_label={"Time"}
+            y_label={"Complaints"}
+            show_rollover_text={false}
             height={250}
             x_accessor="date"
             y_accessor="value"
@@ -115,6 +133,7 @@ class ForecastsPanel extends Component {
             area={false}
             mouseover={this.mouseOver}
             mouseout={this.mouseOut}
+            markers={markers}
           />
         </div>
         <div className="forecasts-table">
