@@ -189,9 +189,12 @@ const alertsReducer = function(state, action) {
   }
 
   if(action.type === "ALERTS_UPDATE_DATA") {
+    var parsed_anomalies = action.current_anomalies.map(function(d) {
+      return new Date(d);
+    });
     new_state = Object.assign({}, state, {
       current_data: action.current_data,
-      current_anomalies: action.current_anomalies,
+      current_anomalies: parsed_anomalies,
       anomalies_count: action.anomalies_count,
       complaints_count: action.complaints_count
     });

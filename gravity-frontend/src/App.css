@@ -254,6 +254,17 @@ footer > a{
   width: auto;
 }
 
+#alerts-tooltip {
+  display: none;
+  z-index: 10000;
+  background-color: black;
+  color: #fff;
+  border-radius: 6px;
+  padding: 5px 5px;
+  width: auto;
+}
+
+
 #ward-map {
   height: 750px;
   width:100%;
