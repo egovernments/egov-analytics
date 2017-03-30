@@ -7,7 +7,8 @@ import { DateField, Calendar } from 'react-date-picker';
 import MetricsGraphics from 'react-metrics-graphics';
 import moment from 'moment';
 import MG from 'metrics-graphics';
-import ReactTable from 'react-table'
+import ReactTable from 'react-table';
+import {offset} from "./utils.js";
 
 class SelectPanel extends Component {
 
@@ -181,16 +182,65 @@ class SelectPanel extends Component {
 
 
 class ChartAndTablePanel extends Component {
-    constructor() {
-      super();
-      this.state = {
-        chartViewType: "chart"
-      };
+  constructor() {
+    super();
+    this.state = {
+      chartViewType: "chart"
+    };
+  }
+  toggleChartView() {
+    var newViewType = this.state.chartViewType === "chart" ? "table" : "chart";
+    this.setState(Object.assign({}, this.state, {chartViewType: newViewType}));
+  }
+
+  mouseOver(d, i) {
+    const selectPoint = document.getElementsByClassName("mg-active-datapoint")[0];
+    var elems = document.getElementsByClassName("mg-line-rollover-circle");
+    var selectedCircle = null;
+    for(i in elems) {
+      var elem = elems[i];
+      if(elem.style && elem.style.opacity == 1) {
+        selectedCircle = elem;
+      }
     }
-    toggleChartView() {
-      var newViewType = this.state.chartViewType === "chart" ? "table" : "chart";
-      this.setState(Object.assign({}, this.state, {chartViewType: newViewType}));
+
+    if(selectedCircle === null) {
+      return;
     }
+
+    const pos = offset(selectedCircle);
+    var tooltip = document.getElementById("alerts-tooltip");
+    tooltip.style.display = "block";
+    tooltip.style.position = "absolute";
+    var dateString = moment(d.date).format("MMMM DD YYYY, h a");
+    var idx = this.props.anomalies.findIndex(function(x) {
+      return x.valueOf() === d.date.valueOf();
+    });
+
+    if(idx >= 0) {
+      tooltip.innerHTML = "(ALERT) " + dateString + ": " + d.value;
+      // style selected circle as well
+      selectedCircle.style.stroke = "#f00";
+      selectedCircle.style.fill = "#f00";
+      selectedCircle.setAttribute("r", "4");
+    } else {
+      tooltip.innerHTML =  dateString + ": " + d.value;
+      selectedCircle.style.stroke = "#ffd300";
+      selectedCircle.style.fill = "#ffd300";
+      selectedCircle.setAttribute("r", "2.5");
+    }
+
+    var width = tooltip.getBoundingClientRect().width;
+
+    tooltip.style.top = (pos.top - 70)+ "px";
+    tooltip.style.left = (pos.left - width / 2)+ "px";
+
+  }
+
+  mouseOut(d, i) {
+    var tooltip = document.getElementById("alerts-tooltip").style.display = "none";
+  }
+
 
   render() {
     var data = [],
@@ -213,7 +263,7 @@ class ChartAndTablePanel extends Component {
           value : d.Data,
           date: date
         });
-        dateToCount[d.Time] = d.Data;
+        dateToCount[date] = d.Data;
       }
     });
 
@@ -230,19 +280,17 @@ class ChartAndTablePanel extends Component {
     var markers = [];
     var anomsForTable = [];
 
-    this.props.anomalies.forEach(function(d) {
-      var date = new Date(d);
+    this.props.anomalies.forEach(function(date) {
 
       if(date >= dateStart && date <= dateEnd) {
         markers.push({
           date: date,
-          label: "",
-          value: 30
+          label: ""
         });
 
         anomsForTable.push({
           date: moment(date).format("MMMM Do YYYY, h a"),
-          count: dateToCount[d]
+          count: dateToCount[date]
         });
       }
     });
@@ -268,6 +316,12 @@ class ChartAndTablePanel extends Component {
           title="Downloads"
           description="This graphic shows a time-series of downloads."
           markers={markers}
+          y_extended_ticks={true}
+          x_label={"Time"}
+          y_label={"Complaints"}
+          show_rollover_text={false}
+          mouseover={this.mouseOver.bind(this)}
+          mouseout={this.mouseOut}
           data={data}
           width={width}
           height={250}
@@ -284,6 +338,7 @@ class ChartAndTablePanel extends Component {
 
     return (
       <div id="chart-panel">
+        <div id="alerts-tooltip" className="data-tooltip" />
         <h3 className="alerts-chart-title">{this.props.selected_date_start.toDateString() } - {this.props.selected_date_end.toDateString()}</h3>
         <div>
           <label className="alerts-chart-stat">
