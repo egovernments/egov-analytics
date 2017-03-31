@@ -32,9 +32,9 @@ class ForecastsPanel extends Component {
     var dateString = moment(d.date).format("MMMM YYYY");
     if(d.upper) {
       // d.upper is defined only for forecasts, different tool tip for it
-      tooltip.innerHTML = "Forecast " + dateString + ": " + d.value;
+      tooltip.innerHTML = "<span>Forecast for " + dateString + "</span><span>" + d.value +"</span>";
     } else {
-      tooltip.innerHTML =  dateString + ": " + d.value;
+      tooltip.innerHTML =  "<span>"+ dateString + "</span><span>" + d.value +"</span>";
     }
 
     var width = tooltip.getBoundingClientRect().width;

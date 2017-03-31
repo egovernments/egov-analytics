@@ -218,13 +218,13 @@ class ChartAndTablePanel extends Component {
     });
 
     if(idx >= 0) {
-      tooltip.innerHTML = "(ALERT) " + dateString + ": " + d.value;
+      tooltip.innerHTML = "<span><span style='color:red;font-size:8px;'>(ALERT)</span> " + dateString + "</span><span>" + d.value +"</span>";
       // style selected circle as well
       selectedCircle.style.stroke = "#f00";
       selectedCircle.style.fill = "#f00";
       selectedCircle.setAttribute("r", "4");
     } else {
-      tooltip.innerHTML =  dateString + ": " + d.value;
+      tooltip.innerHTML =  "<span>"+ dateString + "</span> <span>" + d.value +"</span>";
       selectedCircle.style.stroke = "#ffd300";
       selectedCircle.style.fill = "#ffd300";
       selectedCircle.setAttribute("r", "2.5");
