@@ -163,11 +163,28 @@ footer > a{
   color: #333;
 }
 
-.filter-buttons-container > li.active-filter{
-  background-color: #aaa;
-  color: #fff;
-  border: 0;
+
+.filter-buttons-container > li, .alert-time-filters > button{
+  background: #f7f2f7;
+  background-image: -webkit-linear-gradient(top, #f7f2f7, #e0e0e0);
+  background-image: -moz-linear-gradient(top, #f7f2f7, #e0e0e0);
+  background-image: -ms-linear-gradient(top, #f7f2f7, #e0e0e0);
+  background-image: -o-linear-gradient(top, #f7f2f7, #e0e0e0);
+  background-image: linear-gradient(to bottom, #f7f2f7, #e0e0e0);
+  color: #333;
+  font-size: 10px;
+  padding: 5px 5px 5px 5px;
+  text-decoration: none;
 }
+
+.filter-buttons-container > li.active-filter, .filter-buttons-container > li:hover,
+.alert-time-filters > button.active-time-filter, .alert-time-filters > button:hover {
+  background: #153651;
+  color:#fff;
+  border:1px solid #fff;
+}
+
+
 
 .forecasts-panel{
   padding:15px 0;
@@ -308,25 +325,14 @@ footer > a{
 
 .alert-time-filters > button{
   margin:0 5px 0 0;
-  padding:3px 5px;
+  padding:3px 10px;
   border:1px solid #ccc;
   cursor: pointer;
   outline: none;
-  background-color:#fff;
-  min-width:30px;
-  font-size: 10px;
-  color:#333;
-}
-
-.alert-time-filters > button.active-time-filter{
-  background-color:#aaa;
-  color:#fff;
-  border:0;
 }
 
 .alerts-chart-title{
   font-size: 14px;
-  //text-align: center;
   color:#fff;
 }
 
@@ -338,7 +344,6 @@ footer > a{
 
 .alerts-chart-stat{
   color:#ffd300;
-  //margin-right:10px;
   font-size: 12px;
   width:100%;
   display: inline-block;
