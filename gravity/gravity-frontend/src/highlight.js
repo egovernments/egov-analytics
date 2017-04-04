@@ -122,14 +122,12 @@ class MapPanel extends Component {
     var alert_stats = this.props.highlights.alerts.map(statTemplater);
     var forecast_stats = this.props.highlights.forecasts.map(statTemplater);
 
-    
+
     return(
       <div id="map_container" className="content-wrapper-fixed-height">
         <div id='hour_select'>
-          <span>0</span>
           <input type="range" min="0" max="24" step="1" value={this.props.selected_hour} onChange={this.hourSelectOnChange} />
-          <span>24</span>
-          <label>Drag to view by hour</label>
+          <label>Drag to view by hour. <strong>Hour: {this.props.selected_hour}</strong></label>      
         </div>
         <Map id="ward-map"
           center={mapCenter}
