@@ -25,13 +25,12 @@ There are two goals in mind for this project:
 
 ### Sub-modules
 
-* EDA - Dashboard: For exploring & plotting data, and preliminary analysis for Time series modeling
-* Time Series Dashboard (forked [here](https://github.com/DataKind-BLR/time-series-dashboard)): For selection of parameters for ARIMA and Exponential smoothing models.
-* Gravity: Front-end for the project, where results are tabulated or visualized
-* `time-series` : Contains several notebooks in which a few complaint types' data are analyzed. Useful for understanding how time series modeling works
-* `alerts` : Contains code and notebooks for the alerts module.
+* [EDA - Dashboard](shiny-dashboards/eda-dashboard): For exploring & plotting data, and preliminary analysis for Time series modeling
+* [Alerts Dashboard](shiny-dashboards/alerts-dashboard): Dashboard for viewing detected anomalies at a specific date
+* (WIP) [Time Series Dashboard](https://github.com/DataKind-BLR/time-series-dashboard): End to end time series modeling. Forked to a separate repo
+* [Gravity](gravity): Front-end for the project, where results are tabulated and visualized.
+* [Notebooks](jupyter-notebooks) : Contains several notebooks in which a few complaint types' data are analyzed. Useful for understanding how time series modeling and anomaly detection works
 * [eGovs.lib](eGovs.lib): The R library which contains high level APIs for time series modeling and anomaly detection.
-
 
 ## How to run
 
@@ -47,13 +46,11 @@ Additional instructions are available [here](eGovs.lib/README.md)
 * Create a config file which contains model specifications. An example can be found here in `eGovs.lib/R/example_config.json`
 * Execute `eGovs.lib::execute.all(<path.to.config>, <path.to.output>)`
 
-### Running the front-end
-* Collect the output in the previous step, move it to `gravity-backend/data/data.json` (exact name)
-* start the 2 servers:
-  * navigate to `gravity-backend` and execute `python server.py`
-  * navigate to `gravity-frontend` and execute `npm start`
+Additional instructions are available [here](eGovs.lib/README.md)
 
-(More details can be found in respective project READMEs)
+### Running the front-end
+
+Instructions are available [here](gravity/README.md)
 
 #### Generating sample data  /\*TODO\*/
 

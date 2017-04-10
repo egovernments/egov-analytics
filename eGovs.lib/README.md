@@ -1,4 +1,4 @@
-# Read me - eGovs.lib
+# eGovs.lib
 
 This is a collection of R classes and methods to process data generated from the eGovs PGR data. Broadly speaking, it deals with the time series data at city, ward and complaint levels. Currently, there are two goals of this library:
 
@@ -19,6 +19,8 @@ devtools::install_github("egovernments/analytics",subdir = "eGovs.lib")
 ```
 
 ## User Guide
+(WIP)
+### 0. Config specifications
 
 ### 1. Data
 
