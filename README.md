@@ -30,7 +30,7 @@ There are two goals in mind for this project:
 * Gravity: Front-end for the project, where results are tabulated or visualized
 * `time-series` : Contains several notebooks in which a few complaint types' data are analyzed. Useful for understanding how time series modeling works
 * `alerts` : Contains code and notebooks for the alerts module.
-* eGovs.lib: The R library which contains high level APIs for time series modeling and anomaly detection.
+* [eGovs.lib](eGovs.lib): The R library which contains high level APIs for time series modeling and anomaly detection.
 
 
 ## How to run
@@ -39,6 +39,8 @@ There are two goals in mind for this project:
 
 * Install `devtools` using `install.packages("devtools")`
 * Execute `devtools::install_github("egovernments/analytics",subdir = "eGovs.lib")`
+
+Additional instructions are available [here](eGovs.lib/README.md)
 
 ### Building models and getting output
 
