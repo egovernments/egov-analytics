@@ -71,7 +71,7 @@ class ForecastsPanel extends Component {
         value: Math.max(0, Math.floor(d.Forecast)),
         date: new Date(d.Time),
         upper: Math.max(0, Math.floor(d.High_80)),
-        lower: Math.max(Math.floor(d.Low_80)),
+        lower: Math.max(0, Math.floor(d.Low_80)),
         color: "#fff"
       });
     })
