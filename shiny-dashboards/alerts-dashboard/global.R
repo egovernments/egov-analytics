@@ -35,5 +35,9 @@ anomalies.around <- function(xtsobj, date, window.size=60) {
   end_time <- date
   start_time <- date - (24 * 60 * 60 * window.size)
   subset <- window(xtsobj, start=start_time, end=end_time)
-  AnomalyDetectionVec(drop(coredata(subset)),period=24, plot=T, only_last = T)
+  ret <- list()
+  ret[["anoms"]] <- AnomalyDetectionVec(drop(coredata(subset)),period=24, plot=T, only_last = T)
+  ret[["series"]] <- subset
+  
+  ret
 }

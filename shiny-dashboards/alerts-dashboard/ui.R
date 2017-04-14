@@ -28,7 +28,7 @@ shinyUI(fluidPage(
           "detectAnoms", label = "Detect Anomalies?"
         ),
         dateInput(
-          "anoms.date", label = "Date to detect anomalies around",
+          "anoms.date", label = "Select Date",
           value = "2014-11-22"
         ),
         sliderInput(

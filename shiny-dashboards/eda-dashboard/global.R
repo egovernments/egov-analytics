@@ -1,4 +1,4 @@
-DATA="/home/samarth/workspaces/datakind-workspace/cocUptoJuly2016.csv"
+DATA="/home/samarth/workspaces/datakind-ws/cocUptoJuly2016.csv"
 
 library(shiny)
 library(xts)
