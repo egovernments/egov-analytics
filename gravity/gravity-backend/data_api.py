@@ -146,10 +146,16 @@ class DataAPI(object):
 
     def get_ward_counts(self, date):
         counts = {}
+        anoms = {}
         for i in range(0, 24):
             counts[i] = {}
+            anoms[i] = {}
 
         for ward, data in self.parsed_data["alerts"][DataLevels.WARD].iteritems():
+            # set anomalies flag
+            for a in filter(lambda _: _.date() == date.date(), data["anomalies"]):
+                anoms[a.hour][ward] = True
+
             data = filter(lambda _: _["Time"].date() == date.date(), data["data"])
             data.sort(key=lambda _: _["Time"], reverse=True)
 
@@ -157,7 +163,16 @@ class DataAPI(object):
                 d = item["Time"]
                 counts[d.hour][ward] = item["Data"] + counts[d.hour].get(ward, 0)
 
-        return counts
+        final_data = {}
+        for hour, data in counts.items():
+            final_data[hour] = {}
+            for ward in data.keys():
+                final_data[hour][ward] = {
+                    "count": data[ward],
+                    "alert": anoms.get(hour, {}).get(ward, False)
+                }
+
+        return final_data
 
 
 data_api = DataAPI()

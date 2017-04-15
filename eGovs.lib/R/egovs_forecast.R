@@ -94,6 +94,9 @@ egovs_forecasts <- function(series,
     series <- tsclean(series)
   }
 
+  print("ARGS:")
+  print(model_args)
+
   if(ts_model == "ARIMA") {
     order <- c(model_args$arima.p, model_args$arima.d, model_args$arima.q)
     lambda <- model_args$lambda

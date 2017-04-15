@@ -53,7 +53,7 @@ class ForecastsPanel extends Component {
 
 
     var data = [];
-    var oneYearAgo = moment().subtract(365 * 2, 'days');
+    var oneYearAgo = moment().subtract(365, 'days');
     this.props.data.data.forEach(function(d) {
       if(moment(d.Time) < oneYearAgo) {
         return;

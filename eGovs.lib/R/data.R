@@ -42,11 +42,16 @@ ComplaintsData <- R6Class(
         mutate(NumComplaints=1)
 
       self$data <- df
-
     },
     getComplaintFrequencyByType = function() {
       self$data %>%
         group_by(Complaint.Type) %>%
+        summarise(NumComplaints = sum(NumComplaints)) %>%
+        arrange(-NumComplaints)
+    },
+    getComplaintFrequencyByWard = function() {
+      self$data %>%
+        group_by(Ward) %>%
         summarise(NumComplaints = sum(NumComplaints)) %>%
         arrange(-NumComplaints)
     },
@@ -65,7 +70,6 @@ ComplaintsData <- R6Class(
       if(rollup == "month") {
         series <- xts::apply.monthly(series, FUN=sum)
       }
-
       monthlyData <- data.frame(Date=zoo::index(series), Complaints=zoo::coredata(series))
       # create columns for join
       monthlyData$Month <- month.abb[lubridate::month(monthlyData$Date)]
@@ -151,17 +155,22 @@ AlertsData <- R6Class("AlertsData",
 
 
 #' Generate 'fake' data
-#' @param n_complaint_types number of complaint types
-#' @param n_wards number of wards
-#' @param n_complaints number of complaints to generate
+#' @param n_complaints number of complaints to generate.
+#' @param n_complaint_types number of complaint types. disregarded if 'complaints' is supplied
+#' @param n_wards number of wards. disregarded if 'wards' is supplied
+#' @param complaints the complaints to sample from
+#' @param wards the wards to sample from
 #' @param file_loc location to write csv file to
 #' @param start_date the start date to sample dates from
 #' @param end_date the end date to sample dates from
 #' @export
-data_gen <- function(n_complaint_types,
-                     n_wards,
-                     n_complaints,
-                     file_loc, start_date = "2012-01-01", end_date = "2016-12-31") {
+data_gen <- function(n_complaints,
+                     file_loc,
+                     start_date = "2012-01-01", end_date = "2016-12-31",
+                     n_wards=NULL,
+                     n_complaint_types=NULL,
+                     complaints=NULL,
+                     wards=NULL) {
 
   # http://stackoverflow.com/questions/14720983/efficiently-generate-a-random-sample-of-times-and-dates-between-two-dates
   # @param N the number of dates
@@ -175,8 +184,21 @@ data_gen <- function(n_complaint_types,
     rt <- st + ev
   }
 
-  wards <- paste0("Ward-", seq(1, n_wards))
-  complaints <- paste0("Complaint-", seq(1, n_complaint_types))
+  if(is.null(n_complaint_types) && is.null(complaints)) {
+    stop("Supply either n_complaint_types or complaints")
+  }
+
+  if(is.null(n_wards) && is.null(wards)) {
+    stop("Supply either n_wards or wards")
+  }
+
+  if(is.null(wards)) {
+    wards <- paste0("Ward-", seq(1, n_wards))
+  }
+
+  if(is.null(complaints)) {
+    complaints <- paste0("Complaint-", seq(1, n_complaint_types))
+  }
 
   dates <- latemail(n_complaints, start_date, end_date)
   df <- data.frame(
