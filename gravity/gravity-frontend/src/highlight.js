@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Map, TileLayer, GeoJSON, ZoomControl } from 'react-leaflet';
-
+import { zeroPad } from "./utils.js"
 class HighlightsPanel extends Component {
 
   componentWillMount(){
@@ -53,7 +53,7 @@ class MapPanel extends Component {
     var props = this.props;
 
     const getKey = function(wardNo) {
-      return "Ward-" + wardNo;
+      return "N" + zeroPad(wardNo, 3);
     }
 
     var mapStyle = function(feature) {
@@ -61,8 +61,16 @@ class MapPanel extends Component {
       var colorChoice = "#1c1c1c";
       if(hourData !== undefined) {
         var key = getKey(feature.properties.WARD_NO);
-        var count = hourData[key] || 0;
-        if(count > 0) {
+        var count = 0;
+        var alertStatus = false;
+        if(hourData[key] !== undefined) {
+          count = hourData[key].count;
+          alertStatus = hourData[key].alert;
+        }
+
+        if(alertStatus) {
+          colorChoice = "#F00";
+        } else if(count > 0) {
           colorChoice = "#FED976";
         } else if (count > 1) {
           colorChoice = "#FEB24C";
@@ -89,10 +97,17 @@ class MapPanel extends Component {
           const hourData = component.props.ward_counts[component.props.selected_hour];
           console.log(props);
           var count = 0;
-          if(hourData !== undefined) {
-            count =  hourData[getKey(wardNo)] || 0;
+          var key = getKey(wardNo);
+          var alertStatus = false;
+          if(hourData !== undefined && hourData[key] !== undefined) {
+            count =  hourData[key].count;
+            alertStatus = hourData[key].alert;
           }
-          return "Ward: " + wardNo  + " Complaints: " + count;
+          if(alertStatus) {
+            return "Alert Raised! : Ward: " + wardNo  + " Complaints: " + count;
+          } else {
+            return "Ward: " + wardNo  + " Complaints: " + count;
+          }
         }
 
         layer.bindPopup(getMessage);
