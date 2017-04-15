@@ -4,21 +4,26 @@
 \alias{data_gen}
 \title{Generate 'fake' data}
 \usage{
-data_gen(n_complaint_types, n_wards, n_complaints, file_loc,
-  start_date = "2012-01-01", end_date = "2016-12-31")
+data_gen(n_complaints, file_loc, start_date = "2012-01-01",
+  end_date = "2016-12-31", n_wards = NULL, n_complaint_types = NULL,
+  complaints = NULL, wards = NULL)
 }
 \arguments{
-\item{n_complaint_types}{number of complaint types}
-
-\item{n_wards}{number of wards}
-
-\item{n_complaints}{number of complaints to generate}
+\item{n_complaints}{number of complaints to generate.}
 
 \item{file_loc}{location to write csv file to}
 
 \item{start_date}{the start date to sample dates from}
 
 \item{end_date}{the end date to sample dates from}
+
+\item{n_wards}{number of wards. disregarded if 'wards' is supplied}
+
+\item{n_complaint_types}{number of complaint types. disregarded if 'complaints' is supplied}
+
+\item{complaints}{the complaints to sample from}
+
+\item{wards}{the wards to sample from}
 }
 \description{
 Generate 'fake' data

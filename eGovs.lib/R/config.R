@@ -2,7 +2,7 @@ library(R6)
 
 #' A list of 'Constants'
 Constants <- list(
-  allowed_params = c("arima.p", "arima.d", "arima.q", "ets.model", "ets.damped", "lambda")
+  allowed_params = c("arima.p", "arima.d", "arima.q", "ets.model", "ets.damped", "lambda", "stl.period")
 )
 
 

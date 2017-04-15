@@ -1,22 +1,54 @@
 {
   "data": {
-    "path": "~/workspaces/datakind-ws/cocUptoJuly2016.csv"
+    "path": "~/fakedCocUptoMarch2017.csv"
   },
   "forecasts": {
     "model-spec": {
       "Mosquito menace ": {
-        "model": "ARIMA",
-        "arima.p": 1,
-        "arima.d": 2,
-        "arima.q": 2,
-        "lambda": null,
+        "start-date": "04/01/2012",
         "stl": true,
+        "stl.period": 6,
         "clean-outliers": true,
-        "start-date": "11/26/2012"
+        "model": "ARIMA",
+        "arima.p": 3,
+        "arima.d": 1,
+        "arima.q": 6
       },
       "Non Burning of Street Lights": {
+        "start-date": "04/01/2012",
+        "stl": true,
+        "stl.period" : "periodic",
+        "clean-outliers": false,
+        "model": "ARIMA",
+        "arima.p": 5,
+        "arima.d": 0,
+        "arima.q": 1
+      },
+      "Dog menace ": {
+        "start-date": "04/01/2012",
+        "stl": true,
+        "stl.period" : "periodic",
+        "clean-outliers": true,
         "model": "ETS",
-        "ets.model": "AAA",
+        "ets.model": "MNN",
+        "ets.damped": false
+      },
+      "Removal of garbage" : {
+        "start-date": "04/01/2012",
+        "stl": true,
+        "stl.period": "periodic",
+        "clean-outliers": true,
+        "model": "ARIMA",
+        "arima.p": 1,
+        "arima.d": 1,
+        "arima.q": 9
+      },
+      "Stagnation of water": {
+        "start-date": "04/01/2012",
+        "stl": false,
+        "clean-outliers": true,
+        "model": "ETS",
+        "ets.model": "ANA",
         "ets.damped": false
       }
     }

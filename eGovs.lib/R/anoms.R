@@ -36,9 +36,10 @@ detect_anomalies = function(series,
     warning("No anomalies found!", immediate. = T)
     return(NULL)
   } else {
-    out_subset <- data.frame(Count = series[anomalies$anoms$index,])
+    out_subset <- data.frame(Count = anomalies$anoms$anoms,
+                             Time = anomalies$anoms$timestamp)
     out_subset <- out_subset %>% filter(Count >= threshold)
-    out_subset$Time <- row.names(out_subset)
+    print(paste0("    ", nrow(out_subset), " anomalies found!"))
     row.names(out_subset) <- NULL
   }
 
@@ -78,9 +79,9 @@ detect_anomalies_last <- function(series,
     warning("No anomalies found!", immediate. = T)
     return(NULL)
   } else {
-    out_subset <- data.frame(Count = series[anomalies$anoms$index,])
+    out_subset <- data.frame(Count = anomalies$anoms$anoms,
+                             Time = anomalies$anoms$timestamp)
     out_subset <- out_subset %>% filter(Count >= threshold)
-    out_subset$Time <- row.names(out_subset)
     row.names(out_subset) <- NULL
   }
 
