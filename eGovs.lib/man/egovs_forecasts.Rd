@@ -5,7 +5,8 @@
 \title{Extract forecasts for a given time series.}
 \usage{
 egovs_forecasts(series, ts_model, forecast_points = 3, as.df = TRUE,
-  cleaned = FALSE, stl.decompose = FALSE, conf.intervals = c(80, 95), ...)
+  cleaned = FALSE, stl.decompose = FALSE, conf.intervals = c(80, 95),
+  clip_negative = TRUE, ...)
 }
 \arguments{
 \item{series}{a \code{ts} object}
@@ -21,6 +22,8 @@ egovs_forecasts(series, ts_model, forecast_points = 3, as.df = TRUE,
 \item{stl.decompose}{if set to \code{TRUE} the series is decomposed using STL}
 
 \item{conf.intervals}{the confidence intervals. a vector of numbers between 1-100}
+
+\item{clip_negative}{if set to \code{TRUE} negative values in forecasts are clipped to 0}
 
 \item{...}{other model-specific params. see examples}
 }

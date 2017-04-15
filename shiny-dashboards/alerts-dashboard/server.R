@@ -61,7 +61,13 @@ shinyServer(function(input, output) {
       return(NULL)
     }
     anom.date <- strftime(input$anoms.date, "%Y-%m-%d 23:59:59")
-    anomalies.around(series, as.POSIXct(anom.date), window.size = input$window.size)$plot
+    anoms <- anomalies.around(series, as.POSIXct(anom.date), window.size = input$window.size)
+    
+    if(nrow(anoms$anoms$anoms) > 0) {
+      anoms$anoms$plot
+    } else {
+      plot(anoms$series, main="No anomalies found")
+    }
   })
 
 })

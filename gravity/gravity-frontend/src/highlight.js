@@ -36,17 +36,6 @@ class HighlightsPanel extends Component {
 
 class MapPanel extends Component {
 
-  componentDidUpdate() {
-    var map = document.getElementById("map_container"),
-        hourSelect = document.getElementById("hour_select");
-    if(map !== null) {
-      var pos = map.getBoundingClientRect();
-      //hourSelect.style.left = (10) + "px";
-      //hourSelect.style.top = (pos.top + 10) + "px";
-      //hourSelect.style.zIndex = 5000;
-    }
-  }
-
   hourSelectOnChange(e) {
     var value = e.target.value;
     console.log("Hour Selected: " + value);
@@ -55,8 +44,6 @@ class MapPanel extends Component {
       selected_hour: value
     });
   }
-
-
 
   render() {
     var url = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
@@ -127,7 +114,7 @@ class MapPanel extends Component {
       <div id="map_container" className="content-wrapper-fixed-height">
         <div id='hour_select'>
           <input type="range" min="0" max="24" step="1" value={this.props.selected_hour} onChange={this.hourSelectOnChange} />
-          <label>Drag to view by hour. <strong>Hour: {this.props.selected_hour}</strong></label>      
+          <label>Drag to view by hour. <strong>Hour: {this.props.selected_hour}</strong></label>
         </div>
         <Map id="ward-map"
           center={mapCenter}
@@ -148,16 +135,16 @@ class MapPanel extends Component {
         </Map>
         <div className="summary-stats-container">
           <div className="stat-category">
-            <h3>Summary</h3>
-            {summary_stats}
-          </div>
-          <div className="stat-category">
             <h3>Alerts</h3>
             {alert_stats}
           </div>
           <div className="stat-category">
             <h3>Forecast</h3>
             {forecast_stats}
+          </div>
+          <div className="stat-category">
+            <h3>Summary</h3>
+            {summary_stats}
           </div>
         </div>
         <div className="spacer"></div>
@@ -180,15 +167,6 @@ class HighlightsTab extends Component {
     );
   }
 }
-
-/*
-
- <HighlightsPanel label='summary' highlights={this.props.highlights.general} ></HighlightsPanel>
- <HighlightsPanel label='alerts' highlights={this.props.highlights.alerts}></HighlightsPanel>
- <HighlightsPanel label='forecasts' highlights={this.props.highlights.forecasts}></HighlightsPanel>
- */
-
-
 
 const mapStateToProps = function(store) {
   return {

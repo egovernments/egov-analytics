@@ -33,6 +33,7 @@ class ForecastsPanel extends Component {
     if(d.upper) {
       // d.upper is defined only for forecasts, different tool tip for it
       tooltip.innerHTML = "<span>Forecast for " + dateString + "</span><span>" + d.value +"</span>";
+      tooltip.innerHTML += "<span>80% Confidence: " + d.lower + "-" + d.upper + "<span>";
     } else {
       tooltip.innerHTML =  "<span>"+ dateString + "</span><span>" + d.value +"</span>";
     }
@@ -49,23 +50,30 @@ class ForecastsPanel extends Component {
   }
 
   render() {
-    var data = this.props.data.data.map(function(d) {
-      return {
-        value : d.Data,
+
+
+    var data = [];
+    var oneYearAgo = moment().subtract(365 * 2, 'days');
+    this.props.data.data.forEach(function(d) {
+      if(moment(d.Time) < oneYearAgo) {
+        return;
+      }
+      data.push({
+        value : Math.max(d.Data, 0),
         date: new Date(d.Time),
         upper: null,
         lower: null
-      }
+      });
     });
 
     this.props.data.forecasts.forEach(function(d) {
       data.push({
-        value: d.Forecast,
+        value: Math.max(0, Math.floor(d.Forecast)),
         date: new Date(d.Time),
-        upper: d.High_80,
-        lower: d.Low_80,
+        upper: Math.max(0, Math.floor(d.High_80)),
+        lower: Math.max(0, Math.floor(d.Low_80)),
         color: "#fff"
-      })
+      });
     })
 
     const columnSpec = [{
@@ -104,7 +112,6 @@ class ForecastsPanel extends Component {
             width={500}
             y_extended_ticks={true}
             x_label={"Time"}
-            y_label={"Complaints"}
             show_rollover_text={false}
             height={250}
             x_accessor="date"

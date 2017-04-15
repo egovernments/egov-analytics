@@ -188,6 +188,7 @@ class ChartAndTablePanel extends Component {
       chartViewType: "chart"
     };
   }
+  
   toggleChartView() {
     var newViewType = this.state.chartViewType === "chart" ? "table" : "chart";
     this.setState(Object.assign({}, this.state, {chartViewType: newViewType}));
@@ -252,6 +253,14 @@ class ChartAndTablePanel extends Component {
       return(
         <div>
           <h3>Start date should come before end date </h3>
+        </div>
+      );
+    }
+    var diff = moment(dateEnd).diff(moment(dateStart), "days");
+    if(diff > 365) {
+      return(
+        <div>
+          <h3>Please select less than one year of data</h3>
         </div>
       );
     }
@@ -364,20 +373,6 @@ class AlertsTab extends Component {
 
 
   render() {
-
-    // var highlights = this.props.highlights.alerts.map(function(highlight) {
-    //   // TODO there should be a tool tip for description
-    //   return(
-    //     <div className="stat-box" key={highlight.name} >
-    //       <span>{highlight.value}</span>
-    //       <label>{highlight.name}</label>
-    //     </div>
-    //   );
-    // });
-    // <div className="col-small"> className="col-large"
-    //   {highlights}
-    // </div>
-
     return (
       <div id="alerts-tab">
         <div>

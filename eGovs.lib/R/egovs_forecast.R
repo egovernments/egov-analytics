@@ -1,4 +1,28 @@
 
+clip_predictions <- function(predictions, min_value=0) {
+  # clip the mean value
+  predictions$mean[predictions$mean < min_value] <- min_value
+
+  high_f <- predictions$upper
+  low_f <- predictions$lower
+
+  conf.intervals <- predictions$level
+  forecast_points <- length(predictions$mean)
+  idx <- 1
+
+  for(c in conf.intervals) {
+    low_f[1:forecast_points, idx][low_f[1:forecast_points, idx] < 0] <- 0
+    high_f[1:forecast_points, idx][high_f[1:forecast_points, idx] < 0] <- 0
+    idx <- idx + 1
+  }
+
+  # clip the confidence intervals
+  predictions$lower <- low_f
+  predictions$upper <- high_f
+
+  predictions
+}
+
 forecast_to_df <- function(predictions) {
   mean_f <- predictions$mean
   high_f <- predictions$upper
@@ -31,6 +55,7 @@ forecast_to_df <- function(predictions) {
 #' @param cleaned if set to \code{TRUE}, the series is cleaned before forecasting
 #' @param stl.decompose if set to \code{TRUE} the series is decomposed using STL
 #' @param conf.intervals the confidence intervals. a vector of numbers between 1-100
+#' @param clip_negative if set to \code{TRUE} negative values in forecasts are clipped to 0
 #' @param ... other model-specific params. see examples
 #' @return the forecasts
 #' @examples
@@ -44,6 +69,7 @@ egovs_forecasts <- function(series,
                             cleaned = FALSE,
                             stl.decompose = FALSE,
                             conf.intervals = c(80, 95),
+                            clip_negative = TRUE,
                             ...) {
   ## TODO: Add validation for model_args
 
@@ -111,6 +137,10 @@ egovs_forecasts <- function(series,
                           h=forecast_points,
                           level=conf.intervals,
                           lambda=model_args$lambda)
+  if(clip_negative) {
+    # clip the forecasts to 0
+    predictions <- clip_predictions(predictions, min_value = 0)
+  }
 
   if(as.df) {
     forecast_to_df(predictions)
