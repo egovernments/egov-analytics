@@ -13,7 +13,7 @@ class ForecastsPanel extends Component {
     var selectedCircle = null;
     for(i in elems) {
       var elem = elems[i];
-      if(elem.style && elem.style.opacity === 1) {
+      if(elem.style && elem.style.opacity === "1") {
         selectedCircle = elem;
       }
     }
