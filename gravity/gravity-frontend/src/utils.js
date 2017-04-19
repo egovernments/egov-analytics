@@ -6,7 +6,7 @@ function offset(element){
         box = document.createElement('div');
     box.style.paddingLeft = box.style.width = "1px";
     body.appendChild(box);
-    var isBoxModel = box.offsetWidth == 2;
+    var isBoxModel = box.offsetWidth === 2;
     body.removeChild(box);
     box = element.getBoundingClientRect();
     var clientTop  = docElem.clientTop  || body.clientTop  || 0,

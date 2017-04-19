@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { store } from "./redux_store.js";
 import { connect } from 'react-redux';
-import { HighlightsPanel } from "./highlight.js";
 import 'react-date-picker/index.css';
-import { DateField, Calendar } from 'react-date-picker';
+import { DateField } from 'react-date-picker';
 import MetricsGraphics from 'react-metrics-graphics';
 import moment from 'moment';
-import MG from 'metrics-graphics';
 import ReactTable from 'react-table';
 import {offset} from "./utils.js";
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
 
 class SelectPanel extends Component {
 
@@ -65,23 +65,19 @@ class SelectPanel extends Component {
 
   }
 
-  wardSelectionHandler(e) {
-    var select = e.target,
-        selectValue = select[select.selectedIndex].value || null;
+  wardSelectionHandler(selection) {
     store.dispatch({
       type: "ALERTS_UPDATE_STATE",
-      selected_ward: selectValue,
+      selected_ward: selection.value,
       selected_complaint_type: null
     });
   }
 
-  complaintTypeSelectionHandler(e) {
-    var select = e.target,
-        selectValue = select[select.selectedIndex].value || null;
+  complaintTypeSelectionHandler(selection) {
     store.dispatch({
       type: "ALERTS_UPDATE_STATE",
       selected_ward: null,
-      selected_complaint_type: selectValue
+      selected_complaint_type: selection.value
     });
   }
 
@@ -103,11 +99,11 @@ class SelectPanel extends Component {
 
   render() {
     var ward_options = this.props.wards.map(function(w) {
-      return (<option key={w} value={w} >{w}</option>);
+      return ({value: w, label: w});
     });
 
     var ct_options = this.props.complaint_types.map(function(c) {
-      return (<option key={c} value={c} >{c}</option>);
+      return ({value: c, label: c});
     });
 
     // if date type is custom, show this
@@ -131,16 +127,19 @@ class SelectPanel extends Component {
         customDateRange = [];
     }
 
-
     var categoryOptions = null;
-    if( this.props.categoryType === "ward" ) {
-      categoryOptions =  <select id='wardOptions' onChange={this.wardSelectionHandler}>
-                          {ward_options}
-                         </select>;
-    } else if ( this.props.categoryType === "complaint" ) {
-      categoryOptions = <select id='complaintOptions' onChange={this.complaintTypeSelectionHandler}>
-                          {ct_options}
-                        </select>;
+    if(this.props.categoryType === "ward") {
+      categoryOptions = <Select
+                          value={this.props.selected_ward}
+                          options={ward_options}
+                          onChange={this.wardSelectionHandler}
+                        />
+    } else if (this.props.categoryType === "complaint") {
+      categoryOptions = <Select
+                          value={this.props.selected_complaint_type}
+                          options={ct_options}
+                          onChange={this.complaintTypeSelectionHandler}
+                        />
     }
 
     return (
@@ -188,19 +187,18 @@ class ChartAndTablePanel extends Component {
       chartViewType: "chart"
     };
   }
-  
+
   toggleChartView() {
     var newViewType = this.state.chartViewType === "chart" ? "table" : "chart";
     this.setState(Object.assign({}, this.state, {chartViewType: newViewType}));
   }
 
   mouseOver(d, i) {
-    const selectPoint = document.getElementsByClassName("mg-active-datapoint")[0];
     var elems = document.getElementsByClassName("mg-line-rollover-circle");
     var selectedCircle = null;
     for(i in elems) {
       var elem = elems[i];
-      if(elem.style && elem.style.opacity == 1) {
+      if(elem.style && elem.style.opacity === "1") {
         selectedCircle = elem;
       }
     }
@@ -239,7 +237,7 @@ class ChartAndTablePanel extends Component {
   }
 
   mouseOut(d, i) {
-    var tooltip = document.getElementById("alerts-tooltip").style.display = "none";
+    document.getElementById("alerts-tooltip").style.display = "none";
   }
 
 

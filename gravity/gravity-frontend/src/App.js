@@ -59,8 +59,8 @@ class App extends Component {
 
         </div>
         <footer>
-          <a href='http://www.datakind.org/chapters/datakind-blr' target="_blank"><img src={egov_logo} height="30px" className="vertical-middle"/></a>
-          <a href='http://www.datakind.org/chapters/datakind-blr' target="_blank"><img src={dk_logo} height="25px" className="vertical-middle"/></a>
+          <a href='http://egovernments.org/' target="_blank"><img src={egov_logo} height="30px" className="vertical-middle" alt="eGovernments Foundation"/></a>
+          <a href='http://www.datakind.org/chapters/datakind-blr' target="_blank"><img src={dk_logo} height="25px" className="vertical-middle" alt="DataKind Bangalore"/></a>
           <a href='https://github.com/egovernments/analytics/blob/master/CONTRIBUTORS.md' target="_blank">Contributors</a>
           <a href='https://github.com/egovernments/analytics/' target="_blank">GitHub</a>
         </footer>
