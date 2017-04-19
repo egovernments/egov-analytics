@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import HighlightPill from './pill.js';
 import { store } from "./redux_store.js";
 import { connect } from 'react-redux';
-import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Map, TileLayer, GeoJSON, ZoomControl } from 'react-leaflet';
+import { Map, TileLayer, GeoJSON } from 'react-leaflet';
 import { zeroPad } from "./utils.js"
 class HighlightsPanel extends Component {
 

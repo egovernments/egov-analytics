@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { store } from "./redux_store.js";
 import { connect } from 'react-redux';
-import { HighlightsPanel } from "./highlight.js";
 import MetricsGraphics from 'react-metrics-graphics';
 import ReactTable from 'react-table';
 import moment from 'moment';
@@ -10,12 +9,11 @@ import {offset} from "./utils.js";
 class ForecastsPanel extends Component {
 
   mouseOver(d, i) {
-    const selectPoint = document.getElementsByClassName("mg-active-datapoint")[0];
     var elems = document.getElementsByClassName("mg-line-rollover-circle");
     var selectedCircle = null;
     for(i in elems) {
       var elem = elems[i];
-      if(elem.style && elem.style.opacity == 1) {
+      if(elem.style && elem.style.opacity === 1) {
         selectedCircle = elem;
       }
     }
@@ -46,7 +44,7 @@ class ForecastsPanel extends Component {
   }
 
   mouseOut(d, i) {
-    var tooltip = document.getElementById("forecasts-tooltip").style.display = "none";
+    document.getElementById("forecasts-tooltip").style.display = "none";
   }
 
   render() {
@@ -116,7 +114,7 @@ class ForecastsPanel extends Component {
             height={250}
             x_accessor="date"
             y_accessor="value"
-            show_confidence_band = {["upper", "lower"]}
+            show_confidence_band={["upper", "lower"]}
             color_accessor={"color"}
             area={false}
             mouseover={this.mouseOver}
@@ -195,10 +193,6 @@ class ForecastsTab extends Component {
     );
   }
 }
-
-/*
-  <HighlightsPanel label='forecasts' highlights={this.props.highlights.forecasts}></HighlightsPanel>
-*/
 
 
 const mapStateToProps = function(store) {
